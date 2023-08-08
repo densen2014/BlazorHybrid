@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <Version>0.0.1</Version>
+        <RootNamespace>BlazorHybrid.Win.Shared</RootNamespace>
+        <AssemblyName>BlazorHybrid.Win.Shared</AssemblyName>
+        <PackageProjectUrl>https://github.com/densen2014/BlazorHybrid</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/densen2014/BlazorHybrid</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>跨平台共享库</PackageTags>
+        <Description>用于 Blazor 框架的 Win 平台库</Description>
+        <OutputPath>..\Bin</OutputPath>
+        <!--禁止生成launchSettings.json-->
+        <NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Copyright>DensenInformatica</Copyright>
+        <Authors>Alex Chow</Authors>
+        <Company>Densen Informatica</Company>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BlazorHybrid.Shared\BlazorHybrid.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="32feet.NET" Version="3.5.0" />
+    </ItemGroup>
+
+</Project>

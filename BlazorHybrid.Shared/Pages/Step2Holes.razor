@@ -1,0 +1,44 @@
+﻿@inherits AppComponentBase
+
+<PageTitle>钻孔表</PageTitle>
+<h6 class="m-10">工程</h6>
+<Message @ref="Message" Placement="Placement.Bottom" />
+@if (IsBusy)
+{
+    <Spinner Color="Color.Primary"></Spinner>
+}
+@if (IsShow && !IsBusy)
+{
+    <h6>钻孔完成情况平面图</h6>
+
+    if (PhotoList != null && PhotoList.Any())
+    {
+        <Viewer Images="PhotoList" Width="300px" Height="300px" />
+    }
+    <br />
+    <UploadToBase64 OnError="OnError" OnChanged="OnChanged" />
+}
+
+<TablePollo TItem="SysLog"
+            ItemDetails="NullClass"
+            ItemDetailsII="NullClass"
+            ItemDetailsIII="NullClass"
+            ClickToSelect
+            ShowDefaultButtons="true"
+            ShowEditButton="false"
+            ShowDeleteButton="false"
+            ShowExtendDeleteButton="false"
+            ShowToolbar="true"
+            ShowExtendButtons="true"
+            ShowExportButton="false"
+            ShowExcelModeButtons="false"
+            IsAutoCollapsedToolbarButton="false"
+            IsMultipleSelect="false"
+            ShowDetailRowS
+            RenderMode="TableRenderMode.Table"
+            OnClickRowCallback="ClickRow"
+            TableToolbarBeforeTemplate="RenderTableToolbarBefore()"
+            AddAsync="AddAsync"
+            SaveAsync="SaveAsync" />
+
+ 

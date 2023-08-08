@@ -1,0 +1,64 @@
+﻿@namespace BlazorHybrid.Core.Device
+
+@if (ShowUI)
+{
+    <div @ref="PrinterElement">
+        <div data-action="notSupportedSerial" class="hidden notSupported">
+            <b>Web Serial 串行口</b> 不支持此设备
+        </div>
+        <div data-action="notSupportedBluetooth" class="hidden notSupported">
+            <b>Bluetooth 蓝牙</b> 不支持此设备
+        </div>
+        <div class="btn-group" role="group">
+            <button data-action="btnConnect" class="btn btn-outline-primary">连接</button>
+            <button data-action="btnComConnect" class="btn btn-outline-primary">连接串口</button>
+            <button data-action="btnDisconnect" class="btn btn-outline-danger">断开</button>
+            <button data-action="btnReconnect" class="btn btn-outline-secondary">重连</button>
+            <button data-action="btnGetDevices" class="btn btn-outline-secondary" type="button">已配对</button>
+            <select data-action="selectDevices" class="custom-select" style="width:150px;" />
+            <button data-action="btnConnectdevice" class="btn btn-outline-secondary" type="button">连接</button>
+        </div>
+        <div data-action="tools">
+            <br />
+            <div class="btn-group" role="group">
+                <button data-action="btnwrite" class="btn btn-outline-secondary">自定义打印</button>
+                <button data-action="btnwrite2" class="btn btn-outline-secondary">打印条码</button>
+                <button data-action="btnwriteR" class="btn btn-outline-secondary">打印小票</button>
+                <button data-action="btnwriteQr" class="btn btn-outline-secondary">打印QR码</button>
+                <button class="btn btn-outline-secondary" onclick="@(() => Print)">@PrintButtonText</button>
+            </div>
+        </div>
+        <hr style="width: 70%; max-width: 550px;" />
+        ServiceUuid:
+        <input type="text" class="border border-success" data-action="serviceUuid" value="" style="width: 40%; max-width: 550px;" />
+        <br />
+        <textarea rows="2" cols="20" data-action="barcode" class="border border-success" style="height: 200px; width: 70%; max-width: 550px;"></textarea>
+
+    </div>
+}
+@if (Debug)
+{
+    <pre data-action="log" class="border border-success"></pre>
+}
+@if (ShowUI)
+{
+<pre style="background-color:lightgray">
+服务UUID/ServiceUUID, 默认0xff00
+
+常见打印机ServiceUUID:
+
+[通用型号/BMAU32/QR380A]
+0000ff00-0000-1000-8000-00805f9b34fb => 0xff00
+
+[InnerPrinter商米内置/BlueToothPrinter/FK-POSP58A+]
+e7810a71-73ae-499d-8c15-faa9aef0c3f2
+
+[HM-A300]
+0000fee7-0000-1000-8000-00805f9b34fb
+
+其他设备ServiceUUID:
+'heart_rate'
+0x1802
+0x1803
+</pre>
+}

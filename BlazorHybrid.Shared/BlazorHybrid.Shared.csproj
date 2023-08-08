@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<UseMaui>true</UseMaui>	
+		<SingleProject>true</SingleProject>
+	</PropertyGroup>
+
+	<!--为发布版本启用解释器-->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+		<UseInterpreter>true</UseInterpreter> 
+	</PropertyGroup>
+
+	<PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <Version>0.0.1</Version>
+        <RootNamespace>BlazorHybrid.Shared</RootNamespace>
+        <AssemblyName>BlazorHybrid.Shared</AssemblyName>
+        <PackageProjectUrl>https://github.com/densen2014/BlazorHybrid</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/densen2014/BlazorHybrid</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>跨平台共享库</PackageTags>
+        <Description>用于 Blazor 框架的跨平台库</Description>
+        <OutputPath>..\Bin</OutputPath>
+        <!--禁止生成launchSettings.json-->
+        <NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+    </PropertyGroup>
+
+	<PropertyGroup>
+		<Copyright>DensenInformatica</Copyright>
+		<Authors>Alex Chow</Authors>
+		<Company>Densen Informatica</Company>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<ProjectReference Include="..\BlazorHybrid.Core\BlazorHybrid.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AME.Extensions" Version="7.*" />
+		<PackageReference Include="BootstrapBlazor" Version="7.*" />
+		<PackageReference Include="BootstrapBlazor.FontAwesome" Version="7.*" />
+		<PackageReference Include="BootstrapBlazor.Geolocation" Version="7.*" />
+		<PackageReference Include="BootstrapBlazor.Viewer" Version="7.*" />
+		<PackageReference Include="BootstrapBlazor.WebAPI" Version="7.*" />
+		<PackageReference Include="Densen.Component.Blazor" Version="7.*" />
+		<PackageReference Include="Densen.FreeSql.Extensions.BootstrapBlazor" Version="7.*" />
+		<PackageReference Include="FreeSql" Version="*" />
+		<PackageReference Include="FreeSql.Provider.SqliteCore" Version="*" />
+		<PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.*" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="7.*" />
+		<PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="7.*" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.*" />
+        <PackageReference Include="ZXingBlazor" Version="1.*" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+</Project>

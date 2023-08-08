@@ -1,0 +1,62 @@
+﻿@inherits AppComponentBase
+@using System.Linq.Expressions
+
+<PageTitle>钻孔地层表</PageTitle>
+
+<Message @ref="Message" Placement="Placement.Top" />
+
+<Modal @ref="ExtraLargeModal" OnCloseAsync="OnCloseAsync">
+    <ModalDialog Title="拍照" IsDraggable="true">
+        <BodyTemplate>
+            @if (IsTakingPhoto)
+            {
+                <div class="mb-3">
+                    <div class="form-inline row">
+                        <div class="col-6">
+                            <Display Value="@Model?.Longitude" ShowLabel="true" DisplayText="经度" />
+                        </div>
+                        <div class="col-6">
+                            <Display Value="@Model?.Latitude" ShowLabel="true" DisplayText="纬度" />
+                        </div>
+                    </div>
+                </div>
+
+                <TakePhoto Capture="OnCapture" />
+            }
+
+        </BodyTemplate>
+
+    </ModalDialog>
+</Modal>
+
+@if (IsBusy)
+{
+    <Spinner Color="Color.Primary"></Spinner>
+}
+
+<Geolocations OnResult="@OnResult" @ref="Geolocations" ShowButtons="false" />
+
+
+<TablePollo TItem="SysLog"
+            ItemDetails="NullClass"
+            ItemDetailsII="NullClass"
+            ItemDetailsIII="NullClass"
+            IsAutoCollapsedToolbarButton="false"
+            ShowColumnList
+            IsMultipleSelect="false"
+            ShowDetailRowS
+            ShowLineNo
+            ShowDeleteButton="false"
+            ShowExcelModeButtons="false"
+            PageItemsSource="PageItemsSource"
+            TableToolbarBeforeTemplate="RenderTableToolbarBefore()"
+            AddAsync="AddAsync"
+            SaveAsync="SaveAsync"
+            AfterSaveAsync="AfterSaveAsync"
+            SubTableImgFields="States.ImgFields"
+            EditDialogRowType="RowType.Normal" />
+
+@if (ShowImageList && !IsBusy)
+{
+    <Viewer Images="PhotoList" Width="300px" Height="300px" />
+}

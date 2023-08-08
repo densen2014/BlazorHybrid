@@ -1,0 +1,123 @@
+﻿@inherits AppComponentBase
+
+<Tab IsLazyLoadTabItem="true"> 
+    <TabItem Text="照片表">
+        <TablePollo TItem="Photos"
+                    IncludeByPropertyNames="new List<string> { nameof(Photos.Userss)}"
+                    ItemDetails="NullClass"
+                    ItemDetailsII="NullClass"
+                    ItemDetailsIII="NullClass"
+                    ShowColumnList
+                    ShowExportButton
+                    ShowDetailRowS
+                    TableImgFields="States.ImgFields" />
+    </TabItem> 
+    <TabItem Text="用户表">
+        <TablePollo TItem="Users"
+                    ItemDetails="NullClass"
+                    ItemDetailsII="NullClass"
+                    ItemDetailsIII="NullClass"
+                    ShowColumnList
+                    ShowExportButton
+                    ShowDetailRowS
+                    EditDialogRowType="RowType.Normal"
+                    SaveAsync="SaveAsync" />
+    </TabItem>
+    <TabItem Text="日志">
+        <TablePollo TItem="SysLog"
+                    ItemDetails="NullClass"
+                    ItemDetailsII="NullClass"
+                    ItemDetailsIII="NullClass"
+                    ShowColumnList
+                    ShowExportButton
+                    EditDialogItemsPerRow="1"
+                    EditDialogRowType="RowType.Normal" />
+    </TabItem>
+    <TabItem Text="设置">
+        <Tab IsLazyLoadTabItem="true">
+            <TabItem Text="设置表">
+                <TablePollo TItem="SysInfo"
+                            ItemDetails="NullClass"
+                            ItemDetailsII="NullClass"
+                            ItemDetailsIII="NullClass"
+                            ShowDefaultButtons="false"
+                            ShowExtendDeleteButton="false"
+                            IsMultipleSelect="false"
+                            ShowColumnList
+                            EditDialogItemsPerRow="1"
+                            EditDialogRowType="RowType.Normal" />
+            </TabItem>
+            <TabItem Text="系统操作">
+                <GroupBox Title="危险操作">
+                    <PopConfirmButton Placement="Placement.Top"
+                                      Color="Color.Danger"
+                                      ConfirmIcon="fa-solid fa-triangle-exclamation text-danger"
+                                      ConfirmButtonColor="Color.Danger"
+                                      Text="重建演示数据"
+                                      Content="确认重建演示数据吗?"
+                                      Icon="fas fa-warehouse"
+                                      IsAsync="true"
+                                      OnConfirm="重建演示数据" />
+                    <PopConfirmButton Placement="Placement.Top"
+                                      Color="Color.Danger"
+                                      ConfirmIcon="fa-solid fa-triangle-exclamation text-danger"
+                                      ConfirmButtonColor="Color.Danger"
+                                      Text="重新同步表结构"
+                                      Content="确认重新同步表结构吗?"
+                                      Icon="fas fa-business-time"
+                                      IsAsync="true"
+                                      OnConfirm="重新同步表结构" />
+                </GroupBox>
+
+            </TabItem>
+        </Tab>
+    </TabItem>
+</Tab>
+
+@code{
+    protected Modal? ExtraLargeModal { get; set; }
+    UsersModifyPassword passwordModel = new UsersModifyPassword();
+
+    private async Task<Users> SaveAsync(Users item, ItemChangedType changedType)
+    {
+        if (changedType == ItemChangedType.Update)
+        {
+            if (item.NewPassword == null)
+            {
+                return item;
+            }
+
+            var res = DataService.ChangePassword(item.UserID, item.NewPassword);
+            if (res.users != null)
+            {
+                await ToastService.Success("提示", res.message);
+            }
+            else
+            {
+                await ToastService.Error("提示", res.message);
+            }
+        }
+        return item;
+    }
+
+    private async Task 重建演示数据()
+    {
+        if (DataService.InitDemoProjects(true))
+        {
+            await ToastService.Success("提示", "重建演示数据完成");
+        }
+        else
+        {
+            await ToastService.Error("提示", "重建演示数据失败");
+        }
+    }
+
+    private async Task 重新同步表结构()
+    {
+        if (DataService.SyncStructure() == null)
+            await ToastService.Success("提示", "重新同步表结构完成");
+        else
+            await ToastService.Error("提示", "重新同步表结构失败");
+    }
+
+}

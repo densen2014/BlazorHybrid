@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "BlazorHybrid.Win": {
+      "commandName": "Project"
+    },
+    "BlazorHybrid.WinRemote": {
+      "commandName": "Project",
+      "remoteDebugEnabled": true,
+      "remoteDebugMachine": "87f0cbbf-6dda-429b-b2ed-b7afdc13ff1a:4026",
+      "authenticationMode": "None"
+    }
+  }
+}

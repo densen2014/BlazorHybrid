@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>BlazorHybrid.Demo</title>
+    <base href="/" />
+    <link href="_content/BootstrapBlazor.FontAwesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css" rel="stylesheet">
+    <link href="_content/BootstrapBlazor/css/motronic.min.css" rel="stylesheet">
+    <!--启用maui支持,直接忽略共享库并到主项目,所以不用引用共享库名称-->
+    <link href="css/app.css" rel="stylesheet" />
+    <!--不启用maui支持,引用共享库名称的css-->
+    <link href="_content/BlazorHybrid.Shared/css/app.css" rel="stylesheet" />
+    <link href="BlazorHybrid.Maui.styles.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <div class="status-bar-safe-area"></div>
+
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss"><i class="fa-solid fa-xmark"></i></a>
+    </div>
+
+    <script src="_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+
+</body>
+
+</html>

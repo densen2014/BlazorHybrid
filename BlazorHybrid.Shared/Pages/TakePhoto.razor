@@ -1,0 +1,33 @@
+﻿@if (IsInit)
+{
+    <div class="row g-10 mt-3">
+        <div class="col-12 col-sm-4">
+
+            @switch (SelectedEnumItem)
+            {
+
+                case Cams.P480:
+                    <Capture OnCapture="@OnCapture" ShowResult="false" Quality=0.9 Width=640 Height=480 />
+                    break;
+
+                case Cams.P1080:
+
+                    <Capture OnCapture="@OnCapture" ShowResult="false" Quality=0.9 Width=1180 Height=1080 />
+                    break;
+
+                case Cams.P2048:
+
+                    <Capture OnCapture="@OnCapture" ShowResult="false" Quality=0.9 Width=2100 Height=2048 />
+                    break;
+            }
+
+            @*<Switch @bind-Value="@Cam1080" OnValueChanged="OnValueChanged" OnText="高清" OffText="标清" />*@
+            <br />
+            <RadioList IsButton="true" Color="Color.Success" @bind-Value="@SelectedEnumItem" OnSelectedChanged="@OnSelectedChanged" />
+        </div>
+    </div>
+}
+else
+{
+    <Spinner Color="Color.Primary" />
+}

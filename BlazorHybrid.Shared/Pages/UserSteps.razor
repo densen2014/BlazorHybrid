@@ -1,0 +1,16 @@
+﻿@inherits AppComponentBase
+ 
+@switch (States.Steps)
+{
+    case 1:
+        <Step1Projects Changed="StateHasChanged" />
+        break;
+    case 2:
+        <Step2Holes Changed="StateHasChanged" />
+        break;
+    case 3:
+        <Step3Stratas Changed="StateHasChanged" />
+        break;
+    default:
+        break;
+}
