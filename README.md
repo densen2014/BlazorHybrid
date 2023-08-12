@@ -10,10 +10,12 @@
 ![image](https://github.com/densen2014/BlazorHybrid/assets/8428709/2bb0ba80-0a76-4550-abe4-938772fa98b6)
 
 
- [GitHub](https://github.com/densen2014/BlazorMaui) | [Gitee(仅副本)](https://gitee.com/alexchow/BlazorMaui)
+ [GitHub](https://github.com/densen2014/BlazorHybrid) | [Gitee(仅副本)](https://gitee.com/alexchow/BlazorHybrid)
  
  [工程引用库源码](https://github.com/densen2014?tab=repositories&q=BootstrapBlazor.&type=&language=&sort=)
 
+ [BlazorMaui](https://github.com/densen2014/BlazorMaui) | [BlazorMaui Gitee(仅副本)](https://gitee.com/alexchow/BlazorMaui)
+ 
 ----
 > Maui Blazor 中文社区 QQ群：645660665
 >
