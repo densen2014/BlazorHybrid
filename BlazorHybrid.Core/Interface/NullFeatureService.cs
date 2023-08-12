@@ -90,7 +90,7 @@ public class NullFeatureService : INativeFeatures
 
     public Task<string> CheckPermissionsBluetooth()
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");
     }
 
     public void SetTagDeviceName(BleTagDevice ble)
@@ -153,7 +153,7 @@ public class NullFeatureService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public void LoadUrl(string url)
+    public void LoadUrl(string? url)
     {
         throw new NotImplementedException();
     }
@@ -165,6 +165,6 @@ public class NullFeatureService : INativeFeatures
 
     public Task<string> CheckPermissionsNFC()
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");
     }
 }

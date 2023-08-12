@@ -1,17 +1,1 @@
-﻿@inherits BootstrapModuleComponentBase
-@attribute [JSModuleAutoLoader("./_content/BlazorHybrid.Shared/Shared/NavMenu.razor.js")] 
-
-<div id="@Id">
-    <div class="navbar d-flex d-md-none px-3">
-        <a class="navbar-brand" href="">演示 BlazorHybrid</a>
-        <button class="navbar-toggler" aria-label="toggle">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-
-    <div class="sidebar-content collapse d-md-block">
-        <div class="scroll">
-            <Menu Items="@Menus" IsVertical="true" IsAccordion="true" IsExpandAll="true" />
-        </div>
-    </div>
-</div>
+﻿<Menu Items="@Menus" IsBottom="true" />

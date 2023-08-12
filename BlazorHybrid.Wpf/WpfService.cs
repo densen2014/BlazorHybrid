@@ -96,7 +96,7 @@ public class WpfService : INativeFeatures
 
     public Task<string> PickFile()
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");
     }
 
     public Task<(double? latitude, double? longitude, string message)> GetCurrentLocation()
@@ -111,7 +111,7 @@ public class WpfService : INativeFeatures
 
     public Task<string> NavigateTo(double latitude, double longitude, string? name = null)
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");
     }
 
     public Task<bool> BluetoothIsBusy()
@@ -121,7 +121,7 @@ public class WpfService : INativeFeatures
 
     public Task<string> CheckPermissionsBluetooth()
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");
     }
 
     public void SetTagDeviceName(BleTagDevice ble)
@@ -191,6 +191,6 @@ public class WpfService : INativeFeatures
 
     public Task<string> CheckPermissionsNFC()
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");
     }
 }
