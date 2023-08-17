@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHybrid.Win.Shared", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bh100day", "bh100day", "{23FAEDF1-C3CE-4809-97D7-46DD2CFC5739}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bh001_camera_barcode", "bh100days\bh001_camera_barcode\bh001_camera_barcode.csproj", "{D3A1882B-37E6-4AFD-8852-7D0BBD97B254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bh001_camera_barcode", "bh100days\bh001_camera_barcode\bh001_camera_barcode.csproj", "{D3A1882B-37E6-4AFD-8852-7D0BBD97B254}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHybrid.Maui.Permissions", "BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj", "{22157A74-E89A-4CB4-B6A8-9CE425904342}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,12 @@ Global
 		{D3A1882B-37E6-4AFD-8852-7D0BBD97B254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3A1882B-37E6-4AFD-8852-7D0BBD97B254}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3A1882B-37E6-4AFD-8852-7D0BBD97B254}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{22157A74-E89A-4CB4-B6A8-9CE425904342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22157A74-E89A-4CB4-B6A8-9CE425904342}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22157A74-E89A-4CB4-B6A8-9CE425904342}.DebugNuget|Any CPU.ActiveCfg = Debug|Any CPU
+		{22157A74-E89A-4CB4-B6A8-9CE425904342}.DebugNuget|Any CPU.Build.0 = Debug|Any CPU
+		{22157A74-E89A-4CB4-B6A8-9CE425904342}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22157A74-E89A-4CB4-B6A8-9CE425904342}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,7 +113,7 @@ Global
 		{D3A1882B-37E6-4AFD-8852-7D0BBD97B254} = {23FAEDF1-C3CE-4809-97D7-46DD2CFC5739}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		        SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}
 		SolutionGuid = {6D193DC6-27D4-42F5-8906-3F88D54C86BB}
+		        SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}
 	EndGlobalSection
 EndGlobal

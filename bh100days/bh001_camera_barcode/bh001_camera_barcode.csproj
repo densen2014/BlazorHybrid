@@ -54,4 +54,8 @@
         <PackageReference Include="ZXingBlazor" Version="1.*" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj" />
+    </ItemGroup>
+
 </Project>
