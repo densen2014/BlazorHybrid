@@ -1,19 +1,30 @@
 ﻿@page "/"
 @using ZXingBlazor.Components
 
-<BarcodeReader ScanResult="OnResult"
-               Decodeonce="false" />
+@if (ShowScanBarcode)
+{
+
+    <BarcodeReader ScanResult="OnResult"
+                   Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
+                   Decodeonce="false" />
+}
+
+<button @onclick="_ =>  ShowScanBarcode = !ShowScanBarcode">扫码</button>
 <pre>
     @result
 </pre>
 
 @code{
+    /// <summary>
+    /// 显示扫码界面
+    /// </summary>
+    bool ShowScanBarcode { get; set; } = true;
 
     string result;
 
     private Task OnResult(string message)
     {
-        result+= message + Environment.NewLine;
+        result += message + Environment.NewLine;
         StateHasChanged();
         return Task.CompletedTask;
     }

@@ -50,12 +50,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="BlazorHybrid.Maui.Permissions" Version="0.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
         <PackageReference Include="ZXingBlazor" Version="1.*" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj" />
+      <!--<ProjectReference Include="..\..\BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj" />-->
     </ItemGroup>
 
 </Project>

@@ -10,13 +10,11 @@ namespace bh001_camera_barcode
 {
     public partial class MainPage : ContentPage
     {
-        InitBlazorWebView initBlazorWebView;
-
         public MainPage()
         {
             InitializeComponent();
 
-            initBlazorWebView = new InitBlazorWebView(blazorWebView);
+            new InitBlazorWebView(blazorWebView);
         }
     }
 }
