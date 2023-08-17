@@ -184,7 +184,7 @@ public class MauiFeatureService :Page, INativeFeatures
     /// CapturePhotoAsync调用该方法以打开相机, 让用户拍照。 如果用户拍照, 该方法的返回值将是非 null 值。
     /// 以下代码示例使用媒体选取器拍摄照片并将其保存到缓存目录：
     /// </summary>
-    public async Task<string?> TakePhoto()
+    public async Task<string> TakePhoto()
     {
         await CheckPermissionsCamera();
 

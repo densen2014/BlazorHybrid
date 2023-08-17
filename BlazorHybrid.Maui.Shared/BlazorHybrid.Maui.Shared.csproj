@@ -40,12 +40,20 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <PackageIcon>..\logo.png</PackageIcon>
+        <PackageReadmeFile>..\README.md</PackageReadmeFile>
+        <AssemblyOriginatorKeyFile>..\keys\Longbow.Utility.snk</AssemblyOriginatorKeyFile>
+        <SignAssembly>True</SignAssembly>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <Copyright>DensenInformatica</Copyright>
         <Authors>Alex Chow</Authors>
         <Company>Densen Informatica</Company>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
-
+    
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
         <CreatePackage>false</CreatePackage>
     </PropertyGroup>
