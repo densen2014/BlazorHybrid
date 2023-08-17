@@ -1,0 +1,21 @@
+﻿@page "/"
+@using ZXingBlazor.Components
+
+<BarcodeReader ScanResult="OnResult"
+               Decodeonce="false" />
+<pre>
+    @result
+</pre>
+
+@code{
+
+    string result;
+
+    private Task OnResult(string message)
+    {
+        result+= message + Environment.NewLine;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+}
