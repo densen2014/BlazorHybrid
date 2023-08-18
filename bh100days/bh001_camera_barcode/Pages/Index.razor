@@ -32,9 +32,12 @@
 }
 
 
-<div class="row g-10 mt-3">
-    <div class="col-12 col-sm-4">
+@if (!ShowScanBarcode)
+{
+    <div class="row g-10 mt-3">
+        <div class="col-12 col-sm-4">
 
-    <Capture /> 
+            <Capture />
+        </div>
     </div>
-</div>
+}
