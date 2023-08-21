@@ -5,6 +5,7 @@
 // **********************************
 
 using bh002_ORM.Data;
+using BootstrapBlazor.WebAPI.Services;
 using Microsoft.Extensions.Logging;
 
 namespace bh002_ORM
@@ -29,6 +30,7 @@ namespace bh002_ORM
 #endif
 
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddScoped<IStorage, StorageService>();
 
             return builder.Build();
         }
