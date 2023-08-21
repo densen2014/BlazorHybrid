@@ -6,3 +6,21 @@
 <InputText @bind-Value="Username" />
 
 <button @onclick="Login">登录</button>
+<button @onclick="Reset">清除</button>
+
+<hr />
+
+添加用户:
+<InputText @bind-Value="NewUsername" />
+<button @onclick="Add">添加</button>
+
+
+@if (UserList != null)
+{
+    @foreach (var item in UserList)
+    {
+        <p><b>@item.FullName</b> <h5>@item.Username</h5></p>
+    }
+}
+
+Dbpath: @Dbpath
