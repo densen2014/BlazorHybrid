@@ -50,7 +50,7 @@ public partial class Index
     async Task Reset()
     {
         await Storage.RemoveValue("username");
-        StateHasChanged();
+        Username = "";
     }
 
     async Task OrmTestAsync()
