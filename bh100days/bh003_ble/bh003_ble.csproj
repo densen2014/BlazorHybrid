@@ -51,14 +51,14 @@
     </ItemGroup> 
 
     <ItemGroup>
-        <!--<PackageReference Include="BlazorHybrid.Maui.Permissions" Version="0.0.1" />-->
+        <PackageReference Include="BlazorHybrid.Maui.Permissions" Version="0.0.2" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
         <PackageReference Include="BootstrapBlazor" Version="7.*" />
         <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="7.*" />
     </ItemGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\..\BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj" />
+        <!--<ProjectReference Include="..\..\BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj" />-->
     </ItemGroup>
     
 </Project>
