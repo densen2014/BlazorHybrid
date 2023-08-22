@@ -1,7 +1,66 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<h3>蓝牙</h3>
 
-Welcome to your new app.
+<div class="row g-3">
+    <div class="btn-group" role="group">
+        <Button Text="扫描外设" @attributes=IsScanningCss OnClick=ScanDevice />
+        @if (Devices != null)
+        {
+            <Button Text="连接" OnClick="OnDeviceSelect" />
+            <Button Text="断开" OnClick="OnDisConnectDevice" />
+            @if (Characteristics != null)
+            {
+                <Button Text="写入" OnClick="ReadDeviceName" />
+                <Button Text="读取" OnClick="ReadDeviceName" />
+            }
+        }
+    </div>
+</div>
+@if (Devices != null)
+{
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <div class="row g-3">
+        <div class="col-12 col-sm-3">
+            <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
+        </div>
+        @if (Services != null)
+        {
+            <div class="col-12 col-sm-3">
+                <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
+            </div>
+            @if (Characteristics != null)
+            {
+                <div class="col-12 col-sm-3">
+                    <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
+                </div>
+                @if (ReadResult != null)
+                {
+                    <div class="col-12 col-sm-3">
+                        <Display TValue="string" Value="@ReadResult" />
+                    </div>
+                }
+            }
+        }
+    </div>
+
+}
+
+@if (BleInfo.Name != null)
+{
+
+    <div class="g-3">
+        历史连接 <br />
+        @BleInfo.Name <br />
+        @BleInfo.DeviceID <br />
+        @BleInfo.Serviceid <br />
+        @BleInfo.Characteristic <br />
+        @ReadResult <br />
+    </div>
+
+}
+<Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
+
+<pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
+
+

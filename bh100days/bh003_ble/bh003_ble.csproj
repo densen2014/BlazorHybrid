@@ -11,6 +11,7 @@
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
+        <Nullable>enable</Nullable>
 
         <!-- Display name -->
         <ApplicationTitle>bh003_ble</ApplicationTitle>
@@ -47,10 +48,17 @@
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-    </ItemGroup>
+    </ItemGroup> 
 
     <ItemGroup>
+        <!--<PackageReference Include="BlazorHybrid.Maui.Permissions" Version="0.0.1" />-->
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+        <PackageReference Include="BootstrapBlazor" Version="7.*" />
+        <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="7.*" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj" />
+    </ItemGroup>
+    
 </Project>

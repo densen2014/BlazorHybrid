@@ -28,5 +28,15 @@
     </array>
     <key>XSAppIconAssets</key>
     <string>Assets.xcassets/appicon.appiconset</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>bluetooth-central</string>
+        <string>bluetooth-peripheral</string>
+    </array>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>此应用程序需要访问您的蓝牙。请根据要求授予权限.</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>此应用程序需要访问您的蓝牙。请根据要求授予权限.</string>
+
 </dict>
 </plist>

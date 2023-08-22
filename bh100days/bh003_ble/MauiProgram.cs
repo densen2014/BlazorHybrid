@@ -6,6 +6,8 @@
 
 using bh003_ble.Data;
 using Microsoft.Extensions.Logging;
+using BlazorHybrid.Maui.Shared;
+using BootstrapBlazor.WebAPI.Services;
 
 namespace bh003_ble
 {
@@ -29,6 +31,15 @@ namespace bh003_ble
 #endif
 
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddDensenExtensions();
+            builder.Services.ConfigureJsonLocalizationOptions(op =>
+            {
+                // 忽略文化信息丢失日志
+                op.IgnoreLocalizerMissing = true;
+
+            });
+            builder.Services.AddSingleton<BluetoothLEServices>();
+            builder.Services.AddScoped<IStorage, StorageService>();
 
             return builder.Build();
         }
