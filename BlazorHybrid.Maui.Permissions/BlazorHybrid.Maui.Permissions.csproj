@@ -26,7 +26,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
         <RootNamespace>BlazorHybrid.Maui.Permissions</RootNamespace>
         <AssemblyName>BlazorHybrid.Maui.Permissions</AssemblyName>
         <PackageProjectUrl>https://github.com/densen2014/BlazorHybrid</PackageProjectUrl>
@@ -66,6 +66,12 @@
       <Folder Include="Platforms\iOS\" />
       <Folder Include="Platforms\MacCatalyst\" />
       <Folder Include="Platforms\Tizen\" />
-    </ItemGroup> 
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Plugin.BLE" Version="3.0.0-beta.4" />
+        <PackageReference Include="BootstrapBlazor.WebAPI" Version="7.*" />
+    </ItemGroup>
+
 
 </Project>

@@ -5,10 +5,7 @@
 // **********************************
 
 using BlazorHybrid.Core;
-using BlazorHybrid.Maui.Shared;
-#if WINDOWS
-using Windows.Storage;
-#endif
+using BlazorHybrid.Maui.Shared; 
 
 namespace Microsoft.Extensions.DependencyInjection;
 
