@@ -10,11 +10,13 @@ public class NfcPermissions : Permissions.BasePlatformPermission
     //根据安卓平台版本，返回对应的申请权限
     private (string androidPermission, bool isRuntime)[] GetRequiredPermissions()
     {
-        var permissions = new List<string>();
-            permissions.Add(global::Android.Manifest.Permission.Nfc);
-            permissions.Add(global::Android.Manifest.Permission.NfcTransactionEvent);
-            permissions.Add(global::Android.Manifest.Permission.NfcPreferredPaymentInfo);
- 
+        var permissions = new List<string>
+        {
+            global::Android.Manifest.Permission.Nfc,
+            global::Android.Manifest.Permission.NfcTransactionEvent,
+            global::Android.Manifest.Permission.NfcPreferredPaymentInfo
+        };
+
         var result = new List<(string androidPermission, bool isRuntime)>();
         foreach (var permission in permissions)
         {

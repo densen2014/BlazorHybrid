@@ -43,7 +43,7 @@ public partial class StatusBar
 
     private async Task Logout()
     {
-        await Cookie.RemoveValue("hash");
+        await Storage.RemoveValue("hash");
         States.IsLoging = false;
         await Changed.InvokeAsync();
     }

@@ -28,14 +28,14 @@ public partial class LoginBar
         if (firstRender)
         {
             States.Width = await JS.InvokeAsync<int>("eval", "window.innerWidth");
-            States.Username = await Cookie.GetValue("username");
+            States.Username = await Storage.GetValue("username","");
             if (!string.IsNullOrEmpty(States.Username))
             {
                 States.Remember = true;
-                if (!string.IsNullOrEmpty(await Cookie.GetValue("hash")))
+                if (!string.IsNullOrEmpty(await Storage.GetValue("hash","")))
                 {
                     States.RememberPassword = true;
-                    States.Hash = await Cookie.GetValue("hash");
+                    States.Hash = await Storage.GetValue("hash", "");
                     await Login();
                 }
                 StateHasChanged();
@@ -91,20 +91,20 @@ public partial class LoginBar
 
             if (States.Remember)
             {
-                await Cookie.SetValue("username", res.users.Username!);
+                await Storage.SetValue("username", res.users.Username!);
                 if (States.RememberPassword)
                 {
-                    await Cookie.SetValue("hash", res.users.Password!);
+                    await Storage.SetValue("hash", res.users.Password!);
                 }
                 else
                 {
-                    await Cookie.RemoveValue("hash");
+                    await Storage.RemoveValue("hash");
                 }
             }
             else
             {
-                await Cookie.RemoveValue("username");
-                await Cookie.RemoveValue("hash");
+                await Storage.RemoveValue("username");
+                await Storage.RemoveValue("hash");
             }
 
             await Changed.InvokeAsync();
