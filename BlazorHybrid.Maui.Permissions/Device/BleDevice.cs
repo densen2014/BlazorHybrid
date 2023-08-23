@@ -40,7 +40,7 @@ public class BleService
 
     /// <summary>
     /// Name of the service.
-    /// Returns the name if the <see cref="Id"/> is a standard Id. See <see cref="KnownServices"/>.
+    /// Returns the name if the <see cref="Id"/> is a standard Id.
     /// </summary>
     public string? Name { get; set; }
 
@@ -71,7 +71,7 @@ public class BleCharacteristic
     public string? Name { get; set; }
 
     /// <summary>
-    /// Gets <see cref="Value"/> as UTF8 encoded string representation.
+    /// Gets Value as UTF8 encoded string representation.
     /// </summary>
     public string? StringValue { get; set; }
 
