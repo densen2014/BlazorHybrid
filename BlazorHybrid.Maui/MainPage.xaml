@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:BlazorHybrid.Maui"
              xmlns:shared="clr-namespace:BlazorHybrid.Shared;assembly=BlazorHybrid.Shared"
+             xmlns:mauiShared="clr-namespace:BlazorHybrid.Maui.Shared;assembly=BlazorHybrid.Maui.Shared"
              Title="BlazorHybrid.Maui"
              x:Class="BlazorHybrid.Maui.MainPage" 
              BackgroundColor="{DynamicResource PageBackgroundColor}"> 
@@ -18,7 +19,7 @@
 
         <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html" VerticalOptions="FillAndExpand">
         <BlazorWebView.RootComponents>
-            <RootComponent Selector="#app" ComponentType="{x:Type shared:App}" />
+                <RootComponent Selector="#app" ComponentType="{x:Type mauiShared:AppMaui}" />
         </BlazorWebView.RootComponents>
     </BlazorWebView>
     </StackLayout>

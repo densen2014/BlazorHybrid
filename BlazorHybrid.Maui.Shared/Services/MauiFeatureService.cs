@@ -560,7 +560,7 @@ public class MauiFeatureService :Page, INativeFeatures
     /// 捕获屏幕快照
     /// </summary>
     /// <returns></returns>
-    public async Task<string?> TakeScreenshotAsync()
+    public async Task<string> TakeScreenshotAsync()
     {
         if (Screenshot.Default.IsCaptureSupported)
         {

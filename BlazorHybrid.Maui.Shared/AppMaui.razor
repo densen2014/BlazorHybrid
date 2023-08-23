@@ -1,0 +1,14 @@
+﻿<BootstrapBlazorRoot>
+    <Router AppAssembly="@typeof(MainLayout).Assembly" PreferExactMatches="@true" AdditionalAssemblies='new[] { typeof(NfcBase).Assembly }'>
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">你找不到我.[BlazorHybrid.Shared/BlazorHybrid.Maui.Shared]</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</BootstrapBlazorRoot>
+
