@@ -3,6 +3,7 @@ using BlazorHybrid.Core.Device;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Reflection;
+using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
 
 namespace BlazorHybrid.Win;
 
@@ -176,14 +177,19 @@ public class WinFormsService : INativeFeatures
         throw new NotImplementedException();
     }
 
+    public static WebView2Control? WebView { get; set; }
     public void LoadUrl(string? url)
     {
-        throw new NotImplementedException();
+        if (WebView == null) return;
+        url ??= "https://0.0.0.0/";
+        WebView.CoreWebView2.Navigate(url);
     }
 
-    public Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
+
+    public async Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
     {
-        throw new NotImplementedException();
+        if (WebView == null) return;
+        await WebView.ExecuteScriptAsync(js);
     }
 
     public Task<string> CheckPermissionsNFC()
