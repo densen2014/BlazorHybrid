@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components.WebView.Maui;
 using Microsoft.Maui;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Security.Policy;
 #if ANDROID
 using Android.Webkit;
 using AndroidX.Activity;
@@ -113,7 +115,11 @@ public partial class InitBlazorWebView : Page
         e.WebView.AllowsBackForwardNavigationGestures = true; 
 #endif
         WebView = e.WebView;
+
         MauiFeatureService.WebView = WebView;
+
+        //使用 JsBridge
+        //InitializeBridgeAsync();
     }
 
     public virtual void BlazorWebViewInitializing(object? sender, BlazorWebViewInitializingEventArgs e)
@@ -244,4 +250,40 @@ public partial class InitBlazorWebView : Page
 #elif TIZEN
 #endif
     }
+
+
+    #region JsBridge
+
+    static BridgeObject obj = new BridgeObject();
+
+    /// <summary>
+    /// 自定义宿主类，用于向网页注册C#对象，供JS调用
+    /// </summary>
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class Bridge
+    {
+        public string Func(string param) => $"Func返回 {param} {obj.MacAdress}";
+
+    }
+
+    public class BridgeObject
+    {
+        public string MacAdress { get; set; } = Guid.NewGuid().ToString();
+    }
+
+    async void InitializeBridgeAsync()
+    {
+#if WINDOWS
+        WebView.CoreWebView2.AddHostObjectToScript("bridge", new Bridge());
+        await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync("var bridge= window.chrome.webview.hostObjects.bridge;");
+        await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync($"localStorage.setItem('macAdress', '{obj.MacAdress}')");
+#elif ANDROID
+#elif MACCATALYST || IOS
+#elif TIZEN
+#endif
+
+    }
+
+    #endregion
 }

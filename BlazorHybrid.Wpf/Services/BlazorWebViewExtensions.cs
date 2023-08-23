@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.AspNetCore.Components.WebView.Wpf;
 using Microsoft.Web.WebView2.Core;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
+using WebView2Control = Microsoft.Web.WebView2.Wpf.WebView2;
 #nullable disable
 
 namespace BlazorHybrid.Win.Shared;
@@ -54,6 +56,9 @@ public partial class InitBlazorWebView
         //mainBlazorWebView.WebView.CreationProperties = creationProperties;
 
         WpfService.WebView = e.WebView;
+
+        //使用 JsBridge
+        InitializeBridgeAsync(e.WebView);
     }
 
     private void CoreWebView2_DownloadStarting(object sender, CoreWebView2DownloadStartingEventArgs e)
@@ -66,4 +71,34 @@ public partial class InitBlazorWebView
         e.ResultFilePath = filePath;
         MessageBox.Show($"下载文件完成 {fileName}", "提示");
     }
+
+    #region JsBridge
+
+    static BridgeObject obj = new BridgeObject();
+
+    /// <summary>
+    /// 自定义宿主类，用于向网页注册C#对象，供JS调用
+    /// </summary>
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class Bridge
+    {
+        public string Func(string param) => $"Func返回 {param} {obj.MacAdress}";
+
+    }
+
+    public class BridgeObject
+    {
+        public string MacAdress { get; set; } = Guid.NewGuid().ToString();
+    }
+
+    async void InitializeBridgeAsync(WebView2Control webView)
+    {
+        webView.CoreWebView2.AddHostObjectToScript("bridge", new Bridge());
+        await webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync("var bridge= window.chrome.webview.hostObjects.bridge;");
+        await webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync($"localStorage.setItem('macAdress', '{obj.MacAdress}')");
+
+    }
+
+    #endregion
 }
