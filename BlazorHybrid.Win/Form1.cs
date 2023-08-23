@@ -41,7 +41,6 @@ public partial class Form1 : Form
         blazorWebView.BringToFront();
 
         initBlazorWebView = new InitBlazorWebView(blazorWebView);
-        WinFormsService.WebView = blazorWebView.WebView;
     }
 
     private void ButtonShowCounter_Click(object sender, EventArgs e)

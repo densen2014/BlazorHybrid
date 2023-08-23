@@ -10,12 +10,13 @@ using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+#nullable disable
 
 namespace BlazorHybrid.Win.Shared;
 
 public partial class InitBlazorWebView
 {
-    BlazorWebView? _blazorWebView;
+    BlazorWebView _blazorWebView;
 
     protected string UploadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "uploads");
 
@@ -61,14 +62,15 @@ public partial class InitBlazorWebView
         //无依赖单文件,提示path找不到 The path is empty. (Parameter 'path') at System.IO.Path.GetFullPath(String path)
     }
 
-    void BlazorWebViewInitialized(object sender, EventArgs e)
+    void BlazorWebViewInitialized(object sender, BlazorWebViewInitializedEventArgs e)
     {
         //下载开始时引发 DownloadStarting，阻止默认下载
-        _blazorWebView.WebView.CoreWebView2.DownloadStarting += CoreWebView2_DownloadStarting;
+        e.WebView.CoreWebView2.DownloadStarting += CoreWebView2_DownloadStarting;
 
         //指定下载保存位置
-        _blazorWebView.WebView.CoreWebView2.Profile.DefaultDownloadFolderPath = UploadPath;
+        e.WebView.CoreWebView2.Profile.DefaultDownloadFolderPath = UploadPath;
 
+        WinFormsService.WebView = e.WebView;
     }
 
     private void CoreWebView2_DownloadStarting(object sender, CoreWebView2DownloadStartingEventArgs e)

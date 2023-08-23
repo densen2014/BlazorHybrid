@@ -113,6 +113,7 @@ public partial class InitBlazorWebView : Page
         e.WebView.AllowsBackForwardNavigationGestures = true; 
 #endif
         WebView = e.WebView;
+        MauiFeatureService.WebView = WebView;
     }
 
     public virtual void BlazorWebViewInitializing(object? sender, BlazorWebViewInitializingEventArgs e)

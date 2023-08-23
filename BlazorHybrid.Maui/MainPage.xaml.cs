@@ -11,7 +11,6 @@ public partial class MainPage : ContentPage
         InitializeComponent();
 
         initBlazorWebView = new InitBlazorWebView(blazorWebView);
-        MauiFeatureService.WebView = initBlazorWebView.WebView;
 
         MauiFeatureService.Nfcs = new NfcPage();
     }
