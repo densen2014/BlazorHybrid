@@ -1,5 +1,7 @@
 ﻿@inherits AppComponentBase
 @page "/Components"
+@page "/"
+
 @using ZXingBlazor.Components
 
 <Title>系统设置</Title>
@@ -27,8 +29,7 @@
     <BarcodeReader ScanResult="OnResult"
                    Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
                    OnError="OnError"
-                   Decodeonce="false"
-                   />
+                   Decodeonce="false" />
 }
 
 

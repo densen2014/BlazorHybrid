@@ -29,6 +29,12 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+
+        <!-- 注释掉下面的行以在 Windows 上显示权限请求对话框，而不是静默处理权限 -->
+        <DefineConstants Condition="$(TargetFramework.Contains('-windows'))">HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY</DefineConstants>
+
+        <DefaultLanguage>zh-cn</DefaultLanguage>
+    
     </PropertyGroup>
 
     <!--为发布版本启用解释器-->
@@ -85,4 +91,5 @@
 
     <ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionBlazorHybridMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
     
+
 </Project>

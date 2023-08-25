@@ -68,6 +68,8 @@ public partial class InitBlazorWebView
     {
         //下载开始时引发 DownloadStarting，阻止默认下载
         e.WebView.CoreWebView2.DownloadStarting += CoreWebView2_DownloadStarting;
+        //var permissionHandler = new DialogPermissionRequestHandler(e.WebView);
+        //e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested;
 
         //指定下载保存位置
         e.WebView.CoreWebView2.Profile.DefaultDownloadFolderPath = UploadPath;

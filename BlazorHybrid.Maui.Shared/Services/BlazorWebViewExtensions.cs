@@ -91,13 +91,13 @@ public partial class InitBlazorWebView : Page
 #elif WINDOWS
         e.WebView.CoreWebView2.DownloadStarting += (async (s, e) => await CoreWebView2_DownloadStartingAsync(s, e));
         var permissionHandler =
-#if HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY
+    #if HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY
         new SilentPermissionRequestHandler();
-#else
+    #else
         new DialogPermissionRequestHandler(e.WebView);
-#endif
+    #endif
 
-        e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested;
+        e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested; 
 #elif IOS
 
         //关闭回弹效果
