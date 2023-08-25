@@ -31,7 +31,7 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
         <!-- 注释掉下面的行以在 Windows 上显示权限请求对话框，而不是静默处理权限 -->
-        <DefineConstants Condition="$(TargetFramework.Contains('-windows'))">HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY</DefineConstants>
+        <!--<DefineConstants Condition="$(TargetFramework.Contains('-windows'))">HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY</DefineConstants>-->
 
         <DefaultLanguage>zh-cn</DefaultLanguage>
     
