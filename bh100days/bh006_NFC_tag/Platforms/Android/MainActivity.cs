@@ -5,13 +5,10 @@
 // **********************************
 
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.Nfc;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.Content;
 using DH.NFC;
 
 namespace bh006_NFC_tag
