@@ -51,7 +51,7 @@ public partial class Components
                 new ResCustomersDto("翻译",()=>Tools.LoadUrl("https://blazor.app1.es/Translate")),
                 new ResCustomersDto("OpenAI",()=>Tools.LoadUrl("https://blazor.app1.es/OpenAI")),
                 new ResCustomersDto("设置",null,Tools.ShowSettingsUI),
-                new ResCustomersDto("定位权限",null,Tools.CheckPermissionsNFC),
+                new ResCustomersDto("定位权限",null,Tools.CheckPermissionsLocation),
                 new ResCustomersDto("拍照权限",null, Tools.CheckPermissionsCamera),
                 new ResCustomersDto("蓝牙权限",null,Tools.CheckPermissionsBluetooth),
                 new ResCustomersDto("NFC权限",null,Tools.CheckPermissionsNFC),

@@ -193,8 +193,8 @@ internal class BlazorWebviewPermissions : WebChromeClient, IActivityResultCallba
     public override Android.Views.View? VideoLoadingProgressView => _blazorWebChromeClient.VideoLoadingProgressView;
     public override void GetVisitedHistory(IValueCallback? callback)
         => _blazorWebChromeClient.GetVisitedHistory(callback);
-    public override bool OnConsoleMessage(ConsoleMessage? consoleMessage)
-        => _blazorWebChromeClient.OnConsoleMessage(consoleMessage);
+    //public override bool OnConsoleMessage(ConsoleMessage? consoleMessage)
+    //    => _blazorWebChromeClient.OnConsoleMessage(consoleMessage);
     public override bool OnCreateWindow(WebView? view, bool isDialog, bool isUserGesture, Message? resultMsg)
         => _blazorWebChromeClient.OnCreateWindow(view, isDialog, isUserGesture, resultMsg);
     public override void OnGeolocationPermissionsHidePrompt()
