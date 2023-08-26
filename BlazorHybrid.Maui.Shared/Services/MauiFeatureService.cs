@@ -648,11 +648,11 @@ public class MauiFeatureService :Page, INativeFeatures
 
     public static void Nfc_OpenNFC(bool obj)
     {
-        Application.Current.Dispatcher.Dispatch(async () =>
+        Application.Current?.Dispatcher.Dispatch(async () =>
         {
             //await Application.Current.MainPage.Navigation.PopToRootAsync();
             //await Application.Current.MainPage.Navigation.PushAsync(page); 
-            await Application.Current.MainPage.Navigation.PushModalAsync(Nfcs);
+            await Application.Current.MainPage!.Navigation.PushModalAsync(Nfcs);
         });
     }
     public static ContentPage? Nfcs { get; set; }
@@ -768,12 +768,13 @@ public class MauiFeatureService :Page, INativeFeatures
 
     public Task<bool> BluetoothIsBusy() => MyBleTester.BluetoothIsBusy();
 
-    public async Task Alert(string title, string message, string cancel)
+    public Task Alert(string title, string message, string cancel)
     {
-        Application.Current.Dispatcher.Dispatch(async () =>
+        Application.Current?.Dispatcher.Dispatch(async () =>
         {
             await DisplayAlert(title, message, cancel);
         });
+        return Task.CompletedTask;
     }
 
 #nullable disable

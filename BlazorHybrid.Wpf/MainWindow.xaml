@@ -19,7 +19,7 @@
             <Button DockPanel.Dock="Left"  Content="Home" Click="ButtonHome_Click" Padding ="10"></Button>
              <Button DockPanel.Dock="Left"  Content="" ></Button>
        </DockPanel>
-        <b:BlazorWebView x:Name = "blazorWebView" HostPage="wwwroot/index.html" Services="{StaticResource services}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <b:BlazorWebView x:Name = "blazorWebView" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
 			<b:BlazorWebView.RootComponents>
                 <b:RootComponent ComponentType="{x:Type shared:App}" Selector="#app"/>
 			</b:BlazorWebView.RootComponents>

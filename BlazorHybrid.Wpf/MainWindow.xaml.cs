@@ -18,7 +18,7 @@ public partial class MainWindow : Window
         Resources.Add("services", Startup.Services);
         InitializeComponent();
 
-        dockTop.Visibility = Visibility.Hidden;
+        dockTop.Visibility = Visibility.Collapsed;
 
         blazorWebView.HostPage = "wwwroot/index.html";
         blazorWebView.Services = Startup.Services;

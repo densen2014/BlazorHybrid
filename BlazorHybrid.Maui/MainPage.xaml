@@ -10,14 +10,13 @@
 
     <StackLayout>
         <StackLayout Orientation="Horizontal" BackgroundColor="White" >
-            <Button Text="Show counter"  Clicked="ButtonShowCounter_Click" Padding ="10"></Button>
+            <!--<Button Text="Show counter"  Clicked="ButtonShowCounter_Click" Padding ="10"></Button>-->
             <Button Text="Webview alert" Clicked="ButtonWebviewAlert_Click" Padding ="10"></Button>
             <Button Text="Home" Clicked="ButtonHome_Click" Padding ="10"></Button>
-            <Button Text="Bing" Clicked="ButtonBing_Click" Padding ="10"></Button>
-            <Button Text="NFC" Clicked="Button_Clicked" Padding ="10"></Button>
+            <!--<Button Text="Bing" Clicked="ButtonBing_Click" Padding ="10"></Button>-->
         </StackLayout>
 
-        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html" VerticalOptions="FillAndExpand">
+        <BlazorWebView x:Name="blazorWebView" VerticalOptions="FillAndExpand">
         <BlazorWebView.RootComponents>
                 <RootComponent Selector="#app" ComponentType="{x:Type mauiShared:AppMaui}" />
         </BlazorWebView.RootComponents>
