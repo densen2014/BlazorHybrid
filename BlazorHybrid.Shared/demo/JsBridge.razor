@@ -1,0 +1,14 @@
+﻿@page "/JsBridge"
+@attribute [TabItemOption(Text = "JsBridge")]
+@namespace BlazorHybrid.Shared.Pages
+
+@using BootstrapBlazor.Components
+
+<Button Text="GetMacAdress" OnClick="GetMacAdress" IsDisabled="!BridgeEnabled" />
+
+<pre> 
+@message
+</pre>
+
+
+

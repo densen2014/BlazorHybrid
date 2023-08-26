@@ -45,7 +45,6 @@ public partial class Components
                 new ResCustomersDto("执行JS",async()=> await Tools.ExecuteScriptAsync()),
                 new ResCustomersDto("web蓝牙",()=>Tools.LoadUrl("https://blazor.app1.es/Bluetooth")),
                 new ResCustomersDto("web串口",()=>Tools.LoadUrl("https://blazor.app1.es/WebSerials")),
-                new ResCustomersDto("PDF阅读器",()=>Tools.LoadUrl("https://blazor.app1.es/pdfReaders")),
                 new ResCustomersDto("视频播放器",()=>Tools.LoadUrl("https://blazor.app1.es/videoPlayers")),
                 new ResCustomersDto("OCR",()=>Tools.LoadUrl("https://blazor.app1.es/ocr")),
                 new ResCustomersDto("翻译",()=>Tools.LoadUrl("https://blazor.app1.es/Translate")),
@@ -56,7 +55,13 @@ public partial class Components
                 new ResCustomersDto("蓝牙权限",null,Tools.CheckPermissionsBluetooth),
                 new ResCustomersDto("NFC权限",null,Tools.CheckPermissionsNFC),
                 new ResCustomersDto("返回",async ()=>await BackToHome()),
-            };
+                new ResCustomersDto("文件夹",()=>NavigationManager.NavigateTo("AppFiles")),
+                new ResCustomersDto("PDF阅读器",()=>NavigationManager.NavigateTo("pdfReaders")),
+                new ResCustomersDto("文件",()=>NavigationManager.NavigateTo("Files")),
+                new ResCustomersDto("上传文件",()=>NavigationManager.NavigateTo("FileUpload")),
+                new ResCustomersDto("文件夹",()=>NavigationManager.NavigateTo("AppFiles")),
+                new ResCustomersDto("JsBridge",()=>NavigationManager.NavigateTo("JsBridge")),
+           };
 
             StateHasChanged();
         }
