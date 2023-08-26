@@ -140,7 +140,11 @@
     }
 
     .deskTitle {
-        font-size: 1.1rem;
+        font-size: 1rem;
+    }
+
+    .card-text {
+        font-size: 0.7rem;
     }
 
     .orderIcon {
@@ -155,6 +159,14 @@
 }
 
 @media only screen and (max-width: 600px) {
+
+    .deskTitle {
+        font-size: 0.7rem;
+    }
+
+    .card-text {
+        font-size: 0.5rem;
+    }
 
     .deskIcon {
         width: 98px;
@@ -175,9 +187,21 @@
 @media only screen and (max-width: 390px) {
     /*iphone13*/
 
+    .layout.is-page .layout-main {
+        padding: 0;
+    }
+
+    .deskTitle {
+        font-size: 0.7rem;
+    }
+
+    .card-text {
+        font-size: 0.5rem;
+    }
+
     .deskIcon {
         width: 93px;
-        height: 92px;
+        height: 93px;
     }
 
     .orderIcon {

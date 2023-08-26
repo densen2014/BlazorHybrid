@@ -38,7 +38,7 @@ public partial class Components
                 new ResCustomersDto("NFC",() => NavigationManager.NavigateTo("NfcBase")),
                 new ResCustomersDto("NFC(xaml)",null,Tools.ReadNFC),
                 new ResCustomersDto("原生消息框",async () => await Tools.Alert("Alert", $"hello from native UI", "OK")),
-                new ResCustomersDto("外部网站(NavigationManager)",async() =>{ await APP1();StateHasChanged(); }),
+                new ResCustomersDto("外部网站(NavM)",async() =>{ await APP1();StateHasChanged(); }),
                 new ResCustomersDto("重载主页",()=>Tools.LoadUrl(null)),
                 new ResCustomersDto("app1.es",()=>Tools.LoadUrl("https://blazor.app1.es")),
                 new ResCustomersDto("bing",()=>Tools.LoadUrl("https://www.bing.com")),
