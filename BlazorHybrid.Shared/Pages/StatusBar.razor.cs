@@ -46,6 +46,9 @@ public partial class StatusBar
         await Storage.RemoveValue("hash");
         States.IsLoging = false;
         await Changed.InvokeAsync();
+
+        //注销这句就会刷新布局
+        NavigationManager.NavigateTo("/", false);
     }
 
     private Task Features()

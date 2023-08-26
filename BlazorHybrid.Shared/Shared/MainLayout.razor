@@ -1,18 +1,33 @@
 ﻿@inherits LayoutComponentBase
+@inject States States
 
-@*<div class="main">
-    <div class="content">
-        @Body
+@if (States.IsLoging)
+{
+    <div class="main">
+        <div class="content">
+            @Body
+        </div>
     </div>
-</div>*@
-<Layout ShowFooter="true" IsFixedFooter IsPage>
-    @*<Header>
-        BlazorHybrid
-    </Header>*@
-    <Main>
-        @Body
-    </Main>
-    <Footer>
-        <NavMenu />
-    </Footer>
-</Layout>
+}
+else
+{
+    <Layout ShowFooter="true" IsFixedFooter IsPage>
+        <Header>
+            <h4>BlazorHybrid</h4>
+        </Header>
+        <Main>
+            @Body
+        </Main>
+        <Footer>
+            <NavMenu />
+        </Footer>
+    </Layout>
+
+}
+
+@code{
+
+    [Parameter]
+    public EventCallback Changed { get; set; }
+
+}

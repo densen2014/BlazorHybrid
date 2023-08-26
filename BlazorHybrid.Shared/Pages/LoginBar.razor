@@ -2,16 +2,16 @@
 
 <div class="container">
     <main role="main">
-        <div class="d-flex justify-content-center align-items-center">
+        @*<div class="d-flex justify-content-center align-items-center">
             <h4>BlazorHybrid</h4>
         </div>
-        <br />
+        <br />*@
         <div class="d-flex justify-content-center align-items-center">
-            <section style="min-width:90%">
+            <section style="min-width:70%">
                 <Tab IsLazyLoadTabItem="true">
-                    <TabItem Text="功能">
+                    @*<TabItem Text="功能">
                         <PlatformFeatures />
-                    </TabItem>
+                    </TabItem>*@
                     <TabItem Text="登录">
                         <div class="pb-1 m-5">
                             <ValidateForm Model="@States" OnValidSubmit="@OnValidSubmit">

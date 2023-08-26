@@ -109,6 +109,9 @@ public partial class LoginBar
 
             await Changed.InvokeAsync();
 
+            //注销这句就不会刷新布局.类似单页应用
+            NavigationManager.NavigateTo("/Index", false);
+
             StateHasChanged();
         }
         else
