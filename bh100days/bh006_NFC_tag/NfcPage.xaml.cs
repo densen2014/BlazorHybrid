@@ -412,7 +412,7 @@ public partial class NfcPage : ContentPage
     /// <param name="message">要显示的消息</param>
     /// <param name="title">消息标题</param>
     /// <returns>要执行的任务</returns>
-    Task ShowAlert(string message, string title = null) => DisplayAlert(string.IsNullOrWhiteSpace(title) ? ALERT_TITLE : title, message, "OK");
+    Task ShowAlert(string message, string? title = null) => DisplayAlert(string.IsNullOrWhiteSpace(title) ? ALERT_TITLE : title, message, "OK");
 
     /// <summary>
     /// 如果用户的设备平台不是iOS，则开始监听NFC标签的任务

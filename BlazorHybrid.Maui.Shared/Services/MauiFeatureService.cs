@@ -35,7 +35,7 @@ using System.IO.Ports;
 
 namespace BlazorHybrid.Maui.Shared;
 
-public class MauiFeatureService :Page, INativeFeatures
+public class MauiFeatureService : Page, INativeFeatures
 {
     [NotNull]
     BluetoothLEServices? MyBleTester;
@@ -192,7 +192,7 @@ public class MauiFeatureService :Page, INativeFeatures
         {
 #if WINDOWS
             CameraCaptureUI(new MediaPickerOptions() { Title = "拍照" });
-            var res= await CaptureFileAsync(CameraCaptureUIMode.Photo);
+            var res = await CaptureFileAsync(CameraCaptureUIMode.Photo);
             return res?.Path;
 #else
             FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
@@ -229,14 +229,16 @@ public class MauiFeatureService :Page, INativeFeatures
 
     public void CameraCaptureUI(MediaPickerOptions options)
     {
-        var hndl = WindowStateManager.Default.GetActiveWindow().GetWindowHandle();
+        var hndl = WindowStateManager.Default.GetActiveWindow()?.GetWindowHandle();
+        if (hndl != null)
+        {
+            _launcherOptions = new LauncherOptions();
+            InitializeWithWindow.Initialize(_launcherOptions, hndl.Value);
 
-        _launcherOptions = new LauncherOptions();
-        InitializeWithWindow.Initialize(_launcherOptions, hndl);
-
-        _launcherOptions.TreatAsUntrusted = false;
-        _launcherOptions.DisplayApplicationPicker = false;
-        _launcherOptions.TargetApplicationPackageFamilyName = "Microsoft.WindowsCamera_8wekyb3d8bbwe";
+            _launcherOptions.TreatAsUntrusted = false;
+            _launcherOptions.DisplayApplicationPicker = false;
+            _launcherOptions.TargetApplicationPackageFamilyName = "Microsoft.WindowsCamera_8wekyb3d8bbwe";
+        }
     }
 
     public async Task<StorageFile> CaptureFileAsync(CameraCaptureUIMode mode)
@@ -634,7 +636,7 @@ public class MauiFeatureService :Page, INativeFeatures
 
         return status.ToString();
     }
- #else
+#else
     public Task<string> CheckPermissionsNFC()
     {
         return Task.FromResult("无需授权");
@@ -768,13 +770,13 @@ public class MauiFeatureService :Page, INativeFeatures
 
     public Task<bool> BluetoothIsBusy() => MyBleTester.BluetoothIsBusy();
 
-    public Task Alert(string title, string message, string cancel)
+    public async Task Alert(string title, string message, string cancel)
     {
-        Application.Current?.Dispatcher.Dispatch(async () =>
-        {
-            await DisplayAlert(title, message, cancel);
-        });
-        return Task.CompletedTask;
+        //Application.Current?.Dispatcher.Dispatch(async () =>
+        //{
+            await Application.Current!.MainPage!.DisplayAlert(title, message, cancel);
+        //});
+        //return Task.CompletedTask;
     }
 
 #nullable disable
