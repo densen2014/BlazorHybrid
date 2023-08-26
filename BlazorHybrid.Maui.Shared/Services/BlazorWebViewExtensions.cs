@@ -2,10 +2,9 @@
 using Microsoft.Maui.Platform;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components.WebView.Maui;
-using Microsoft.Maui;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
+using ICSharpCode.SharpZipLib.Zip;
 #if ANDROID
 using Android.Webkit;
 using AndroidX.Activity;
@@ -68,7 +67,7 @@ public partial class InitBlazorWebView : Page
         _blazorWebView = blazorWebView;
         _blazorWebView.BlazorWebViewInitialized += BlazorWebViewInitialized;
         _blazorWebView.BlazorWebViewInitializing += BlazorWebViewInitializing;
-        _blazorWebView.UrlLoading += BlazorWebViewUrlLoading;
+        _blazorWebView.UrlLoading += BlazorWebViewUrlLoading; 
     }
 
 
@@ -119,7 +118,7 @@ public partial class InitBlazorWebView : Page
         MauiFeatureService.WebView = WebView;
 
         //使用 JsBridge
-        //InitializeBridgeAsync();
+        InitializeBridgeAsync();
     }
 
     public virtual void BlazorWebViewInitializing(object? sender, BlazorWebViewInitializingEventArgs e)
@@ -272,12 +271,17 @@ public partial class InitBlazorWebView : Page
         public string MacAdress { get; set; } = Guid.NewGuid().ToString();
     }
 
-    async void InitializeBridgeAsync()
+    public async void InitializeBridgeAsync()
     {
+
 #if WINDOWS
-        WebView.CoreWebView2.AddHostObjectToScript("bridge", new Bridge());
-        await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync("var bridge= window.chrome.webview.hostObjects.bridge;");
-        await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync($"localStorage.setItem('macAdress', '{obj.MacAdress}')");
+        //解决方案如下:
+        //https://stackoverflow.com/questions/72683537/corewebview2-addhostobjecttoscript-throws-system-exception?WT.mc_id=DT-MVP-5005078
+        //https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/winrt-from-js?tabs=winui3%2Cwinrtcsharp&WT.mc_id=DT-MVP-5005078
+
+        //WebView.CoreWebView2.AddHostObjectToScript("bridge", new Bridge());
+        //await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync("var bridge= window.chrome.webview.hostObjects.bridge;");
+        //await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync($"localStorage.setItem('macAdress', '{obj.MacAdress}')");
 #elif ANDROID
 #elif MACCATALYST || IOS
 #elif TIZEN
