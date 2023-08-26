@@ -1,5 +1,6 @@
 ﻿@page "/Files"
 @namespace BlazorHybrid.Shared.Pages
+@inherits AppComponentBase
 
 @using BootstrapBlazor.Components
 
@@ -55,7 +56,7 @@
 
     string? ImagePreview { get; set; }
 
-    string? Message { get; set; }
+    new string? Message { get; set; }
 
     string? Status { get; set; }
 
@@ -128,6 +129,8 @@
     {
         Reset();
 
+        await ShowBottomMessage("下载演示文件中");
+
         Status = "下载演示文件中";
         StateHasChanged();
 
@@ -155,16 +158,18 @@
         System.Diagnostics.Debug.WriteLine($"写入文件txt完成");
 
         Status = "下载演示文件完成.";
+        await ShowBottomMessage("下载演示文件完成");
 
     }
 
-    void EmptyFiles()
+    async Task EmptyFiles()
     {
         Reset();
 
         Directory.GetFiles(UploadPath).ToList().ForEach(file => File.Delete(file));
 
         Status = "已清空文件.";
+        await ShowBottomMessage("已清空文件");
     }
 
 }

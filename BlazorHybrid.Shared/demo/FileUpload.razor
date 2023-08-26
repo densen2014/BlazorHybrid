@@ -1,10 +1,6 @@
 ﻿@page "/FileUpload"
 @namespace BlazorHybrid.Shared.Pages
 
-<PageTitle>FileUpload</PageTitle>
-<hr />
-<a href="https://github.com/densen2014/Densen.Extensions/blob/master/Demo/BlazorHybrid.Shared/Pages/FileUpload.razor"><h5>页面源码</h5></a>
-
 
 <div>
     上传文件(Max100)
@@ -17,7 +13,7 @@
         <InputFile OnChange="OnChange" style="max-width: 400px" class="form-control" multiple accept='image/*' />
     </div>
     <div style="padding-top:30px">
-        <a class="btn btn-primary" href="/">
+        <a class="btn btn-primary" href="/Files">
             <span class="oi oi-file" aria-hidden="true"></span> 浏览文件
         </a>
     </div>

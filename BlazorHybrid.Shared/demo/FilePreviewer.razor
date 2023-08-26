@@ -1,7 +1,6 @@
 ﻿@using BootstrapBlazor.Components
 @namespace BlazorHybrid.Shared.Pages
-
-
+@inherits AppComponentBase
 
 @Status
 
@@ -39,7 +38,7 @@ else
 
     string? ImagePreview { get; set; }
 
-    string? Message { get; set; }
+    new string? Message { get; set; }
 
     string? Status { get; set; }
 
@@ -90,6 +89,7 @@ else
             {
                 var fileinfo = new System.IO.FileInfo(filename);
                 Message = $"目前还无法预览{extension}类型文件, {fileinfo.Length / 1024}k,{fileinfo.LastWriteTime}";
+                await ShowBottomMessage(Message);
             }
         }
         else
