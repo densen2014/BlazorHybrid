@@ -5,43 +5,65 @@
 @using BootstrapBlazor.Components
 
 <div class="row">
-    <div class="col-12 col-m-5 col-x-4 col-xl-3">
+    @if (!HideTools)
+    {
+        <div class="col-4" style="height: 85vh; overflow: scroll ">
 
-        Files:
+            Files:
 
-        <pre>
+            <pre>
             @{
                 var files = Directory.GetFiles(UploadPath);
                 int i = 0;
                 foreach (var item in files)
                 {
                     i++;
-        <button class="btn btn-link" @onclick="(()=>SelectItem=item)">@($"{i}.{Path.GetFileName(item)}")</button><br />
+            <button class="btn btn1 btn-link btn-sm" @onclick="(()=>SelectItem=item)">@($"{i}.{Path.GetFileName(item)}")</button><br />
                 }
             }
         </pre>
 
 
-        <FileUpload ShowFileList="false" Lite FileChanged="_=>StateHasChanged()" />
+            <FileUpload ShowFileList="false" Lite FileChanged="_=>StateHasChanged()" />
 
-        <div style="padding-top:30px">
-            <a class="btn btn-primary" @onclick="_=>DownloadDemoFiles()">
-                <span class="oi oi-file" aria-hidden="true"></span> 演示文件
-            </a>
-            <a class="btn btn-danger" @onclick="_=>EmptyFiles()">
-                <span class="oi oi-delete" aria-hidden="true"></span> 清空文件
-            </a>
+            <div style="padding-top:30px">
+                <a class="btn btn-primary" @onclick="_=>DownloadDemoFiles()">
+                    <span class="oi oi-file" aria-hidden="true"></span> 演示文件
+                </a>
+                <a class="btn btn-danger" @onclick="_=>EmptyFiles()">
+                    <span class="oi oi-delete" aria-hidden="true"></span> 清空文件
+                </a>
+                <a class="btn btn-secondary" @onclick="_=>HideTools=!HideTools">
+                    <span class="oi oi-delete" aria-hidden="true"></span> 隐藏列表
+                </a>
+            </div>
+
         </div>
-
+    }
+    <div class="col-8">
+        <div style="min-width : 400px;height:85vh; overflow :scroll ">
+            <FilePreviewer FileName="@SelectItem" @key="SelectItem" />
+        </div>
     </div>
-
-    <div class="col-12 col-m-7 col-x-8 col-xl-9">
-
-        <FilePreviewer FileName="@SelectItem" @key="SelectItem" />
-
-    </div>
+    @if (HideTools)
+    {
+        <a class="btn btn-secondary" @onclick="_=>HideTools=!HideTools">
+            <span class="oi oi-delete" aria-hidden="true"></span> 文件列表
+        </a>
+    }
 </div>
 
+<style>
+    .btn1 {
+        width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        height: auto;
+        overflow: hidden;
+        padding: 1px 0 1px 0;
+    }
+</style>
 
 
 @code{
@@ -59,6 +81,8 @@
     new string? Message { get; set; }
 
     string? Status { get; set; }
+
+    bool HideTools { get; set; }
 
     async Task PreviewFile(string filename)
     {

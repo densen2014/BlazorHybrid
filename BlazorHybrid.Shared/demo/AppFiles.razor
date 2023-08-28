@@ -5,42 +5,57 @@
 @using BootstrapBlazor.Components
 
 <div class="row">
-    <div class="col-12 col-m-5 col-x-4 col-xl-4" style="height : 700px;overflow :scroll ">
+    @if (!HideTools)
+    {
+        <div class="col-4" style="height: 85vh; overflow: scroll ">
 
-        Files:
+            Files:
 
-        <pre>
+            <pre>
             @{
-                var files1 = Directory.GetFiles(UploadPath);
-                var files = Directory.GetFiles(Path.Combine ( AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "wwwroot"), "*.*", SearchOption.AllDirectories);
+                var files = Directory.GetFiles(UploadPath);
+                var dirwww = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "wwwroot");
+                if (System.IO.Directory.Exists(dirwww)) {
+                    files = Directory.GetFiles(dirwww, "*.*", SearchOption.AllDirectories);
+                }
+                else
+                {
+                    dirwww = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "");
+                    if (System.IO.Directory.Exists(dirwww))
+                    {
+                        files = Directory.GetFiles(dirwww, "*.*", SearchOption.AllDirectories);
+                    }
+                }
                 int i = 0;
                 foreach (var item in files)
                 {
                     i++;
-        <button class="btn btn1 btn-link" @onclick="(()=>SelectItem=item)">@($"{i}.{item.Replace (AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "")}")</button><br />
+            <button class="btn btn1 btn-link btn-sm" @onclick="(()=>SelectItem=item)">@($"{i}.{item.Replace (AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "")}")</button><br />
                 }
             }
         </pre>
 
 
-        <FileUpload ShowFileList="false" Lite FileChanged="_=>StateHasChanged()" />
 
-        <div style="padding-top:30px">
-            <a class="btn btn-primary" @onclick="_=>DownloadDemoFiles()">
-                <span class="oi oi-file" aria-hidden="true"></span> 演示文件
-            </a>
-            <a class="btn btn-danger" @onclick="_=>EmptyFiles()">
-                <span class="oi oi-delete" aria-hidden="true"></span> 清空文件
-            </a>
         </div>
+    }
 
-    </div>
-
-    <div class="col-12 col-m-7 col-x-8 col-xl-8" style="height : 700px; max-width:1000px; overflow :scroll ">
+    <div class="col-8" style="height: 85vh; max-width: 80vw; overflow: scroll ">
 
         <FilePreviewer FileName="@SelectItem" @key="SelectItem" />
 
     </div>
+    @if (HideTools)
+    {
+        <a class="btn btn-secondary" @onclick="_=>HideTools=!HideTools">
+            <span class="oi oi-delete" aria-hidden="true"></span> 文件列表
+        </a>
+    }
+    else
+    { <a class="btn btn-secondary" @onclick="_=>HideTools=!HideTools">
+            <span class="oi oi-delete" aria-hidden="true"></span> 隐藏列表
+        </a>
+    }
 </div>
 
 <style>
@@ -51,6 +66,7 @@
         white-space: normal;
         height: auto;
         overflow: hidden;
+        padding:1px 0 1px 0; 
     }
 </style>
 
@@ -71,14 +87,11 @@
 
     string? ImagePreview { get; set; }
 
-    string? Message { get; set; }
+    new string? Message { get; set; }
 
     string? Status { get; set; }
 
-    string AceptedImageTypes { get; set; } = ".png,.jpg,.jpeg,.gif,.bmp,.ico";
-
-    string AceptedFileTypes { get; set; } = ".txt,.csv,.xml,.log,.htm,.html,.css,.js,.json,.md,.bcmap";
-
+    bool HideTools { get; set; }
 
     private string PopulateImageFromStream(Stream stream)
     {
