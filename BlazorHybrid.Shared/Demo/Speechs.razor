@@ -1,0 +1,151 @@
+﻿@page "/Speechs"
+@attribute [TabItemOption(Text = "语音识别/合成")]
+@inherits AppComponentBase
+@using System.ComponentModel
+@namespace BlazorHybrid.Shared.Pages
+
+<a href="https://www.nuget.org/packages/BootstrapBlazor.WebApi#readme-body-tab"><h3>语音识别/合成</h3></a>
+<hr />
+<a href="https://github.com/densen2014/Densen.Extensions/blob/master/Demo/DemoShared/Pages/Speechs.razor"><h5>页面源码</h5></a>
+
+<div class="row g-3 mb-3">
+    <h4>语音识别</h4>
+    <div class="col-12">
+        <BootstrapInputGroup>
+            <Button Text="普通话" OnClick="SpeechRecognition" IsAsync />
+            <Button Text="粤语" OnClick="SpeechRecognitionHK" IsAsync />
+            <Button Text="英文" OnClick="SpeechRecognitionEN" IsAsync />
+            <Button Text="西文" OnClick="SpeechRecognitionES" IsAsync />
+            <Button Text="停止" OnClick="SpeechRecognitionStop" Icon="fa-fw fa-solid fa-stop" IsAsync />
+        </BootstrapInputGroup>
+    </div>
+
+    <p>语音变色器</p>
+
+    <p class="hints"></p>
+    <div>
+        <p class="output"><em>...诊断信息</em></p>
+    </div>
+
+</div>
+
+<div class="row g-3 mb-3">
+    <h4>语音合成</h4>
+    <div class="col-12">
+        <BootstrapInputGroup>
+            <Button Text="普通话" OnClick="SpeechSynthesis" IsAsync />
+            <Button Text="粤语" OnClick="SpeechSynthesisHK" IsAsync />
+            <Button Text="英文" OnClick="SpeechSynthesisEN" IsAsync />
+            <Button Text="西文" OnClick="SpeechSynthesisES" IsAsync />
+            <Button Text="停止" OnClick="SpeechStop" Icon="fa-fw fa-solid fa-stop" IsAsync />
+        </BootstrapInputGroup>
+    </div>
+    <div class="col-12">
+        <WebSpeech @ref="WebSpeech" OnResult="@OnError" OnStatus="@OnError" OnError="@OnError" />
+    </div>
+    <p>
+        @Message
+    </p>
+</div>
+
+<div class="row g-3 mb-3">
+    <h4>语音合成自定义</h4>
+    <div class="col-12">
+        @if (WebVoiceList != null && WebVoiceList.Any())
+        {
+            <select id="voiceSelect" class="form-select" @onchange="((e)=>OnChange(e))" style="width:70vw; max-width: 400px;">
+                @foreach (var voice in WebVoiceList)
+                {
+                    <option value="@voice.VoiceURI">@($"{(voice.LocalService ? "" : "*")}{voice.Name} ({voice.Lang})")</option>
+                }
+            </select>
+
+        }
+    </div>
+    <div class="col-10">
+        速率
+        <input type="range" min="0.1" max="10" step="0.1" style="width:70vw; max-width: 400px;" @bind-value="Rate" />
+    </div>
+    <div class="col-10">
+        音高
+        <input type="range" min="0" max="2" step="0.1" style="width: 70vw; max-width: 400px; " @bind-value="Picth">
+    </div>
+    <div class="col-10">
+        音量
+        <input type="range" min="0" max="1" step="0.01" style="width: 70vw; max-width: 400px; " @bind-value="Volume" />
+    </div>
+    <div class="col-12">
+        <Textarea @bind-Value="Item" />
+    </div>
+    <div class="col-12">
+        <BootstrapInputGroup>
+            <Button Text="测试" OnClick="SpeechSynthesisDIY" Icon="fa-fw fa-solid fa-play" IsAsync />
+            <Button Text="停止" OnClick="SpeechStop" Icon="fa-fw fa-solid fa-stop" IsAsync />
+            <Button Text="语音列表" OnClick="GetVoiceList" IsAsync />
+        </BootstrapInputGroup>
+    </div>
+</div>
+
+
+
+@code{
+
+    [NotNull]
+    WebSpeech? WebSpeech { get; set; }
+
+    new string? Message { get; set; } = "";
+
+    [DisplayName("内容")]
+    private string Item { get; set; } = "我们一直与Blazor同行";
+    private string? SelectLang { get; set; }
+    double Volume { get; set; } = 1;
+    double Rate { get; set; } = 1;
+    double Picth { get; set; } = 1;
+
+    async Task SpeechRecognition() => Message = await WebSpeech.SpeechRecognition();
+    async Task SpeechRecognitionHK() => Message = await WebSpeech.SpeechRecognition("zh-HK");
+    async Task SpeechRecognitionEN() => Message = await WebSpeech.SpeechRecognition("en-US");
+    async Task SpeechRecognitionES() => Message = await WebSpeech.SpeechRecognition("es-ES");
+    async Task SpeechRecognitionStop() => await WebSpeech.SpeechRecognitionStop();
+
+    async Task SpeechSynthesis() => await WebSpeech.SpeechSynthesis("你好 blazor,现在是" + NowString());
+    async Task SpeechSynthesisHK() => await WebSpeech.SpeechSynthesis("早晨 blazor,依家系 " + NowString(), "zh-HK");
+    async Task SpeechSynthesisEN() => await WebSpeech.SpeechSynthesis("Hello blazor,now is " + NowString(), "en-US");
+    async Task SpeechSynthesisES() => await WebSpeech.SpeechSynthesis("Hola blazor,ahora es " + NowString(), "es-ES");
+    async Task SpeechSynthesisDIY() => await WebSpeech.SpeechSynthesis(Item, "", Rate, Picth, Volume, SelectLang ?? WebVoiceList?.FirstOrDefault()?.VoiceURI);
+    async Task SpeechStop() => await WebSpeech.SpeechStop();
+
+    string NowString() => DateTime.Now.ToShortTimeString();
+
+    List<WebVoice>? WebVoiceList { get; set; }
+    async Task GetVoiceList()
+    {
+        WebVoiceList = await WebSpeech.GetVoiceList();
+        if (WebVoiceList != null && WebVoiceList.Any()) StateHasChanged();
+    }
+
+    private void OnChange(ChangeEventArgs val)
+    {
+        if (val?.Value != null) SelectLang = val.Value.ToString();
+    }
+
+    private async Task OnError(string message)
+    {
+        Message = message;
+        await ShowBottomMessage(message, true);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            await Task.Delay(500);
+            while (WebVoiceList == null || !WebVoiceList.Any())
+            {
+                await Task.Delay(100);
+                await GetVoiceList();
+            }
+        }
+    }
+}

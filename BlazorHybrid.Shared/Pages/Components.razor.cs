@@ -50,6 +50,8 @@ public partial class Components
                 new ResCustomersDto("NFC权限",null,Tools.CheckPermissionsNFC),
                 new ResCustomersDto("返回",async ()=>await BackToHome()),
                 new ResCustomersDto("PDF阅读器",()=>NavigationManager.NavigateTo("pdfReaders")),
+                new ResCustomersDto("思维导图",()=>NavigationManager.NavigateTo("MindMaps")),
+                new ResCustomersDto("语音合成/识别",()=>NavigationManager.NavigateTo("Speechs")),
                 new ResCustomersDto("文件",()=>NavigationManager.NavigateTo("Files")),
                 new ResCustomersDto("上传文件",()=>NavigationManager.NavigateTo("FileUpload")),
                 new ResCustomersDto("APP文件夹",()=>NavigationManager.NavigateTo("AppFiles")),

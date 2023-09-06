@@ -78,6 +78,7 @@
         <PackageReference Include="BootstrapBlazor.PdfReader" Version="7.*" />
         <PackageReference Include="BootstrapBlazor.VideoPlayer" Version="7.*" />
         <PackageReference Include="BootstrapBlazor.FileViewer" Version="7.*" />
+        <PackageReference Include="BootstrapBlazor.MindMap" Version="*" />
     </ItemGroup>
 
 	<ItemGroup>
