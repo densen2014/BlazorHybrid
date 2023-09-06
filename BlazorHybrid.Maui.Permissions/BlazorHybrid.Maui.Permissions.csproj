@@ -30,7 +30,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <Version>0.0.3</Version>
+        <Version>0.0.4</Version>
         <RootNamespace>BlazorHybrid.Maui.Permissions</RootNamespace>
         <AssemblyName>BlazorHybrid.Maui.Permissions</AssemblyName>
         <PackageProjectUrl>https://github.com/densen2014/BlazorHybrid</PackageProjectUrl>
@@ -38,7 +38,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>跨平台共享库</PackageTags>
         <Description>用于 Maui Blazor 框架的跨平台库权限包</Description>
-        <OutputPath>..\Bin</OutputPath>
+        <OutputPath>..\..\Bin</OutputPath>
         <!--禁止生成launchSettings.json-->
         <NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
     </PropertyGroup>

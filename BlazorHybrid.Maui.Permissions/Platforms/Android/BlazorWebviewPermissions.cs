@@ -35,6 +35,7 @@ internal class BlazorWebviewPermissions : WebChromeClient, IActivityResultCallba
         [Manifest.Permission.Camera] = CameraAccessRationale,
         [Manifest.Permission.AccessFineLocation] = LocationAccessRationale,
         [Manifest.Permission.RecordAudio] = MicrophoneAccessRationale,
+        [Manifest.Permission.ModifyAudioSettings] = MicrophoneAccessRationale,
         [Manifest.Permission.CaptureVideoOutput] = VideoAccessRationale,
         // 添加更多支持权限时添加更多理由。
     };

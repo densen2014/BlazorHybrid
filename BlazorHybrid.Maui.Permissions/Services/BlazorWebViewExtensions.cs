@@ -81,6 +81,10 @@ public partial class InitBlazorWebView : Page
 
         e.WebView.Settings.JavaScriptEnabled = true;
         e.WebView.Settings.AllowFileAccess = true;
+        e.WebView.Settings.AllowFileAccessFromFileURLs = true;
+        e.WebView.Settings.AllowUniversalAccessFromFileURLs = true;
+        e.WebView.Settings.LightTouchEnabled = true;
+        e.WebView.Settings.MixedContentMode = MixedContentHandling.AlwaysAllow;
         e.WebView.Settings.MediaPlaybackRequiresUserGesture = false;
         e.WebView.Settings.SetGeolocationEnabled(true);
         e.WebView.Settings.SetGeolocationDatabasePath(e.WebView.Context?.FilesDir?.Path);
