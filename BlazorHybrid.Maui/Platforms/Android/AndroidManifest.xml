@@ -59,19 +59,19 @@
 		<intent>
 			<action android:name="android.media.action.IMAGE_CAPTURE" />
 		</intent>
+  		<intent>
 			<!--测试 w10 wsa Windows 安卓子系统,需要注释掉这个配置-->
 			<!---->
-      <action android:name="android.intent.action.VIEW" />
-      <data android:scheme="geo"/>
-    <intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="geo"/>
 		</intent>
-    <intent>
-      <action android:name="android.intent.action.VIEW" />
-      <data android:scheme="http"/>
-    </intent>
-    <intent>
-      <action android:name="android.intent.action.VIEW" />
-      <data android:scheme="https"/>
-    </intent>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="http"/>
+		</intent>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="https"/>
+		</intent>
 	</queries>
 </manifest>
