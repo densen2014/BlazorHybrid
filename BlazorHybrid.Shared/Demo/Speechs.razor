@@ -12,10 +12,10 @@
     <h4>语音识别</h4>
     <div class="col-12">
         <BootstrapInputGroup>
-            <Button Text="普通话" OnClick="SpeechRecognition" IsAsync />
-            <Button Text="粤语" OnClick="SpeechRecognitionHK" IsAsync />
-            <Button Text="英文" OnClick="SpeechRecognitionEN" IsAsync />
-            <Button Text="西文" OnClick="SpeechRecognitionES" IsAsync />
+            <Button Text="普通话" OnClick="SpeechRecognition"  />
+            <Button Text="粤语" OnClick="SpeechRecognitionHK"  />
+            <Button Text="英文" OnClick="SpeechRecognitionEN"  />
+            <Button Text="西文" OnClick="SpeechRecognitionES"  />
             <Button Text="停止" OnClick="SpeechRecognitionStop" Icon="fa-fw fa-solid fa-stop" IsAsync />
         </BootstrapInputGroup>
     </div>
@@ -140,11 +140,15 @@
 
         if (firstRender)
         {
-            await Task.Delay(500);
+            await Task.Delay(1500);
             while (WebVoiceList == null || !WebVoiceList.Any())
             {
                 await Task.Delay(100);
                 await GetVoiceList();
+                if (WebSpeech.SpeechUndefined)
+                {
+                    return;
+                }
             }
         }
     }
