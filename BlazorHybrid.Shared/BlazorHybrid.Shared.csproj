@@ -55,6 +55,7 @@
 
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\BootstrapBlazor.WebAPI\src\BootstrapBlazor.WebAPI\BootstrapBlazor.WebAPI.csproj" />
 		<ProjectReference Include="..\BlazorHybrid.Core\BlazorHybrid.Core.csproj" />
 	</ItemGroup>
 
@@ -64,7 +65,7 @@
 		<PackageReference Include="BootstrapBlazor.FontAwesome" Version="7.*" />
 		<PackageReference Include="BootstrapBlazor.Geolocation" Version="7.*" />
 		<PackageReference Include="BootstrapBlazor.Viewer" Version="7.*" />
-		<PackageReference Include="BootstrapBlazor.WebAPI" Version="7.*" />
+		<!--<PackageReference Include="BootstrapBlazor.WebAPI" Version="7.*" />-->
 		<PackageReference Include="Densen.Component.Blazor" Version="7.*" />
 		<PackageReference Include="Densen.FreeSql.Extensions.BootstrapBlazor" Version="7.*" />
 		<PackageReference Include="FreeSql" Version="*" />
