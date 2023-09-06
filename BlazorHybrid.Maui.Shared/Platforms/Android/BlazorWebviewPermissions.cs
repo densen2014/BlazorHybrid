@@ -9,6 +9,7 @@ using AndroidX.Activity.Result;
 using AndroidX.Activity.Result.Contract;
 using AndroidX.Core.Content;
 using Java.Interop;
+using Microsoft.AspNetCore.Components.WebView.Maui;
 using View = Android.Views.View;
 using WebView = Android.Webkit.WebView;
 
@@ -35,6 +36,7 @@ internal class BlazorWebviewPermissions : WebChromeClient, IActivityResultCallba
         [Manifest.Permission.Camera] = CameraAccessRationale,
         [Manifest.Permission.AccessFineLocation] = LocationAccessRationale,
         [Manifest.Permission.RecordAudio] = MicrophoneAccessRationale,
+        [Manifest.Permission.ModifyAudioSettings] = MicrophoneAccessRationale,
         [Manifest.Permission.CaptureVideoOutput] = VideoAccessRationale,
         // 添加更多支持权限时添加更多理由。
     };
@@ -71,6 +73,10 @@ internal class BlazorWebviewPermissions : WebChromeClient, IActivityResultCallba
 
         RequestPermission(Manifest.Permission.AccessFineLocation, isGranted => callback.Invoke(origin, isGranted, false));
     }
+    //public override void OnPermissionRequest(PermissionRequest? request)
+    //{
+    //    request.Grant(request.GetResources());
+    //}
 
     public override void OnPermissionRequest(PermissionRequest? request)
     {

@@ -1,5 +1,4 @@
-﻿using BlazorHybrid.Maui.Shared;
-using BlazorHybrid.Shared;
+﻿using BlazorHybrid.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using System.Diagnostics;

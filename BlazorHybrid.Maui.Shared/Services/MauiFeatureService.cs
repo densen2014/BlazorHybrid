@@ -122,16 +122,27 @@ public class MauiFeatureService : Page, INativeFeatures
 
     public async Task<string> CheckPermissionsCamera()
     {
-        //检查权限的当前状态
+        var res = "";
         PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-
-        //请求权限
         if (status != PermissionStatus.Granted)
         {
             status = await Permissions.RequestAsync<Permissions.Camera>();
         }
+        res = status.ToString();
+        status = await Permissions.CheckStatusAsync<Permissions.Microphone>();
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<Permissions.Microphone>();
+        }
+        res += " " + status.ToString();
+        status = await Permissions.CheckStatusAsync<Permissions.Speech>();
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<Permissions.Speech>();
+        }
+        res += " " + status.ToString();
 
-        return status.ToString();
+        return res;
     }
 
     public async Task<string> CheckPermissionsLocation()
@@ -774,7 +785,7 @@ public class MauiFeatureService : Page, INativeFeatures
     {
         //Application.Current?.Dispatcher.Dispatch(async () =>
         //{
-            await Application.Current!.MainPage!.DisplayAlert(title, message, cancel);
+        await Application.Current!.MainPage!.DisplayAlert(title, message, cancel);
         //});
         //return Task.CompletedTask;
     }

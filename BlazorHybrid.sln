@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
@@ -36,7 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bh004_BootstrapBlazorUI", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bh006_NFC_tag", "bh100days\bh006_NFC_tag\bh006_NFC_tag.csproj", "{7D9460CD-81E4-4873-BEB0-F893ED57449C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "t01_Webapi", "bh100days\t01_Webapi\t01_Webapi.csproj", "{0137E50D-696B-42E6-85BA-A11982359BFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "t01_Webapi", "bh100days\t01_Webapi\t01_Webapi.csproj", "{0137E50D-696B-42E6-85BA-A11982359BFE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BootstrapBlazor.WebAPI", "..\BootstrapBlazor.WebAPI\src\BootstrapBlazor.WebAPI\BootstrapBlazor.WebAPI.csproj", "{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "外部代码", "外部代码", "{2EC4FEE7-6035-4DFB-AB3D-5C265640E82C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,6 +173,12 @@ Global
 		{0137E50D-696B-42E6-85BA-A11982359BFE}.DebugNuget|Any CPU.Build.0 = Debug|Any CPU
 		{0137E50D-696B-42E6-85BA-A11982359BFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0137E50D-696B-42E6-85BA-A11982359BFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33}.DebugNuget|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33}.DebugNuget|Any CPU.Build.0 = Debug|Any CPU
+		{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -180,9 +191,10 @@ Global
 		{8FE23F99-CAC6-4D5F-9E81-C17065F0FCD8} = {23FAEDF1-C3CE-4809-97D7-46DD2CFC5739}
 		{7D9460CD-81E4-4873-BEB0-F893ED57449C} = {23FAEDF1-C3CE-4809-97D7-46DD2CFC5739}
 		{0137E50D-696B-42E6-85BA-A11982359BFE} = {23FAEDF1-C3CE-4809-97D7-46DD2CFC5739}
+		{FAAAF2E6-F4CF-44F6-9C02-3723BE257E33} = {2EC4FEE7-6035-4DFB-AB3D-5C265640E82C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6D193DC6-27D4-42F5-8906-3F88D54C86BB}
 		        SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}
+		SolutionGuid = {6D193DC6-27D4-42F5-8906-3F88D54C86BB}
 	EndGlobalSection
 EndGlobal

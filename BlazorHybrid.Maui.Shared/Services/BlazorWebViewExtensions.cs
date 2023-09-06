@@ -82,6 +82,10 @@ public partial class InitBlazorWebView : Page
 
         e.WebView.Settings.JavaScriptEnabled = true;
         e.WebView.Settings.AllowFileAccess = true;
+        e.WebView.Settings.AllowFileAccessFromFileURLs = true;
+        e.WebView.Settings.AllowUniversalAccessFromFileURLs = true;
+        e.WebView.Settings.LightTouchEnabled = true;
+        e.WebView.Settings.MixedContentMode = MixedContentHandling.AlwaysAllow;
         e.WebView.Settings.MediaPlaybackRequiresUserGesture = false;
         e.WebView.Settings.SetGeolocationEnabled(true);
         e.WebView.Settings.SetGeolocationDatabasePath(e.WebView.Context?.FilesDir?.Path);
@@ -127,7 +131,12 @@ public partial class InitBlazorWebView : Page
         //如果 true为 ，则 HTML5 视频可以内联播放，如果 false 则使用本机填充屏幕控制器。
         e.Configuration.AllowsInlineMediaPlayback = true;
         e.Configuration.AllowsAirPlayForMediaPlayback = true;
+        e.Configuration.AllowsPictureInPictureMediaPlayback = true;
         e.Configuration.MediaTypesRequiringUserActionForPlayback = WebKit.WKAudiovisualMediaTypes.None;
+        if (e.Configuration.DefaultWebpagePreferences != null)
+        { 
+            e.Configuration.DefaultWebpagePreferences.AllowsContentJavaScript=true;
+        }
 #endif
     }
 

@@ -7,6 +7,8 @@ using Android.Views;
 using Android.Widget;
 using Android.Content;
 using DH.NFC;
+using AndroidX.Core.App;
+using Android;
 
 namespace BlazorHybrid.Maui;
 
@@ -24,6 +26,10 @@ public class MainActivity : MauiAppCompatActivity
         CrossNFC.Init(this);
 
         base.OnCreate(savedInstanceState);
+
+        // 申请所需权限 也可以再使用的时候去申请
+        //ActivityCompat.RequestPermissions(this, new[] { Manifest.Permission.Camera, Manifest.Permission.RecordAudio, Manifest.Permission.ModifyAudioSettings }, 0);
+
     }
 
     protected override void OnResume()

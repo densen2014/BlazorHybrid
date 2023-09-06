@@ -120,7 +120,7 @@
     List<WebVoice>? WebVoiceList { get; set; }
     async Task GetVoiceList()
     {
-        WebVoiceList = await WebSpeech.GetVoiceList();
+        WebVoiceList = await WebSpeech.GetVoiceList(true);
         if (WebVoiceList != null && WebVoiceList.Any()) StateHasChanged();
     }
 
