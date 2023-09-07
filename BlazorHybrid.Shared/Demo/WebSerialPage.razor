@@ -1,0 +1,110 @@
+﻿@page "/WebSerials"
+@attribute [TabItemOption(Text = "串行设备 WebSerial")]
+@namespace BlazorHybrid.Shared.Pages
+
+<a href="https://www.nuget.org/packages/BootstrapBlazor.WebApi#readme-body-tab"><h4>WebSerial</h4></a>
+
+<hr />
+<a href="https://github.com/densen2014/Densen.Extensions/blob/master/Demo/DemoShared/Pages/WebSerialPage.razor"><h5>页面源码</h5></a>
+
+<a href="https://github.com/densen2014/Densen.Extensions/blob/master/Demo/Receive_DSP.ino"><h4>Arduino源码</h4></a>
+
+
+@*<GroupBox Title="基本用法">
+        <div class="row m-3">
+            <WebSerial OnReceive="@OnReceive" OnLog="@OnLog" OnError="@OnError" />
+        </div>
+    </GroupBox>
+    <p />
+    <p />*@
+<GroupBox Title="基本用法">
+    <div>
+        <div class="row m-3">
+            <div class="col-3">
+                <Select Color="Color.Primary" Items="BaudRateList" @bind-Value="@SelectedBaudRate" ShowLabel="true" />
+            </div>
+            <div class="col-3">
+                <BootstrapInputNumber Color="Color.Primary" @bind-Value="@options.BufferSize" ShowLabel="true" />
+            </div>
+            <div class="col-3">
+                <Select Color="Color.Primary" @bind-Value="@options.ParityType" ShowLabel="true" />
+            </div>
+            <div class="col-3">
+                <Select Color="Color.Primary" @bind-Value="@options.FlowControlType" ShowLabel="true" />
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col-3">
+                <BootstrapInputNumber Color="Color.Primary" @bind-Value="@options.DataBits" ShowLabel="true" />
+            </div>
+            <div class="col-3">
+                <BootstrapInputNumber Color="Color.Primary" @bind-Value="@options.StopBits" ShowLabel="true" />
+            </div>
+            <div class="col-3">
+                <Select Color="Color.Primary" @bind-Value="@options.AutoFrameBreakType" ShowLabel="true" />
+            </div>
+            <div class="col-3">
+                <BootstrapInput Color="Color.Primary" @bind-Value="@options.FrameBreakChar" ShowLabel="true" />
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col-3">
+                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.AutoConnect" />
+            </div>
+            <div class="col-3">
+                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.OutputInHex" />
+            </div>
+            <div class="col-3">
+                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.InputWithHex" />
+            </div>
+            <div class="col-3">
+                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.Break" />
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col-3">
+                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.DTR" />
+            </div>
+            <div class="col-3">
+                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.RTS" />
+            </div>
+        </div>
+    </div>
+    <div class="row m-3">
+        @if (Flag)
+        {
+            <div class="col-6">
+                <WebSerial @ref="WebSerial" OnConnect="@OnConnect" OnReceive="@OnReceive" OnLog="@OnLog" OnError="@OnError" Options="@options" Debug ShowUI="false" />
+            </div>
+
+            <div @ref="WebSerial.Element">
+                <div class="col-12">
+                    <BootstrapInputGroup>
+                        <Button data-action="butConnect">@options.ConnectBtnTitle</Button>
+                        <input class="form-control" type="text" data-action="fname" style="visibility:hidden;width:300px;" />
+                        <Button data-action='butwrite' style="visibility:hidden;">@options.WriteBtnTitle</Button>
+                        @if (!IsConnected)
+                        {
+                            <Button Text="关闭" OnClick="OnApply" Icon="fa-fw fa-solid fa-close" />
+                        }
+                    </BootstrapInputGroup>
+                </div>
+
+            </div>
+            <pre data-action="log" style="overflow-y:scroll;max-height:500px;"></pre>
+
+        }
+        else
+        {
+            <div class="col-6">
+                <Button Text="应用" OnClick="OnApply" Icon="fa-fw fa-solid fa-play" />
+            </div>
+        }
+    </div>
+    <p>注意:本例子改变设置要点关闭再重新应用</p>
+</GroupBox>
+
+<pre>@message</pre>
+<pre style="color:green">@statusmessage</pre>
+<pre style="color:red">@errmessage</pre>
+ 
