@@ -27,22 +27,22 @@
         {
 
             <div class="row g-3">
-                <div class="col-12 col-sm-3">
+                <div class="col-12 col-m-3 col-sm-3">
                     <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
                 </div>
                 @if (Services != null)
                 {
-                    <div class="col-12 col-sm-3">
+                    <div class="col-12 col-m-3 col-sm-3">
                         <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
                     </div>
                     @if (Characteristics != null)
                     {
-                        <div class="col-12 col-sm-3">
+                        <div class="col-12 col-m-3 col-sm-3">
                             <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
                         </div>
                         @if (ReadResult != null)
                         {
-                            <div class="col-12 col-sm-3">
+                            <div class="col-12 col-m-3 col-sm-3">
                                 <Display TValue="string" Value="@ReadResult" />
                             </div>
                         }
