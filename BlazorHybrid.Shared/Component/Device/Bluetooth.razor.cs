@@ -167,8 +167,8 @@ public partial class Bluetooth : IAsyncDisposable
 
     private async void Tools_OnMessage(string message)
     {
-        if (Message.Length >500) Message= Message.Substring (0, 500);
-        Message = $"{message}\r\n{Message}";
+        //if (Message !=null && Message.Length >1500) Message= Message.Substring (0, 1500);
+        Message = $"{Message}\r\n{message}";
         await InvokeAsync(StateHasChanged);
     }
 

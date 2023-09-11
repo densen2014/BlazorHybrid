@@ -13,7 +13,7 @@ public class BleTagDevice
     public Guid Serviceid { get; set; }
     public Guid Characteristic { get; set; }
 
-    public int ScanTimeout { get; set; } = 15;
+    public int ScanTimeout { get; set; } = 10;
 }
 
 public class BleDevice

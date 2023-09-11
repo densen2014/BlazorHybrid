@@ -1,5 +1,7 @@
 ﻿using AME;
 using BlazorHybrid.Core.Device;
+using DocumentFormat.OpenXml.EMMA;
+using NPOI.SS.Formula.Functions;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
@@ -136,9 +138,9 @@ public partial class BluetoothLEServices
             CurrentAdapter.ScanTimeout = TagDevice.ScanTimeout * 1000;
 
             //默认LowPower
-            CurrentAdapter.ScanMode = ScanMode.LowPower;
+            CurrentAdapter.ScanMode = ScanMode.Balanced;
 
-            OnMessage?.Invoke($"开始扫描外设, IsAvailable={CurrentBle.IsAvailable}, IsOn={CurrentBle.IsOn}, State={CurrentBle.State}, ScanMode={CurrentAdapter.ScanMode}, ScanTimeout={CurrentAdapter.ScanTimeout / 1000}");
+            OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle.IsAvailable}, 已开启={CurrentBle.IsOn}, 状态={CurrentBle.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
 
             if (deviceGuid != null && deviceGuid != Guid.Empty)
                 Device = await CurrentAdapter.ConnectToKnownDeviceAsync(deviceGuid.Value, cancellationToken: _scanForAedCts.Token);
@@ -195,13 +197,21 @@ public partial class BluetoothLEServices
     private void Adapter_DeviceDiscovered(object? sender, DeviceEventArgs e)
     {
         //[0:] 扫描到蓝牙设备honor Band 4-7E8, Id=00000000-0000-0000-0000-f4bf805ad7e8, Name=honor Band 4-7E8, Rssi=-50, State=Disconnected, AdvertisementRecords.Count=5
-        OnMessage?.Invoke($"扫描到蓝牙设备{e.Device}, Id={e.Device.Id}, Name={e.Device.Name}, Rssi={e.Device.Rssi}, State={e.Device.State}, AdvertisementRecords.Count={e.Device.AdvertisementRecords.Count}");
+        OnMessage?.Invoke($"扫描到蓝牙设备: " +
+            $"Id={e.Device.Id}, " +
+            $"名称={e.Device.Name}, " +
+            $"Rssi={e.Device.Rssi}, " +
+            $"状态={e.Device.State}, " +
+            $"可连接={e.Device.IsConnectable}, " +
+            $"广播记录总数={e.Device.AdvertisementRecords.Count}");
+
+        BLE_beacon_AdvertisementRecords(e.Device);
 
         Devices.Add(new BleDevice() { Id = e.Device.Id, Name = e.Device.Name });
 
         if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) || (!string.IsNullOrWhiteSpace(TagDevice.Name) && string.Compare(e.Device.Name, TagDevice.Name, true) == 0))
         {
-            TagDeviceInfo = $"{e.Device}, Id={e.Device.Id}, Name={e.Device.Name}, Rssi={e.Device.Rssi}, State={e.Device.State}, AdvertisementRecords.Count={e.Device.AdvertisementRecords.Count}";
+            TagDeviceInfo = $"{e.Device}, Id={e.Device.Id}, 名称={e.Device.Name}, Rssi={e.Device.Rssi}, 状态={e.Device.State}, 广播记录总数={e.Device.AdvertisementRecords.Count}";
 
             OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
 
@@ -213,6 +223,14 @@ public partial class BluetoothLEServices
         }
     }
 
+    /// <summary>
+    /// 返回设备信标广播信息 BLE beacon
+    /// </summary>
+    private void BLE_beacon_AdvertisementRecords(IDevice device)
+    {
+        if (device.AdvertisementRecords.Count==0) { return; }
+        device.AdvertisementRecords.ToList().ForEach((e) => OnMessage?.Invoke($"{device.Name}信标广播: {e}{Environment.NewLine}"));
+    }
     private void Adapter_ScanTimeoutElapsed(object? sender, EventArgs e)
     {
         OnMessage?.Invoke("蓝牙扫描超时结束");
