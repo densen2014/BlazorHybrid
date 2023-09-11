@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace BlazorHybrid.Core.Device;
 
@@ -13,7 +14,27 @@ public class BleTagDevice
     public Guid Serviceid { get; set; }
     public Guid Characteristic { get; set; }
 
+}
+
+public class BleOptions
+{
+    [DisplayName("扫描超时")]
     public int ScanTimeout { get; set; } = 15;
+
+    [DisplayName("名称过滤")]
+    public string? NameFilter { get; set; }
+
+    [DisplayName("显示广播")]
+    public bool ShowAdvertisementRecords { get; set; }
+
+    [DisplayName("显示iBeacon")]
+    public bool ShowBeacon { get; set; }
+
+    [DisplayName("Beacon扫描周期(ms)")]
+    public int BeaconTiming { get; set; } = 1000;
+
+    [DisplayName("BeaconID过滤")]
+    public Guid? BeaconUUID { get; set; }
 }
 
 public class BleDevice

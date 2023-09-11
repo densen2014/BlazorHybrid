@@ -32,6 +32,7 @@ using BlazorHybrid.Core.Device;
 using Microsoft.Maui.Platform;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Ports;
+using Beacons;
 
 namespace BlazorHybrid.Maui.Shared;
 
@@ -43,6 +44,7 @@ public class MauiFeatureService : Page, INativeFeatures
 
     public event Action<string>? OnMessage;
     public event Action<string>? OnDataReceived;
+    public event Action<iBeaconData>? OnBeaconDataReceived;
     public event Action<bool>? OnStateConnect;
     public event Action<string>? UpdateDevicename;
 
@@ -754,6 +756,7 @@ public class MauiFeatureService : Page, INativeFeatures
         {
             MyBleTester.OnMessage += OnMessage;
             MyBleTester.OnDataReceived += OnDataReceived;
+            MyBleTester.OnBeaconDataReceived += OnBeaconDataReceived;
             MyBleTester.OnStateConnect += OnStateConnect;
             isInit = true;
         }
@@ -761,7 +764,7 @@ public class MauiFeatureService : Page, INativeFeatures
 
     bool isInit = false;
 
-    public async Task<List<BleDevice>?> StartScanAsync() => await MyBleTester.StartScanAsync();
+    public async Task<List<BleDevice>?> StartScanAsync(BleOptions? options = null) => await MyBleTester.StartScanAsync(options);
 
     public async Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble) => await MyBleTester.ConnectDeviceAsync(ble);
 

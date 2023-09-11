@@ -1,4 +1,5 @@
 ﻿using AME;
+using Beacons;
 using BlazorHybrid.Core.Device;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
@@ -52,6 +53,11 @@ public partial class BluetoothLEServices
     /// 数据接收
     /// </summary>
     public event Action<string>? OnDataReceived;
+
+    /// <summary>
+    /// Beacon数据接收
+    /// </summary>
+    public event Action<iBeaconData>? OnBeaconDataReceived;
 
     /// <summary>
     /// 连接状态
@@ -109,13 +115,21 @@ public partial class BluetoothLEServices
 
     #region 扫描外设
 
+    BleOptions Options { get; set; } = new BleOptions();
+
     /// <summary>
     /// 开始扫描
     /// </summary>
+    /// <param name="options"></param>
+    /// <param name="deviceGuid"></param>
+    /// <param name="serviceUuids"></param>
+    /// <param name="scanFilterOptions"></param>
     /// <returns></returns>
-    public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null)
+    public async Task<List<BleDevice>?> StartScanAsync(BleOptions? options = null, Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null)
     {
+        Options = options ?? new BleOptions();
         Devices = new List<BleDevice>();
+        BeaconList = new List<iBeaconData>();
 
         //检查获取蓝牙权限
         bool isPermissionPass = await CheckAndRequestBluetoothPermission();
@@ -133,12 +147,12 @@ public partial class BluetoothLEServices
             CurrentAdapter.ScanTimeoutElapsed += Adapter_ScanTimeoutElapsed;
 
             //蓝牙扫描时间
-            CurrentAdapter.ScanTimeout = TagDevice.ScanTimeout * 1000;
+            CurrentAdapter.ScanTimeout = (Options.ScanTimeout) * 1000;
 
             //默认LowPower
-            CurrentAdapter.ScanMode = ScanMode.LowPower;
+            CurrentAdapter.ScanMode = ScanMode.Balanced;
 
-            OnMessage?.Invoke($"开始扫描外设, IsAvailable={CurrentBle.IsAvailable}, IsOn={CurrentBle.IsOn}, State={CurrentBle.State}, ScanMode={CurrentAdapter.ScanMode}, ScanTimeout={CurrentAdapter.ScanTimeout / 1000}");
+            OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle.IsAvailable}, 已开启={CurrentBle.IsOn}, 状态={CurrentBle.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
 
             if (deviceGuid != null && deviceGuid != Guid.Empty)
                 Device = await CurrentAdapter.ConnectToKnownDeviceAsync(deviceGuid.Value, cancellationToken: _scanForAedCts.Token);
@@ -195,22 +209,37 @@ public partial class BluetoothLEServices
     private void Adapter_DeviceDiscovered(object? sender, DeviceEventArgs e)
     {
         //[0:] 扫描到蓝牙设备honor Band 4-7E8, Id=00000000-0000-0000-0000-f4bf805ad7e8, Name=honor Band 4-7E8, Rssi=-50, State=Disconnected, AdvertisementRecords.Count=5
-        OnMessage?.Invoke($"扫描到蓝牙设备{e.Device}, Id={e.Device.Id}, Name={e.Device.Name}, Rssi={e.Device.Rssi}, State={e.Device.State}, AdvertisementRecords.Count={e.Device.AdvertisementRecords.Count}");
+        var result = $"蓝牙设备: " +
+            $"{e.Device.Name}, " +
+            $"Id={e.Device.Id}, " +
+            $"Rssi={e.Device.Rssi}, " +
+            $"状态={e.Device.State}, " +
+            $"可连接={e.Device.IsConnectable}, " +
+            $"广播记录总数={e.Device.AdvertisementRecords.Count}";
 
-        Devices.Add(new BleDevice() { Id = e.Device.Id, Name = e.Device.Name });
-
-        if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) || (!string.IsNullOrWhiteSpace(TagDevice.Name) && string.Compare(e.Device.Name, TagDevice.Name, true) == 0))
+        if (Options.NameFilter == null || (Options.NameFilter != null && e.Device.Name.Contains(Options.NameFilter)))
         {
-            TagDeviceInfo = $"{e.Device}, Id={e.Device.Id}, Name={e.Device.Name}, Rssi={e.Device.Rssi}, State={e.Device.State}, AdvertisementRecords.Count={e.Device.AdvertisementRecords.Count}";
+            OnMessage?.Invoke(result);
 
-            OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
+            if (Options.ShowAdvertisementRecords||Options.ShowBeacon) BLE_beacon_AdvertisementRecords(e.Device);
 
-            Device = e.Device;
+            Devices.Add(new BleDevice() { Id = e.Device.Id, Name = e.Device.Name });
 
-            //如果找到目标外设，退出扫描
-            if (!_scanForAedCts!.IsCancellationRequested)
-                _scanForAedCts.Cancel(false);
+            if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) || (!string.IsNullOrWhiteSpace(TagDevice.Name) && string.Compare(e.Device.Name, TagDevice.Name, true) == 0))
+            {
+                TagDeviceInfo = $"{e.Device}, 名称={e.Device.Name}, Id={e.Device.Id}, Rssi={e.Device.Rssi}, 状态={e.Device.State}, 广播记录总数={e.Device.AdvertisementRecords.Count}";
+
+                OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
+
+                Device = e.Device;
+
+                //如果找到目标外设，退出扫描
+                if (!_scanForAedCts!.IsCancellationRequested)
+                    _scanForAedCts.Cancel(false);
+            }
+
         }
+
     }
 
     private void Adapter_ScanTimeoutElapsed(object? sender, EventArgs e)
@@ -218,7 +247,80 @@ public partial class BluetoothLEServices
         OnMessage?.Invoke("蓝牙扫描超时结束");
     }
 
-#endregion
+    #endregion
+
+    #region 广播信息
+
+    private List<iBeaconData> BeaconList { get; set; } = new List<iBeaconData>();
+
+    /// <summary>
+    /// 返回设备信标广播信息 BLE beacon
+    /// </summary>
+    private void BLE_beacon_AdvertisementRecords(IDevice device)
+    {
+        if (device.AdvertisementRecords.Count == 0) { return; }
+
+        //iBeacon 广播数据包
+        var iBeacon = false;
+        iBeaconData iBeaconData;
+
+        var index = BeaconList.FindIndex(a => a.ID == device.Id);
+        if (index != -1)
+        {
+            iBeaconData= BeaconList[index];
+        }
+        else
+        {
+            iBeaconData = new iBeaconData() { ID = device.Id, Rssi = device.Rssi, Name=device.Name };
+            BeaconList.Add(iBeaconData);
+        }
+
+        iBeaconData.Rssi = device.Rssi;
+
+        foreach (var e in device.AdvertisementRecords)
+        {
+            if (Options.ShowAdvertisementRecords) OnMessage?.Invoke($" ** {device.Name}广播: {e}");
+
+            if (Options.ShowBeacon)
+            {
+                if (e.Type == AdvertisementRecordType.Flags && e.Data.ByteArrayToHexString() == "06")
+                {
+                    iBeacon = true;
+                }
+
+                if (e.Type == AdvertisementRecordType.TxPowerLevel)
+                {
+                    //信号强度,蓝牙天线发射功率, -20、-16、-12、-8、-4、0、4                    
+                    if ((short)(sbyte)e.Data[0] != 0)
+                        iBeaconData.Rssi = (short)(sbyte)e.Data[0];
+                }
+
+                if (e.Type == AdvertisementRecordType.ServiceData)
+                {
+                    iBeaconData = e.Data.btParseAdvertisement(iBeaconData);
+                }
+
+                if (e.Type == AdvertisementRecordType.CompleteLocalName)
+                {
+                    iBeaconData.CompleteLocalName = BitConverter.ToString(e.Data);
+                }
+
+                if (iBeacon && e.Type == AdvertisementRecordType.ManufacturerSpecificData)
+                {
+                    iBeaconData = e.Data.iBeaconParseAdvertisement(iBeaconData);
+                }
+            }
+        }
+
+        if (iBeacon && Options.BeaconUUID == null || (Options.BeaconUUID != null && iBeaconData.UUID == Options.BeaconUUID))
+        {
+            OnMessage?.Invoke($" *** {device.Name}iBeacon: {iBeaconData.Tostring}");
+
+            OnBeaconDataReceived?.Invoke(iBeaconData);
+        }
+
+    }
+    #endregion
 
     #region 连接外设
 
@@ -231,7 +333,7 @@ public partial class BluetoothLEServices
         {
             TagDevice.DeviceID = ble.DeviceID;
             TagDevice.Name = "";
-            await StartScanAsync(ble.DeviceID);
+            await StartScanAsync(deviceGuid: ble.DeviceID);
         }
         else if (ble.Name != null)
         {
@@ -461,10 +563,10 @@ public partial class BluetoothLEServices
             OnMessage?.Invoke($"没有连接{TagDevice.Name}");
             return false;
         }
-        if (Notify !=null && Device.State == DeviceState.Connected)
+        if (Notify != null && Device.State == DeviceState.Connected)
         {
-           await Notify.StopUpdatesAsync();
-            Notify=null;
+            await Notify.StopUpdatesAsync();
+            Notify = null;
             OnMessage?.Invoke($"停止监听{TagDevice.Name}");
         }
 
@@ -481,7 +583,7 @@ public partial class BluetoothLEServices
     public async Task<string?> ReadDeviceName(Guid? serviceid, Guid? characteristic)
     {
         ReadDeviceNameResult = null;
-        await StopUpdatesAsync(); 
+        await StopUpdatesAsync();
 
         OnMessage?.Invoke($"开始获取服务");
 
@@ -497,7 +599,7 @@ public partial class BluetoothLEServices
         {
             OnMessage?.Invoke("获取特征失败.");
         }
-        else  if (deviceNameCharacteristic.CanRead)
+        else if (deviceNameCharacteristic.CanRead)
         {
             //读取设备名特征值
             var ary = await ReadDataAsync(deviceNameCharacteristic);
@@ -507,20 +609,21 @@ public partial class BluetoothLEServices
             {
                 //getUint8：读取1个字节，返回一个无符号的8位整数。
                 //  logII('> Battery Level is ' + value.getUint8(0) + '%');
-                var hr = (sbyte) ary[0];
-                ReadDeviceNameResult = Encoding.ASCII.GetString(ary) + $"  电池 {hr}%" ;
+                var hr = (sbyte)ary[0];
+                ReadDeviceNameResult = Encoding.ASCII.GetString(ary) + $"  电池 {hr}%";
 
             }
             else if (ary == null)
             {
                 OnMessage?.Invoke("数据为空");
             }
-        }else 
+        }
+        else
         {
             OnMessage?.Invoke("不可读, 接收消息通知.");
             #region notify类型特征值接收消息通知
 
-            Notify= deviceNameCharacteristic;
+            Notify = deviceNameCharacteristic;
             deviceNameCharacteristic.ValueUpdated += NotifyCharacteristic_ValueUpdated;
             await deviceNameCharacteristic.StartUpdatesAsync();
 
@@ -540,12 +643,12 @@ public partial class BluetoothLEServices
         bool HRC2 = (flags & 1) == 1;
         if (HRC2) //this means the BPM is un uint16
         {
-             hr = BitConverter.ToInt16(heartRateRecord, offset);
+            hr = BitConverter.ToInt16(heartRateRecord, offset);
             offset += 2;
         }
         else //BPM is uint8
         {
-             hr = heartRateRecord[offset];
+            hr = heartRateRecord[offset];
             offset += 1;
         }
 

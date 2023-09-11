@@ -1,4 +1,5 @@
-﻿using BlazorHybrid.Core.Device;
+﻿using Beacons;
+using BlazorHybrid.Core.Device;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ public partial interface INativeFeatures
     /// 扫描外设,返回设备列表
     /// </summary>
     /// <returns></returns>
-    Task<List<BleDevice>?> StartScanAsync();
+    Task<List<BleDevice>?> StartScanAsync(BleOptions? options=null);
 
     /// <summary>
     /// 连接外设
@@ -75,6 +76,11 @@ public partial interface INativeFeatures
     /// 数据接收
     /// </summary>
     event Action<string>? OnDataReceived;
+
+    /// <summary>
+    /// Beacon数据接收
+    /// </summary>
+    event Action<iBeaconData>? OnBeaconDataReceived;
 
     /// <summary>
     /// 连接状态

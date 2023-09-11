@@ -1,81 +1,144 @@
 ﻿@inherits AppComponentBase
 @namespace BlazorHybrid.Core.Device
 @page "/bluetooth"
+@using Beacons
 
-<h3>蓝牙</h3>
+    <h3>蓝牙</h3>
 
-<Tab IsLazyLoadTabItem>
-    <TabItem Text="工具">
-        <div class="row g-3">
-            <div class="btn-group" role="group">
-                <Button Text="返回" OnClick="BackToHome" />
-                <Button Text="扫描外设" @attributes=IsScanningCss OnClick=ScanDevice />
+    <Tab IsLazyLoadTabItem>
+        <TabItem Text="Beacon">
+
+            <GroupBox Title="连接参数">
+                <BootstrapInput ShowLabel="true" @bind-Value="@BeaconOptions.NameFilter" />
+                <Switch ShowLabel="true" @bind-Value="@BeaconOptions.ShowAdvertisementRecords" />
+                <Switch ShowLabel="true" @bind-Value="@BeaconOptions.ShowBeacon" />
+
+            </GroupBox>
+
+            <div class="m-3">
+                <Switch ShowLabel="true" DisplayText="搜索" Value="@IsScanningBeacon" OnValueChanged="@OnScanBeaconStateChanged" />
+            </div>
+
+            <ListView TItem="iBeaconData" Items="@BeaconList">
+                <BodyTemplate>
+                    <Card>
+                        <BodyTemplate>
+                            <div>@context.Name</div>
+                            <div>地址  @context.MAC地址</div>
+                            <div>信号强度(dBm)  @context.Rssi</div>
+                            <div>更新时间  @context.LastUpdate</div>
+                            <div>UUID  @context.UUID</div>
+                            <div>Major  @context.Major</div>
+                            <div>Minor  @context.Minor</div>
+                            <div>TxPower  @context.TxPower</div>
+                            <div>距离  @context.Distance</div>
+                        </BodyTemplate>
+                    </Card>
+                </BodyTemplate>
+            </ListView>
+
+            <pre class="m-3" style="white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
+
+        </TabItem>
+        <TabItem Text="工具">
+            <div class="row m-3">
+                <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                    <Button Text="返回" OnClick="BackToHome" />
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                    <Button Text="扫描外设" @attributes=IsScanningCss OnClick=ScanDevice />
+                </div>
                 @if (Devices != null)
                 {
-                    <Button Text="连接" OnClick="OnDeviceSelect" />
-                    <Button Text="断开" OnClick="OnDisConnectDevice" />
-                    @if (Characteristics != null)
-                    {
-                        <Button Text="写入" OnClick="ReadDeviceName" />
-                        <Button Text="读取" OnClick="ReadDeviceName" />
-                    }
-                }
-                <Select TValue="string" Color="Color.Primary" Items="DemoList" OnSelectedItemChanged="OnDemoDeviceSelect" />
-            </div>
-        </div>
-        @if (Devices != null)
-        {
-
-            <div class="row g-3">
-                <div class="col-12 col-sm-3">
-                    <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
-                </div>
-                @if (Services != null)
-                {
-                    <div class="col-12 col-sm-3">
-                        <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                        <Button Text="连接" OnClick="OnDeviceSelect" />
+                    </div>
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                        <Button Text="断开" OnClick="OnDisConnectDevice" />
                     </div>
                     @if (Characteristics != null)
                     {
-                        <div class="col-12 col-sm-3">
-                            <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
+                        <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                            <Button Text="写入" OnClick="ReadDeviceName" />
                         </div>
-                        @if (ReadResult != null)
-                        {
-                            <div class="col-12 col-sm-3">
-                                <Display TValue="string" Value="@ReadResult" />
-                            </div>
-                        }
+                        <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                            <Button Text="读取" OnClick="ReadDeviceName" />
+                        </div>
                     }
+                }
+
+                <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                    <Select TValue="string" Color="Color.Primary" Items="DemoList" OnSelectedItemChanged="OnDemoDeviceSelect" />
+                </div>
+
+            </div>
+            <Collapse>
+                <CollapseItems>
+                    <CollapseItem Text="连接参数">
+                        <BootstrapInput ShowLabel="true" @bind-Value="@Options.NameFilter" />
+                        <Switch ShowLabel="true" @bind-Value="@Options.ShowAdvertisementRecords" />
+                        <Switch ShowLabel="true" @bind-Value="@Options.ShowBeacon" />
+                    </CollapseItem>
+                </CollapseItems>
+            </Collapse>
+
+            <div class="row m-3">
+                @if (Devices != null)
+                {
+
+                    <div class="row m-3">
+                        <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                            <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
+                        </div>
+                        @if (Services != null)
+                        {
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                                <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
+                            </div>
+                            @if (Characteristics != null)
+                            {
+                                <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                                    <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
+                                </div>
+                                @if (ReadResult != null)
+                                {
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-auto">
+                                        <Display TValue="string" Value="@ReadResult" />
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+
                 }
             </div>
 
-        }
+            @if (BleInfo.Name != null)
+            {
 
-        @if (BleInfo.Name != null)
-        {
+                <div class="m-3">
+                    历史连接 <br />
+                    @BleInfo.Name <br />
+                    @BleInfo.DeviceID <br />
+                    @BleInfo.Serviceid <br />
+                    @BleInfo.Characteristic <br />
+                    @ReadResult <br />
+                </div>
 
-            <div class="g-3">
-                历史连接 <br />
-                @BleInfo.Name <br />
-                @BleInfo.DeviceID <br />
-                @BleInfo.Serviceid <br />
-                @BleInfo.Characteristic <br />
-                @ReadResult <br />
+            }
+            <div class="m-3">
+                <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
             </div>
 
-        }
-        <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
+            <pre class="m-3" style="white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
 
-<pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
+        </TabItem>
+        <TabItem Text="心率带">
+        </TabItem>
+        <TabItem Text="电量">
+            <BtBatteryLevelPage />
+        </TabItem>
+        <TabItem Text="打印">
 
-    </TabItem>
-    <TabItem Text="心率带">
-    </TabItem>
-    <TabItem Text="电量">
-        <BtBatteryLevelPage />
-    </TabItem>
-    <TabItem Text="打印">
-
-    </TabItem>
-</Tab>
+        </TabItem>
+    </Tab>

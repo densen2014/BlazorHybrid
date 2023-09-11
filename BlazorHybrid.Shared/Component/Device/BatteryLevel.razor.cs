@@ -84,7 +84,7 @@ public partial class BatteryLevel : IAsyncDisposable
         Tools.OnDataReceived += UpdateStatus;
         Tools.UpdateStatus += UpdateStatus;
         Tools.UpdateError += UpdateError;
-        Tools.SetTagDeviceName(new BleTagDevice() { ScanTimeout = 30 });
+        Tools.SetTagDeviceName(new BleTagDevice() {  });
         IsInit = true;
     }
 

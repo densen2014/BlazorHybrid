@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Beacons;
 using BlazorHybrid.Core.Device;
 
 namespace BlazorHybrid.Core;
@@ -17,6 +18,7 @@ public class NullFeatureService : INativeFeatures
     public event Action<string>? UpdateStatus;
     public event Action<BluetoothDevice>? UpdateDeviceInfo;
     public event Action<string>? UpdateError;
+    public event Action<iBeaconData>? OnBeaconDataReceived;
 
     public bool IsMaui() => false;
     public Task<string> CheckPermissionsCamera() => Task.FromResult("未实现");
@@ -98,7 +100,7 @@ public class NullFeatureService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public Task<List<BleDevice>?> StartScanAsync()
+    public Task<List<BleDevice>?> StartScanAsync(BleOptions? options = null)
     {
         throw new NotImplementedException();
     }

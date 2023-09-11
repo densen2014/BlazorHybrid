@@ -127,7 +127,7 @@ public class WinFormsService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public Task<List<BleDevice>?> StartScanAsync()
+    public Task<List<BleDevice>?> StartScanAsync(BleOptions? options = null)
     {
         throw new NotImplementedException();
     }
