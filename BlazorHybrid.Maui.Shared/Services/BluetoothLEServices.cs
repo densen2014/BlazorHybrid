@@ -1,13 +1,13 @@
 ﻿using AME;
 using Beacons;
 using BlazorHybrid.Core.Device;
-using DocumentFormat.OpenXml.EMMA;
-using NPOI.SS.Formula.Functions;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
+using Plugin.BLE.Abstractions.Extensions;
 using System.Data;
+using System.Diagnostics;
 using System.Text;
 
 
@@ -18,6 +18,7 @@ namespace BlazorHybrid.Maui.Shared;
 /// </summary>
 public partial class BluetoothLEServices
 {
+    #region 变量
     public List<BleDevice> Devices { get; set; } = new List<BleDevice>();
 
     /// <summary>
@@ -89,6 +90,8 @@ public partial class BluetoothLEServices
         }
     }
 
+    #endregion
+
     #region BLE状态管理
 
     public Task<bool> BluetoothIsBusy()
@@ -131,7 +134,7 @@ public partial class BluetoothLEServices
     {
         Options = options ?? new BleOptions();
         Devices = new List<BleDevice>();
-        BeaconList = new List<iBeaconData>();
+        if (!Options.ShowBeacon) BeaconList = new List<iBeaconData>();
 
         //检查获取蓝牙权限
         bool isPermissionPass = await CheckAndRequestBluetoothPermission();
@@ -152,7 +155,7 @@ public partial class BluetoothLEServices
             CurrentAdapter.ScanTimeout = (Options.ScanTimeout) * 1000;
 
             //默认LowPower
-            CurrentAdapter.ScanMode = ScanMode.Balanced;
+            CurrentAdapter.ScanMode = ScanMode.LowPower;
 
             OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle.IsAvailable}, 已开启={CurrentBle.IsOn}, 状态={CurrentBle.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
 
@@ -227,31 +230,25 @@ public partial class BluetoothLEServices
 
             Devices.Add(new BleDevice() { Id = e.Device.Id, Name = e.Device.Name });
 
-            if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) || (!string.IsNullOrWhiteSpace(TagDevice.Name) && string.Compare(e.Device.Name, TagDevice.Name, true) == 0))
-            {
-                TagDeviceInfo = $"{e.Device}, 名称={e.Device.Name}, Id={e.Device.Id}, Rssi={e.Device.Rssi}, 状态={e.Device.State}, 广播记录总数={e.Device.AdvertisementRecords.Count}";
+            if (TagDevice.AutoStop)
+            { 
+                if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) || (!string.IsNullOrWhiteSpace(TagDevice.Name) && string.Compare(e.Device.Name, TagDevice.Name, true) == 0))
+                {
+                    TagDeviceInfo = $"{e.Device}, 名称={e.Device.Name}, Id={e.Device.Id}, Rssi={e.Device.Rssi}";
 
-                OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
+                    OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
 
-                Device = e.Device;
+                    Device = e.Device;
 
-                //如果找到目标外设，退出扫描
-                if (!_scanForAedCts!.IsCancellationRequested)
-                    _scanForAedCts.Cancel(false);
+                    //如果找到目标外设，退出扫描
+                    if (!_scanForAedCts!.IsCancellationRequested)
+                        _scanForAedCts.Cancel(false);
+                }
             }
-
         }
 
     }
 
-    /// <summary>
-    /// 返回设备信标广播信息 BLE beacon
-    /// </summary>
-    private void BLE_beacon_AdvertisementRecords(IDevice device)
-    {
-        if (device.AdvertisementRecords.Count==0) { return; }
-        device.AdvertisementRecords.ToList().ForEach((e) => OnMessage?.Invoke($"{device.Name}信标广播: {e}{Environment.NewLine}"));
-    }
     private void Adapter_ScanTimeoutElapsed(object? sender, EventArgs e)
     {
         OnMessage?.Invoke("蓝牙扫描超时结束");
@@ -271,58 +268,56 @@ public partial class BluetoothLEServices
         if (device.AdvertisementRecords.Count == 0) { return; }
 
         //iBeacon 广播数据包
-        var iBeacon = false;
-        iBeaconData iBeaconData;
+        iBeaconData iBeaconData = new iBeaconData() { ID = device.Id, Rssi = device.Rssi, Name = device.Name };
 
         var index = BeaconList.FindIndex(a => a.ID == device.Id);
         if (index != -1)
         {
             iBeaconData= BeaconList[index];
-        }
-        else
-        {
-            iBeaconData = new iBeaconData() { ID = device.Id, Rssi = device.Rssi, Name=device.Name };
-            BeaconList.Add(iBeaconData);
-        }
+        } 
 
         iBeaconData.Rssi = device.Rssi;
 
         foreach (var e in device.AdvertisementRecords)
         {
             if (Options.ShowAdvertisementRecords) OnMessage?.Invoke($" ** {device.Name}广播: {e}");
+#if DEBUG
+            if (device.AdvertisementRecords.Count >2) Console.WriteLine(e.ToString());
+#endif
 
             if (Options.ShowBeacon)
             {
                 if (e.Type == AdvertisementRecordType.Flags && e.Data.ByteArrayToHexString() == "06")
                 {
-                    iBeacon = true;
-                }
-
-                if (e.Type == AdvertisementRecordType.TxPowerLevel)
+                    iBeaconData.IsiBeacon = true;
+                }else if (e.Type == AdvertisementRecordType.TxPowerLevel)
                 {
                     //信号强度,蓝牙天线发射功率, -20、-16、-12、-8、-4、0、4                    
                     if ((short)(sbyte)e.Data[0] != 0)
                         iBeaconData.Rssi = (short)(sbyte)e.Data[0];
-                }
-
-                if (e.Type == AdvertisementRecordType.ServiceData)
+                }else if (e.Type == AdvertisementRecordType.ServiceData)
                 {
                     iBeaconData = e.Data.btParseAdvertisement(iBeaconData);
-                }
-
-                if (e.Type == AdvertisementRecordType.CompleteLocalName)
+                }else if (e.Type == AdvertisementRecordType.CompleteLocalName)
                 {
                     iBeaconData.CompleteLocalName = BitConverter.ToString(e.Data);
-                }
-
-                if (iBeacon && e.Type == AdvertisementRecordType.ManufacturerSpecificData)
+                }else if (e.Type == AdvertisementRecordType.ManufacturerSpecificData)
                 {
                     iBeaconData = e.Data.iBeaconParseAdvertisement(iBeaconData);
                 }
             }
         }
 
-        if (iBeacon && Options.BeaconUUID == null || (Options.BeaconUUID != null && iBeaconData.UUID == Options.BeaconUUID))
+        if (index != -1)
+        {
+             BeaconList[index]= iBeaconData;
+        }
+        else
+        {
+            BeaconList.Add(iBeaconData);
+        }
+
+        if ( Options.BeaconUUID == null || (Options.BeaconUUID != null && iBeaconData.UUID == Options.BeaconUUID))
         {
             OnMessage?.Invoke($" *** {device.Name}iBeacon: {iBeaconData.Tostring}");
 

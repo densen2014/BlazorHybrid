@@ -41,11 +41,13 @@ public partial class Bluetooth : IAsyncDisposable
     bool IsAuto { get; set; }
     bool IsInit { get; set; }
 
-    BleOptions BeaconOptions { get; set; } = new() {
+    BleOptions BeaconOptions { get; set; } = new()
+    {
         NameFilter = "K0",
-        BeaconUUID = Guid.Parse("9306a5fd-e2a4-b14f-afcf-c6eb07647825"),
-        ShowAdvertisementRecords = true ,
-        ShowBeacon = true
+        //BeaconUUID = Guid.Parse("9306a5fd-e2a4-b14f-afcf-c6eb07647825"),
+        ShowAdvertisementRecords = true,
+        ShowBeacon = true,
+        ScanTimeout = 10,
     };
 
     BleOptions Options { get; set; } = new() { };
@@ -105,6 +107,7 @@ public partial class Bluetooth : IAsyncDisposable
                 var auto = await Storage.GetValue("bleAutoConnect", string.Empty);
                 if (auto == "True")
                 {
+                    BleInfo.AutoStop = true;
                     IsAuto = true;
                     await AutoRead();
 
@@ -338,11 +341,8 @@ public partial class Bluetooth : IAsyncDisposable
 
         while (IsScanningBeacon)
         {
-            await Task.Delay(3000);
-            if (IsScanningBeacon)
-            {
-                await ScanBeacon();
-            }
+            await ScanBeacon();
+            await Task.Delay(1000);
         }
     }
 
@@ -366,7 +366,7 @@ public partial class Bluetooth : IAsyncDisposable
     {
         if (BeaconList.Any(a => a.ID == data.ID))
         {
-            var index=BeaconList.FindIndex(a => a.ID == data.ID) ;
+            var index = BeaconList.FindIndex(a => a.ID == data.ID);
             if (index != -1)
             {
                 BeaconList[index] = data;

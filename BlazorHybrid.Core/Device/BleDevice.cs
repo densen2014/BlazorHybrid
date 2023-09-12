@@ -13,7 +13,7 @@ public class BleTagDevice
     public Guid DeviceID { get; set; }
     public Guid Serviceid { get; set; }
     public Guid Characteristic { get; set; }
-
+    public bool AutoStop { get; set; }
 }
 
 public class BleOptions

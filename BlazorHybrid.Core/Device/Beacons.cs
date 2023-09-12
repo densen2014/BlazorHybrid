@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Beacons
@@ -13,17 +12,17 @@ namespace Beacons
         /// <summary>
         /// CompanyId[0~1]：0x004C（Raw中小端排列:4C00）
         /// </summary>
-        public byte[]? CompanyID { get; set; }
+        public int CompanyID { get; set; }
 
         /// <summary>
         /// DeviceType[2]：0x02(表示Beacon)
         /// </summary>
-        public byte[]? DeviceType { get; set; }
+        public int DeviceType { get; set; }
 
         /// <summary>
         /// [DataLen[3]: 0x15(表示数据长度，uuid+major+minor+measured power 字节数)
         /// </summary>
-        public byte[]? DataLen { get; set; }
+        public int DataLen { get; set; }
 
         /// <summary>
         /// UUID[4~19] : iBeacon UUID
@@ -56,13 +55,15 @@ namespace Beacons
 
         public string? Tostring { get; set; }
 
-        public DateTime? LastUpdate { get; set; }
-    }
+        public DateTime? Timestamp { get; set; }
+
+        public bool IsiBeacon{ get; set; }
+}
 
     public sealed class iBeaconData: iBeaconDataBase
     {
 
-        public string CompleteLocalName { get; set; }
+        public string? CompleteLocalName { get; set; }
 
         /// <summary>
         /// [0]：电池电量百分比(0~100)
@@ -72,7 +73,7 @@ namespace Beacons
         /// <summary>
         /// [1]:  标识(0x73)
         /// </summary>
-        public string 标识 { get; set; }
+        public string? 标识 { get; set; }
 
         /// <summary>
         /// [2]：广播间隔(ms)/100 的值(例如：2表示当前广播间隔是  200ms)
@@ -82,7 +83,7 @@ namespace Beacons
         /// <summary>
         /// [3~8]: 6字节用户数据自定义段（默认为MAC地址）
         /// </summary>
-        public string MAC地址 { get; set; }
+        public string? MAC地址 { get; set; }
 
         //[9]: 位有效，传感器配置。
         //     Bit[5~7] 未使用
@@ -106,18 +107,8 @@ namespace Beacons
         /// <summary>
         /// [12]: 最后一次检测到的湿度%
         /// </summary>
-        public int 湿度 { get; set; }
-  
-        public iBeaconData()
-        {
-            CompanyID = null;
-            UUID = Guid.Empty;
-            Major = 0;
-            Minor = 0;
-            TxPower = 0;
-            Distance = 0;
-            Rssi = 0; 
-        }
+        public int 湿度 { get; set; } 
+         
     }
     public static class iBeaconExtensions
     {
@@ -165,13 +156,16 @@ namespace Beacons
         /// <returns></returns>
         public static iBeaconData iBeaconParseAdvertisement(this byte[] bytes, iBeaconData beacon)
         {
-            beacon.CompanyID = bytes.Take(2).ToArray(); //76 apple
+            beacon.CompanyID = BitConverter.ToUInt16(bytes.Take(2).ToArray(), 0); //76 apple
 
             bytes =bytes.Skip(2).ToArray();
 
             //0x02 表示Beacon, 0x15 数据长度
             if (bytes[0] == 0x02 && bytes[1] == 0x15 && bytes.Length == 23)
             {
+                beacon.DeviceType = (sbyte)bytes[0];
+                beacon.DataLen = (sbyte)bytes[1];
+
                 //iBeacon Data
                 beacon.UUID = new Guid(bytes.Skip(2).Take(16).ToArray());
                 beacon.Major = BitConverter.ToUInt16(bytes.Skip(18).Take(2).Reverse().ToArray(), 0);
@@ -181,9 +175,9 @@ namespace Beacons
                 //Estimated value
                 //Read this article http://developer.radiusnetworks.com/2014/12/04/fundamentals-of-beacon-ranging.html 
                 beacon.Distance = CalculateDistance(beacon.TxPower, beacon.Rssi);
-                beacon.Tostring = "UUID: " + beacon.UUID.ToString() + " Major: " + beacon.Major + " Minor:" + beacon.Minor + " Power: " + beacon.TxPower + " Rssi: " + beacon.Rssi + " Distance:" + beacon.Distance+ " MAC: " + beacon.MAC地址;
-                Debug.WriteLine(beacon.Tostring);
-                beacon.LastUpdate = DateTime.Now;
+                beacon.Tostring = "UUID: " + beacon.UUID.ToString() + " Major: " + beacon.Major + " Minor:" + beacon.Minor + " Power: " + beacon.TxPower + " Rssi: " + beacon.Rssi + " Distance:" + beacon.Distance+ " MAC: " + beacon.MAC地址 + " ID: " + beacon.ID;
+                //Debug.WriteLine(beacon.Tostring);
+                beacon.Timestamp = DateTime.Now;
             }
 
             return beacon;
@@ -202,7 +196,7 @@ namespace Beacons
             {
                 //iBeacon Data
                 beacon.电池电量百分比 = (sbyte)bytes[0];
-                beacon.标识 = Convert.ToChar(bytes[1]).ToString ();
+                beacon.标识 = Convert.ToChar(bytes[1]).ToString();
                 beacon.广播间隔 = (sbyte)bytes[2];
                 var MAC地址 = bytes.Skip(3).Take(6).ToArray().ToHexString();
                 if (!string.IsNullOrWhiteSpace (MAC地址))  beacon.MAC地址 = MAC地址;
@@ -210,8 +204,8 @@ namespace Beacons
                 beacon.加速度 = (sbyte)bytes[10];
                 beacon.温度 = (sbyte)bytes[11];
                 beacon.湿度 = (sbyte)bytes[12]; 
-                Debug.WriteLine("MAC地址: " + beacon.MAC地址 + " 标识: " + beacon.标识);
-                beacon.LastUpdate = DateTime.Now;
+                //Debug.WriteLine("MAC地址: " + beacon.MAC地址 + " ID: " + beacon.ID);
+                beacon.Timestamp = DateTime.Now;
             }
 
             return beacon;
