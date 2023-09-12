@@ -64,7 +64,7 @@
 
     <ItemGroup>
         <PackageReference Include="DH.Plugin.NFC" Version="1.3.2023.3081" />
-        <PackageReference Include="Plugin.BLE" Version="3.0.0-beta.5" />
+        <PackageReference Include="Plugin.BLE" Version="3.0.0-beta.4" />
     </ItemGroup>
     
 	<!--<ItemGroup>
