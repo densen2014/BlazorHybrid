@@ -52,46 +52,88 @@
                 <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.AutoConnect" />
             </div>
             <div class="col-3">
+                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.AutoGetSignals" />
+            </div>
+            <div class="col-3">
                 <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.OutputInHex" />
             </div>
             <div class="col-3">
                 <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.InputWithHex" />
             </div>
-            <div class="col-3">
-                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.Break" />
-            </div>
-        </div>
-        <div class="row m-3">
-            <div class="col-3">
-                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.DTR" />
-            </div>
-            <div class="col-3">
-                <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@options.RTS" />
-            </div>
         </div>
     </div>
-    <div class="row m-3">
+    <div>
         @if (Flag)
         {
             <div class="col-6">
-                <WebSerial @ref="WebSerial" OnConnect="@OnConnect" OnReceive="@OnReceive" OnLog="@OnLog" OnError="@OnError" Options="@options" Debug ShowUI="false" />
+                <WebSerial @ref="WebSerial"
+                           OnConnect="@OnConnect"
+                           OnReceive="@OnReceive"
+                           OnSignals="@OnSignals"
+                           OnLog="@OnLog"
+                           OnError="@OnError"
+                           Options="@options" Debug
+                           ShowUI="false" />
             </div>
 
             <div @ref="WebSerial.Element">
-                <div class="col-12">
-                    <BootstrapInputGroup>
-                        <Button data-action="butConnect">@options.ConnectBtnTitle</Button>
-                        <input class="form-control" type="text" data-action="fname" style="visibility:hidden;width:300px;" />
-                        <Button data-action='butwrite' style="visibility:hidden;">@options.WriteBtnTitle</Button>
-                        @if (!IsConnected)
-                        {
-                            <Button Text="关闭" OnClick="OnApply" Icon="fa-fw fa-solid fa-close" />
-                        }
-                    </BootstrapInputGroup>
+                <div class="row m-3">
+                    <div class="col-12">
+                        <BootstrapInputGroup>
+                            <Button data-action="butConnect" Text="@options.ConnectBtnTitle" />
+                            @if (!IsConnected)
+                            {
+                                <Button Text="关闭" OnClick="OnApply" Icon="fa-fw fa-solid fa-close" />
+                            }
+                            else
+                            {
+                                <Button Text="@options.GetSignalsBtnTitle" OnClick="WebSerial.GetSignals" />
+                            }
+                        </BootstrapInputGroup>
+                    </div>
                 </div>
-
+                <div class="row m-3">
+                    <div class="col-6">
+                        <textarea class="form-control" type="text" data-action="fname" style="visibility:hidden;" />
+                    </div>
+                    <div class="col-6">
+                        <Button data-action='butwrite' style="visibility:hidden;" Text="@options.WriteBtnTitle" />
+                    </div>
+                </div>
+                @if (WebSerial != null && IsConnected)
+                {
+                    <div class="row m-3">
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-auto">
+                            <Switch @bind-Value="WebSerial.DTR" ShowLabel="true" OnValueChanged="WebSerial.SetSignalDTR" />
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-auto">
+                            <Switch @bind-Value="WebSerial.RTS" ShowLabel="true" OnValueChanged="WebSerial.SetSignalRTS" />
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-auto">
+                            <Switch @bind-Value="WebSerial.Break" ShowLabel="true" OnValueChanged="WebSerial.SetSignalBreak" />
+                        </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-auto">
+                            RING
+                            <Light Color="@(Signals.RING?Color.Success:Color.None)"></Light>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-auto">
+                            DSR
+                            <Light Color="@(Signals.DSR?Color.Success:Color.None)"></Light>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-auto">
+                            CTS
+                            <Light Color="@(Signals.CTS?Color.Success:Color.None)"></Light>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-auto">
+                            DCD
+                            <Light Color="@(Signals.DCD?Color.Success:Color.None)"></Light>
+                        </div>
+                    </div>
+                }
             </div>
-            <pre data-action="log" style="overflow-y:scroll;max-height:500px;"></pre>
+            <pre data-action="log"></pre>
 
         }
         else
@@ -104,7 +146,7 @@
     <p>注意:本例子改变设置要点关闭再重新应用</p>
 </GroupBox>
 
-<pre>@message</pre>
+<pre style="overflow-y:scroll;max-height:500px;">@message</pre>
 <pre style="color:green">@statusmessage</pre>
 <pre style="color:red">@errmessage</pre>
- 
+<hr />

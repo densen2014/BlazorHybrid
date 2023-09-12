@@ -12,21 +12,47 @@
     <h4>语音识别</h4>
     <div class="col-12">
         <BootstrapInputGroup>
-            <Button Text="普通话" OnClick="SpeechRecognition"  />
-            <Button Text="粤语" OnClick="SpeechRecognitionHK"  />
-            <Button Text="英文" OnClick="SpeechRecognitionEN"  />
-            <Button Text="西文" OnClick="SpeechRecognitionES"  />
+            <Button Text="普通话" OnClick="SpeechRecognition" IsAsync />
+            <Button Text="粤语" OnClick="SpeechRecognitionHK" IsAsync />
+            <Button Text="英文" OnClick="SpeechRecognitionEN" IsAsync />
+            <Button Text="西文" OnClick="SpeechRecognitionES" IsAsync />
             <Button Text="停止" OnClick="SpeechRecognitionStop" Icon="fa-fw fa-solid fa-stop" IsAsync />
         </BootstrapInputGroup>
     </div>
-
-    <p>语音变色器</p>
-
-    <p class="hints"></p>
     <div>
-        <p class="output"><em>...诊断信息</em></p>
+        <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@Options.Continuous" />
+    </div>
+    <div>
+        <Checkbox TValue="bool" ShowLabel="true" @bind-Value="@Options.InterimResults" />
+    </div>
+    <div style="width: 160px;">
+        <BootstrapInputNumber ShowLabel="true" ShowButton="true" @bind-Value="@Options.MaxAlternatives" Max="10" Min="1" />
+    </div>
+    <div class="col-12">
+        <Textarea Value="@Result" />
     </div>
 
+</div>
+@if (WebSpeech != null && WebSpeech.IsBusy)
+{
+    <Spinner />
+}
+
+<h4>语音颜色选择游戏</h4>
+
+<div class="col-12">
+    <BootstrapInputGroup>
+        <Button Text="普通话" OnClick="SpeechRecognitionDemo" IsAsync />
+        <Button Text="粤语" OnClick="SpeechRecognitionHKDemo" IsAsync />
+        <Button Text="英文" OnClick="SpeechRecognitionENDemo" IsAsync />
+        <Button Text="西文" OnClick="SpeechRecognitionESDemo" IsAsync />
+        <Button Text="停止" OnClick="SpeechRecognitionStop" Icon="fa-fw fa-solid fa-stop" IsAsync />
+    </BootstrapInputGroup>
+</div>
+
+<p class="hints"></p>
+<div>
+    <p class="output"><em>...</em></p>
 </div>
 
 <div class="row g-3 mb-3">
@@ -41,7 +67,7 @@
         </BootstrapInputGroup>
     </div>
     <div class="col-12">
-        <WebSpeech @ref="WebSpeech" OnResult="@OnError" OnStatus="@OnError" OnError="@OnError" />
+        <WebSpeech @ref="WebSpeech" OnResult="@OnResult" OnIsBusy="@OnIsBusy" OnStatus="@OnStatus" OnError="@OnError" />
     </div>
     <p>
         @Message
@@ -53,7 +79,7 @@
     <div class="col-12">
         @if (WebVoiceList != null && WebVoiceList.Any())
         {
-            <select id="voiceSelect" class="form-select" @onchange="((e)=>OnChange(e))" style="width:70vw; max-width: 400px;">
+            <select id="voiceSelect" class="form-select" @onchange="((e) => OnChange(e))" style="width:70vw; max-width: 400px;">
                 @foreach (var voice in WebVoiceList)
                 {
                     <option value="@voice.VoiceURI">@($"{(voice.LocalService ? "" : "*")}{voice.Name} ({voice.Lang})")</option>
@@ -64,18 +90,18 @@
     </div>
     <div class="col-10">
         速率
-        <input type="range" min="0.1" max="10" step="0.1" style="width:70vw; max-width: 400px;" @bind-value="Rate" />
+        <input type="range" min="0.1" max="10" step="0.1" style="width:70vw; max-width: 400px;" @bind-value="Options2.Rate" />
     </div>
     <div class="col-10">
         音高
-        <input type="range" min="0" max="2" step="0.1" style="width: 70vw; max-width: 400px; " @bind-value="Picth">
+        <input type="range" min="0" max="2" step="0.1" style="width: 70vw; max-width: 400px; " @bind-value="Options2.Picth">
     </div>
     <div class="col-10">
         音量
-        <input type="range" min="0" max="1" step="0.01" style="width: 70vw; max-width: 400px; " @bind-value="Volume" />
+        <input type="range" min="0" max="1" step="0.01" style="width: 70vw; max-width: 400px; " @bind-value="Options2.Volume" />
     </div>
     <div class="col-12">
-        <Textarea @bind-Value="Item" />
+        <Textarea @bind-Value="SpeakText" />
     </div>
     <div class="col-12">
         <BootstrapInputGroup>
@@ -87,32 +113,41 @@
 </div>
 
 
-
 @code{
 
     [NotNull]
     WebSpeech? WebSpeech { get; set; }
 
+    [DisplayName("识别结果")]
+    string? Result { get; set; } = "";
+
     new string? Message { get; set; } = "";
 
     [DisplayName("内容")]
-    private string Item { get; set; } = "我们一直与Blazor同行";
-    private string? SelectLang { get; set; }
-    double Volume { get; set; } = 1;
-    double Rate { get; set; } = 1;
-    double Picth { get; set; } = 1;
+    private string SpeakText { get; set; } = "我们一直与Blazor同行";
 
-    async Task SpeechRecognition() => Message = await WebSpeech.SpeechRecognition();
-    async Task SpeechRecognitionHK() => Message = await WebSpeech.SpeechRecognition("zh-HK");
-    async Task SpeechRecognitionEN() => Message = await WebSpeech.SpeechRecognition("en-US");
-    async Task SpeechRecognitionES() => Message = await WebSpeech.SpeechRecognition("es-ES");
+    private string? SelectLang { get; set; }
+
+    SpeechRecognitionOption Options { get; set; } = new SpeechRecognitionOption();
+    SpeechSynthesisOption Options2 { get; set; } = new SpeechSynthesisOption();
+
+    async Task SpeechRecognition() => Message = await WebSpeech.SpeechRecognition(option: Options);
+    async Task SpeechRecognitionHK() => Message = await WebSpeech.SpeechRecognition("zh-HK", Options);
+    async Task SpeechRecognitionEN() => Message = await WebSpeech.SpeechRecognition("en-US", Options);
+    async Task SpeechRecognitionES() => Message = await WebSpeech.SpeechRecognition("es-ES", Options);
     async Task SpeechRecognitionStop() => await WebSpeech.SpeechRecognitionStop();
+
+    async Task SpeechRecognitionDemo() => Message = await WebSpeech.SpeechRecognitionDemo();
+    async Task SpeechRecognitionHKDemo() => Message = await WebSpeech.SpeechRecognitionDemo("zh-HK");
+    async Task SpeechRecognitionENDemo() => Message = await WebSpeech.SpeechRecognitionDemo("en-US");
+    async Task SpeechRecognitionESDemo() => Message = await WebSpeech.SpeechRecognitionDemo("es-ES");
+    async Task SpeechRecognitionStopDemo() => await WebSpeech.SpeechRecognitionStop();
 
     async Task SpeechSynthesis() => await WebSpeech.SpeechSynthesis("你好 blazor,现在是" + NowString());
     async Task SpeechSynthesisHK() => await WebSpeech.SpeechSynthesis("早晨 blazor,依家系 " + NowString(), "zh-HK");
     async Task SpeechSynthesisEN() => await WebSpeech.SpeechSynthesis("Hello blazor,now is " + NowString(), "en-US");
     async Task SpeechSynthesisES() => await WebSpeech.SpeechSynthesis("Hola blazor,ahora es " + NowString(), "es-ES");
-    async Task SpeechSynthesisDIY() => await WebSpeech.SpeechSynthesis(Item, "", Rate, Picth, Volume, SelectLang ?? WebVoiceList?.FirstOrDefault()?.VoiceURI);
+    async Task SpeechSynthesisDIY() => await WebSpeech.SpeechSynthesis(SpeakText, Options2, "", SelectLang ?? WebVoiceList?.FirstOrDefault()?.VoiceURI);
     async Task SpeechStop() => await WebSpeech.SpeechStop();
 
     string NowString() => DateTime.Now.ToShortTimeString();
@@ -120,13 +155,32 @@
     List<WebVoice>? WebVoiceList { get; set; }
     async Task GetVoiceList()
     {
-        WebVoiceList = await WebSpeech.GetVoiceList(true);
+        WebVoiceList = await WebSpeech.GetVoiceList();
         if (WebVoiceList != null && WebVoiceList.Any()) StateHasChanged();
+    }
+
+    private Task OnIsBusy(bool flag)
+    {
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
     private void OnChange(ChangeEventArgs val)
     {
         if (val?.Value != null) SelectLang = val.Value.ToString();
+    }
+
+    private Task OnResult(string message)
+    {
+        Result = message;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private async Task OnStatus(string message)
+    {
+        Message = message;
+        await ShowBottomMessage(message);
     }
 
     private async Task OnError(string message)
@@ -140,6 +194,7 @@
 
         if (firstRender)
         {
+            await Task.Delay(500);
             await Task.Delay(1500);
             while (WebVoiceList == null || !WebVoiceList.Any())
             {

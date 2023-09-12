@@ -1,6 +1,8 @@
 ﻿using AME;
 using Beacons;
 using BlazorHybrid.Core.Device;
+using DocumentFormat.OpenXml.EMMA;
+using NPOI.SS.Formula.Functions;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
@@ -242,6 +244,14 @@ public partial class BluetoothLEServices
 
     }
 
+    /// <summary>
+    /// 返回设备信标广播信息 BLE beacon
+    /// </summary>
+    private void BLE_beacon_AdvertisementRecords(IDevice device)
+    {
+        if (device.AdvertisementRecords.Count==0) { return; }
+        device.AdvertisementRecords.ToList().ForEach((e) => OnMessage?.Invoke($"{device.Name}信标广播: {e}{Environment.NewLine}"));
+    }
     private void Adapter_ScanTimeoutElapsed(object? sender, EventArgs e)
     {
         OnMessage?.Invoke("蓝牙扫描超时结束");
