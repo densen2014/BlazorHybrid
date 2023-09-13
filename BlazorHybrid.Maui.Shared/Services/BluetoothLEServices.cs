@@ -1,6 +1,7 @@
 ﻿using AME;
 using Beacons;
 using BlazorHybrid.Core.Device;
+using Microsoft.Maui.Controls.PlatformConfiguration;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
@@ -8,6 +9,7 @@ using Plugin.BLE.Abstractions.EventArgs;
 using Plugin.BLE.Abstractions.Extensions;
 using System.Data;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 
 
@@ -222,7 +224,7 @@ public partial class BluetoothLEServices
             $"可连接={e.Device.IsConnectable}, " +
             $"广播记录总数={e.Device.AdvertisementRecords.Count}";
 
-        if (Options.NameFilter == null || (Options.NameFilter != null && e.Device.Name.Contains(Options.NameFilter)))
+        if (Options.NameFilter == null || (Options.NameFilter != null && e.Device.Name != null && e.Device.Name.Contains(Options.NameFilter)))
         {
             OnMessage?.Invoke(result);
 
