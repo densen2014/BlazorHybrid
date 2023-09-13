@@ -228,12 +228,12 @@ public partial class BluetoothLEServices
         {
             OnMessage?.Invoke(result);
 
-            if (Options.ShowAdvertisementRecords||Options.ShowBeacon) BLE_beacon_AdvertisementRecords(e.Device);
+            if (Options.ShowAdvertisementRecords || Options.ShowBeacon) BLE_beacon_AdvertisementRecords(e.Device);
 
             Devices.Add(new BleDevice() { Id = e.Device.Id, Name = e.Device.Name });
 
             if (TagDevice.AutoStop)
-            { 
+            {
                 if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) || (!string.IsNullOrWhiteSpace(TagDevice.Name) && string.Compare(e.Device.Name, TagDevice.Name, true) == 0))
                 {
                     TagDeviceInfo = $"{e.Device}, 名称={e.Device.Name}, Id={e.Device.Id}, Rssi={e.Device.Rssi}";
@@ -275,8 +275,8 @@ public partial class BluetoothLEServices
         var index = BeaconList.FindIndex(a => a.ID == device.Id);
         if (index != -1)
         {
-            iBeaconData= BeaconList[index];
-        } 
+            iBeaconData = BeaconList[index];
+        }
 
         iBeaconData.Rssi = device.Rssi;
 
@@ -284,7 +284,7 @@ public partial class BluetoothLEServices
         {
             if (Options.ShowAdvertisementRecords) OnMessage?.Invoke($" ** {device.Name}广播: {e}");
 #if DEBUG
-            if (device.AdvertisementRecords.Count >2) Console.WriteLine(e.ToString());
+            if (device.AdvertisementRecords.Count > 2) Console.WriteLine(e.ToString());
 #endif
 
             if (Options.ShowBeacon)
@@ -292,18 +292,22 @@ public partial class BluetoothLEServices
                 if (e.Type == AdvertisementRecordType.Flags && e.Data.ByteArrayToHexString() == "06")
                 {
                     iBeaconData.IsiBeacon = true;
-                }else if (e.Type == AdvertisementRecordType.TxPowerLevel)
+                }
+                else if (e.Type == AdvertisementRecordType.TxPowerLevel)
                 {
                     //信号强度,蓝牙天线发射功率, -20、-16、-12、-8、-4、0、4                    
                     if ((short)(sbyte)e.Data[0] != 0)
                         iBeaconData.Rssi = (short)(sbyte)e.Data[0];
-                }else if (e.Type == AdvertisementRecordType.ServiceData)
+                }
+                else if (e.Type == AdvertisementRecordType.ServiceData)
                 {
                     iBeaconData = e.Data.btParseAdvertisement(iBeaconData);
-                }else if (e.Type == AdvertisementRecordType.CompleteLocalName)
+                }
+                else if (e.Type == AdvertisementRecordType.CompleteLocalName)
                 {
                     iBeaconData.CompleteLocalName = BitConverter.ToString(e.Data);
-                }else if (e.Type == AdvertisementRecordType.ManufacturerSpecificData)
+                }
+                else if (e.Type == AdvertisementRecordType.ManufacturerSpecificData)
                 {
                     iBeaconData = e.Data.iBeaconParseAdvertisement(iBeaconData);
                 }
@@ -312,14 +316,14 @@ public partial class BluetoothLEServices
 
         if (index != -1)
         {
-             BeaconList[index]= iBeaconData;
+            BeaconList[index] = iBeaconData;
         }
         else
         {
             BeaconList.Add(iBeaconData);
         }
 
-        if ( Options.BeaconUUID == null || (Options.BeaconUUID != null && iBeaconData.UUID == Options.BeaconUUID))
+        if (iBeaconData.IsiBeacon && (Options.BeaconUUID == null || (Options.BeaconUUID != null && iBeaconData.UUID == Options.BeaconUUID)))
         {
             OnMessage?.Invoke($" *** {device.Name}iBeacon: {iBeaconData.Tostring}");
 
