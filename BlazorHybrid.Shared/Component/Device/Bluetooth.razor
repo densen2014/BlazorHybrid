@@ -23,6 +23,7 @@
                 <BodyTemplate>
                     <Card>
                         <BodyTemplate>
+                            <div>@(context.IsiBeacon?"iBeacon": context.DeviceType==2? "Beacon":"")</div>
                             <div>@context.Name</div>
                             <div>地址  @context.MAC地址</div>
                             <div>信号强度(dBm)  @context.Rssi</div>

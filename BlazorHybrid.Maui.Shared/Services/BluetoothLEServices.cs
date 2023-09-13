@@ -149,6 +149,10 @@ public partial class BluetoothLEServices
 
         try
         {
+            var allowDuplicatesKey = false;
+#if IOS
+allowDuplicatesKey=true;
+#endif
 
             CurrentAdapter!.DeviceDiscovered += Adapter_DeviceDiscovered;
             CurrentAdapter.ScanTimeoutElapsed += Adapter_ScanTimeoutElapsed;
@@ -166,7 +170,7 @@ public partial class BluetoothLEServices
             if (scanFilterOptions != null)
                 await CurrentAdapter.StartScanningForDevicesAsync(scanFilterOptions: scanFilterOptions, cancellationToken: _scanForAedCts.Token);
             else if (serviceUuids == null)
-                await CurrentAdapter.StartScanningForDevicesAsync(cancellationToken: _scanForAedCts.Token);
+                await CurrentAdapter.StartScanningForDevicesAsync(cancellationToken: _scanForAedCts.Token, allowDuplicatesKey: allowDuplicatesKey);
             else
                 await CurrentAdapter.StartScanningForDevicesAsync(serviceUuids, cancellationToken: _scanForAedCts.Token);
 
@@ -196,7 +200,7 @@ public partial class BluetoothLEServices
     /// <returns></returns>
     public async Task<bool> CheckAndRequestBluetoothPermission()
     {
-#if ANDROID 
+#if ANDROID
         var status = await Permissions.CheckStatusAsync<BluetoothPermissions>();
 
         if (status != PermissionStatus.Granted)
@@ -228,7 +232,7 @@ public partial class BluetoothLEServices
         {
             OnMessage?.Invoke(result);
 
-            if (Options.ShowAdvertisementRecords || Options.ShowBeacon) BLE_beacon_AdvertisementRecords(e.Device);
+            if (Options.ShowAdvertisementRecords || Options.ShowBeacon) BLE_adList(e.Device);
 
             Devices.Add(new BleDevice() { Id = e.Device.Id, Name = e.Device.Name });
 
@@ -256,7 +260,7 @@ public partial class BluetoothLEServices
         OnMessage?.Invoke("蓝牙扫描超时结束");
     }
 
-    #endregion
+#endregion
 
     #region 广播信息
 
@@ -265,7 +269,7 @@ public partial class BluetoothLEServices
     /// <summary>
     /// 返回设备信标广播信息 BLE beacon
     /// </summary>
-    private void BLE_beacon_AdvertisementRecords(IDevice device)
+    private void BLE_adList(IDevice device)
     {
         if (device.AdvertisementRecords.Count == 0) { return; }
 
@@ -323,7 +327,8 @@ public partial class BluetoothLEServices
             BeaconList.Add(iBeaconData);
         }
 
-        if (iBeaconData.IsiBeacon && (Options.BeaconUUID == null || (Options.BeaconUUID != null && iBeaconData.UUID == Options.BeaconUUID)))
+        //iBeaconData.IsiBeacon &&
+        if ( (Options.BeaconUUID == null || (Options.BeaconUUID != null && iBeaconData.UUID == Options.BeaconUUID)))
         {
             OnMessage?.Invoke($" *** {device.Name}iBeacon: {iBeaconData.Tostring}");
 
