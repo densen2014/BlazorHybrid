@@ -33,6 +33,10 @@ using Microsoft.Maui.Platform;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Ports;
 using Beacons;
+using xamarin.beacon.Model;
+#if IOS
+using xamarin.beacon.iOS.Services;
+#endif
 
 namespace BlazorHybrid.Maui.Shared;
 
@@ -62,6 +66,66 @@ public class MauiFeatureService : Page, INativeFeatures
     public MauiFeatureService(BluetoothLEServices myBleTester)
     {
         MyBleTester = myBleTester;
+#if IOS
+        List<SharedBeacon> receivedBeacons = new List<SharedBeacon>();
+
+        updateBeaconCurrentDateTime(receivedBeacons, DateTime.Now);
+        deleteOldBeacons(receivedBeacons);
+
+        startRangingBeacon();
+#endif
+    }
+    private void updateBeaconCurrentDateTime(List<SharedBeacon> receivedBeacons, DateTime now)
+    {
+        // Update current received date time
+        foreach (SharedBeacon shared in receivedBeacons)
+            shared.CurrentDateTime = now;
+    }
+#if IOS
+    public bool IsStartedRanging { get; set; }
+
+    public bool IsTransmitting { get; set; }
+
+    BleScan bleScan = new BleScan();
+    Blebroadcast iOSTransmit = new Blebroadcast();
+    private void startRangingBeacon()
+    {
+        if (!IsStartedRanging)
+            bleScan.startranging();
+        else
+            bleScan.stopranging();
+
+        IsStartedRanging = !IsStartedRanging;
+    }
+
+    private void starttransmitbeacon()
+    {
+
+        iOSTransmit.StartBroadcasting();
+        IsTransmitting = !IsTransmitting;
+    }
+#endif
+
+    private void deleteOldBeacons(List<SharedBeacon> receivedBeacons)
+    {
+        if (receivedBeacons != null)
+        {
+            int count = receivedBeacons.Count;
+
+            // Delete old beacons
+            for (int ii = count - 1; ii >= 0; ii--)
+            {
+                try
+                {
+                    if (receivedBeacons[ii].ForceDelete)
+                        receivedBeacons.RemoveAt(ii);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            }
+        }
     }
 
     public bool IsMaui() => true;
