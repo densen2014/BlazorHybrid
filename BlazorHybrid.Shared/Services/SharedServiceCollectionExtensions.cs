@@ -56,14 +56,14 @@ public static class SharedServiceCollectionExtensions
         services.AddFreeSql(option =>
         {
             option
-#if DEBUG
+//#if DEBUG
                  .UseConnectionString(FreeSql.DataType.Sqlite, $"Data Source={dbpath};")
                  .UseAutoSyncStructure(true)
                  //调试sql语句输出
                  .UseMonitorCommand(cmd => System.Console.WriteLine(cmd.CommandText + Environment.NewLine))
-#else
-                 .UseConnectionString(FreeSql.DataType.MySql, connstr, typeof(FreeSql.MySql.MySqlProvider<>))
-#endif
+//#else
+//                 .UseConnectionString(FreeSql.DataType.MySql, connstr, typeof(FreeSql.MySql.MySqlProvider<>))
+//#endif
                  .UseNoneCommandParameter(true);
 
         }, configEntityPropertyImage: true);

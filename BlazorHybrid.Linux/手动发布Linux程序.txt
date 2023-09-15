@@ -1,0 +1,5 @@
+dotnet publish -r linux-x64 -f net7.0 -c Release --self-contained /p:PublishSingleFile=true
+
+在 ARM 上运行的 Linux 发行版，例如 Raspberry Pi 上的 Raspbian
+
+dotnet publish -r linux-arm64 -f net7.0 -c Release --self-contained /p:PublishSingleFile=true
