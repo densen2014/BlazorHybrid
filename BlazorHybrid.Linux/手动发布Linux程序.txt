@@ -1,5 +1,5 @@
 dotnet publish -r linux-x64 -f net7.0 -c Release --self-contained /p:PublishSingleFile=true
 
-ÔÚ ARM ÉÏÔËĞĞµÄ Linux ·¢ĞĞ°æ£¬ÀıÈç Raspberry Pi ÉÏµÄ Raspbian
+åœ¨ ARM ä¸Šè¿è¡Œçš„ Linux å‘è¡Œç‰ˆï¼Œä¾‹å¦‚ Raspberry Pi ä¸Šçš„ Raspbian
 
 dotnet publish -r linux-arm64 -f net7.0 -c Release --self-contained /p:PublishSingleFile=true
