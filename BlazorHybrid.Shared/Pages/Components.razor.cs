@@ -19,12 +19,16 @@ public partial class Components
 
     List<ResCustomersDto>? DeskList { get; set; }
 
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            DeskList = new List<ResCustomersDto>()
+             Tools.OnMessage += (async (e)=>await ToastService.Information(e));
+
+           DeskList = new List<ResCustomersDto>()
             {
+                new ResCustomersDto("becon",null,Tools.CheckPermissionsNFC),
                 new ResCustomersDto("定位",async ()=>await ShowBottomMessage("定位:" + (await Tools.GetCurrentLocation()).message)),
                 new ResCustomersDto("定位缓存",async() =>await ShowBottomMessage("定位缓存:" + (await Tools.GetCachedLocation()).message)),
                 new ResCustomersDto("图库",async() => await ShowPhoto()),

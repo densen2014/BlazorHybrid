@@ -36,6 +36,7 @@ using Beacons;
 using xamarin.beacon.Model;
 #if IOS
 using xamarin.beacon.iOS.Services;
+using xamarin.beacon.iOS;
 #endif
 
 namespace BlazorHybrid.Maui.Shared;
@@ -66,14 +67,6 @@ public class MauiFeatureService : Page, INativeFeatures
     public MauiFeatureService(BluetoothLEServices myBleTester)
     {
         MyBleTester = myBleTester;
-#if IOS
-        List<SharedBeacon> receivedBeacons = new List<SharedBeacon>();
-
-        updateBeaconCurrentDateTime(receivedBeacons, DateTime.Now);
-        deleteOldBeacons(receivedBeacons);
-
-        startRangingBeacon();
-#endif
     }
     private void updateBeaconCurrentDateTime(List<SharedBeacon> receivedBeacons, DateTime now)
     {
@@ -90,6 +83,8 @@ public class MauiFeatureService : Page, INativeFeatures
     Blebroadcast iOSTransmit = new Blebroadcast();
     private void startRangingBeacon()
     {
+        bleScan.InitializeScannerService();
+
         if (!IsStartedRanging)
             bleScan.startranging();
         else
@@ -714,8 +709,21 @@ public class MauiFeatureService : Page, INativeFeatures
         return status.ToString();
     }
 #else
+    List<SharedBeacon> receivedBeacons = new List<SharedBeacon>();
     public Task<string> CheckPermissionsNFC()
     {
+#if IOS
+        Helpers.OnMessage += OnMessage;
+
+        Helpers.test();
+
+
+        //bleScan.OnMessage += OnMessage;
+        //updateBeaconCurrentDateTime(receivedBeacons, DateTime.Now);
+        //deleteOldBeacons(receivedBeacons);
+
+        //startRangingBeacon();
+#endif
         return Task.FromResult("无需授权");
     }
 #endif
