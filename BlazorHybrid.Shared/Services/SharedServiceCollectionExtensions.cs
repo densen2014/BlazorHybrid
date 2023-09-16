@@ -50,22 +50,19 @@ public static class SharedServiceCollectionExtensions
         string dbpath = "hybrid.db";
 #endif
 
-        //string connstr = $"data source=1.2.3.4;port=3306;user id=root;password=root; initial catalog=hybrid;charset=utf8; sslmode=none;min pool size=1";
+        //string connstr = $"data source=10.0.0.4;port=3306;user id=root1;password=root1; initial catalog=hybrid;charset=utf8; sslmode=none;min pool size=1";
         string connstr = $"Data Source=10.0.0.5,1433;Initial Catalog=hybrid;Persist Security Info=True;User ID=root;Password=root;Connect Timeout=5";
 
 
         services.AddFreeSql(option =>
         {
             option
-         //#if DEBUG
-         //                 .UseConnectionString(FreeSql.DataType.Sqlite, $"Data Source={dbpath};")
+                 //.UseConnectionString(FreeSql.DataType.Sqlite, $"Data Source={dbpath};")
                  .UseConnectionString(FreeSql.DataType.SqlServer, connstr)
+                 //.UseConnectionString(FreeSql.DataType.MySql, connstr, typeof(FreeSql.MySql.MySqlProvider<>))
                  .UseAutoSyncStructure(true)
                  //调试sql语句输出
                  .UseMonitorCommand(cmd => System.Console.WriteLine(cmd.CommandText + Environment.NewLine))
-//#else
-//                 .UseConnectionString(FreeSql.DataType.MySql, connstr, typeof(FreeSql.MySql.MySqlProvider<>))
-//#endif
                  .UseNoneCommandParameter(true);
 
         }, configEntityPropertyImage: true);
