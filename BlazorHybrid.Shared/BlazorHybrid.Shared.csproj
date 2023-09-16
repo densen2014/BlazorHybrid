@@ -70,6 +70,7 @@
 		<PackageReference Include="FreeSql" Version="*" />
 		<PackageReference Include="FreeSql.Provider.SqliteCore" Version="*" />
 		<PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.*" />
+		<PackageReference Include="FreeSql.Provider.SqlServerForSystem" Version="3.2.800" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="7.*" />
 		<PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="7.*" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
