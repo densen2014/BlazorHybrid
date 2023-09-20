@@ -15,6 +15,8 @@
  [工程引用库源码](https://github.com/densen2014?tab=repositories&q=BootstrapBlazor.&type=&language=&sort=)
 
  [BlazorMaui](https://github.com/densen2014/BlazorMaui) | [BlazorMaui Gitee(仅副本)](https://gitee.com/alexchow/BlazorMaui)
+
+ [树莓派4b装系统到运行 Blazor Linux 本地程序全记录](https://github.com/densen2014/BlazorHybrid/wiki/%E6%A0%91%E8%8E%93%E6%B4%BE4b%E8%A3%85%E7%B3%BB%E7%BB%9F%E5%88%B0%E8%BF%90%E8%A1%8C-Blazor-Linux-%E6%9C%AC%E5%9C%B0%E7%A8%8B%E5%BA%8F%E5%85%A8%E8%AE%B0%E5%BD%95)
  
 ----
 > Maui Blazor 中文社区 QQ群：645660665
