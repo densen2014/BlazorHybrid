@@ -17,51 +17,51 @@ public partial class Components
     /// </summary>
     bool ShowScanBarcode { get; set; } = false;
 
-    List<ResCustomersDto>? DeskList { get; set; }
+    List<BtnFun>? DeskList { get; set; }
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            DeskList = new List<ResCustomersDto>()
+            DeskList = new List<BtnFun>()
             {
-                new ResCustomersDto("定位",async ()=>await ShowBottomMessage("定位:" + (await Tools.GetCurrentLocation()).message)),
-                new ResCustomersDto("定位缓存",async() =>await ShowBottomMessage("定位缓存:" + (await Tools.GetCachedLocation()).message)),
-                new ResCustomersDto("图库",async() => await ShowPhoto()),
-                new ResCustomersDto("拍照(原生)",async() => await TakePhotoNative()),
-                new ResCustomersDto("拍照(H5)",async() => {await TakePhotoH5();StateHasChanged(); }),
-                new ResCustomersDto("拍照(Blazor)",async() => {await TakePhotoBlazor();StateHasChanged(); }),
-                new ResCustomersDto("扫码",() => {ShowScanBarcode=!ShowScanBarcode;StateHasChanged(); }),
-                new ResCustomersDto("导航",null,Tools.NavigateToMadrid),
-                new ResCustomersDto("文件",async () => await ShowBottomMessage("选择文件:" + await Tools.PickFile())),
-                new ResCustomersDto("蓝牙",async() => {await 蓝牙();StateHasChanged(); }),
-                new ResCustomersDto("NFC",() => NavigationManager.NavigateTo("NfcBase")),
-                new ResCustomersDto("NFC(xaml)",null,Tools.ReadNFC),
-                new ResCustomersDto("原生消息框",async () => await Tools.Alert("Alert", $"hello from native UI", "OK")),
-                new ResCustomersDto("外部网站(NavM)",async() =>{ await APP1();StateHasChanged(); }),
-                new ResCustomersDto("重载主页",()=>Tools.LoadUrl(null)),
-                new ResCustomersDto("app1.es",()=>Tools.LoadUrl("https://blazor.app1.es")),
-                new ResCustomersDto("bing",()=>Tools.LoadUrl("https://www.bing.com")),
-                new ResCustomersDto("执行JS",async()=> await Tools.ExecuteScriptAsync()),
-                new ResCustomersDto("设置",null,Tools.ShowSettingsUI),
-                new ResCustomersDto("定位权限",null,Tools.CheckPermissionsLocation),
-                new ResCustomersDto("拍照权限",null, Tools.CheckPermissionsCamera),
-                new ResCustomersDto("蓝牙权限",null,Tools.CheckPermissionsBluetooth),
-                new ResCustomersDto("NFC权限",null,Tools.CheckPermissionsNFC),
-                new ResCustomersDto("返回",async ()=>await BackToHome()),
-                new ResCustomersDto("PDF阅读器",()=>NavigationManager.NavigateTo("pdfReaders")),
-                new ResCustomersDto("思维导图",()=>NavigationManager.NavigateTo("MindMaps")),
-                new ResCustomersDto("语音合成/识别",()=>NavigationManager.NavigateTo("Speechs")),
-                new ResCustomersDto("文件",()=>NavigationManager.NavigateTo("Files")),
-                new ResCustomersDto("上传文件",()=>NavigationManager.NavigateTo("FileUpload")),
-                new ResCustomersDto("APP文件夹",()=>NavigationManager.NavigateTo("AppFiles")),
-                new ResCustomersDto("JsBridge",()=>NavigationManager.NavigateTo("JsBridge")),
-                new ResCustomersDto("串口",()=>NavigationManager.NavigateTo("WebSerials")),
-                new ResCustomersDto("web蓝牙",()=>Tools.LoadUrl("https://blazor.app1.es/Bluetooth")),
-                new ResCustomersDto("视频播放器",()=>Tools.LoadUrl("https://blazor.app1.es/videoPlayers")),
-                new ResCustomersDto("OCR",()=>Tools.LoadUrl("https://blazor.app1.es/ocr")),
-                new ResCustomersDto("翻译",()=>Tools.LoadUrl("https://blazor.app1.es/Translate")),
-                new ResCustomersDto("OpenAI",()=>Tools.LoadUrl("https://blazor.app1.es/OpenAI")),
+                new BtnFun("定位",async ()=>await ShowBottomMessage("定位:" + (await Tools.GetCurrentLocation()).message)),
+                new BtnFun("定位缓存",async() =>await ShowBottomMessage("定位缓存:" + (await Tools.GetCachedLocation()).message)),
+                new BtnFun("图库",async() => await ShowPhoto()),
+                new BtnFun("拍照(原生)",async() => await TakePhotoNative()),
+                new BtnFun("拍照(H5)",async() => {await TakePhotoH5();StateHasChanged(); }),
+                new BtnFun("拍照(Blazor)",async() => {await TakePhotoBlazor();StateHasChanged(); }),
+                new BtnFun("扫码",() => {ShowScanBarcode=!ShowScanBarcode;StateHasChanged(); }),
+                new BtnFun("导航",null,Tools.NavigateToMadrid),
+                new BtnFun("文件",async () => await ShowBottomMessage("选择文件:" + await Tools.PickFile())),
+                new BtnFun("蓝牙",async() => {await 蓝牙();StateHasChanged(); }),
+                new BtnFun("NFC",() => NavigationManager.NavigateTo("NfcBase")),
+                new BtnFun("NFC(xaml)",null,Tools.ReadNFC),
+                new BtnFun("原生消息框",async () => await Tools.Alert("Alert", $"hello from native UI", "OK")),
+                new BtnFun("外部网站(NavM)",async() =>{ await APP1();StateHasChanged(); }),
+                new BtnFun("重载主页",()=>Tools.LoadUrl(null)),
+                new BtnFun("app1.es",()=>Tools.LoadUrl("https://blazor.app1.es")),
+                new BtnFun("bing",()=>Tools.LoadUrl("https://www.bing.com")),
+                new BtnFun("执行JS",async()=> await Tools.ExecuteScriptAsync()),
+                new BtnFun("设置",null,Tools.ShowSettingsUI),
+                new BtnFun("定位权限",null,Tools.CheckPermissionsLocation),
+                new BtnFun("拍照权限",null, Tools.CheckPermissionsCamera),
+                new BtnFun("蓝牙权限",null,Tools.CheckPermissionsBluetooth),
+                new BtnFun("NFC权限",null,Tools.CheckPermissionsNFC),
+                new BtnFun("返回",async ()=>await BackToHome()),
+                new BtnFun("PDF阅读器",()=>NavigationManager.NavigateTo("pdfReaders")),
+                new BtnFun("思维导图",()=>NavigationManager.NavigateTo("MindMaps")),
+                new BtnFun("语音合成/识别",()=>NavigationManager.NavigateTo("Speechs")),
+                new BtnFun("文件",()=>NavigationManager.NavigateTo("Files")),
+                new BtnFun("上传文件",()=>NavigationManager.NavigateTo("FileUpload")),
+                new BtnFun("APP文件夹",()=>NavigationManager.NavigateTo("AppFiles")),
+                new BtnFun("JsBridge",()=>NavigationManager.NavigateTo("JsBridge")),
+                new BtnFun("串口",()=>NavigationManager.NavigateTo("WebSerials")),
+                new BtnFun("web蓝牙",()=>Tools.LoadUrl("https://blazor.app1.es/Bluetooth")),
+                new BtnFun("视频播放器",()=>Tools.LoadUrl("https://blazor.app1.es/videoPlayers")),
+                new BtnFun("OCR",()=>Tools.LoadUrl("https://blazor.app1.es/ocr")),
+                new BtnFun("翻译",()=>Tools.LoadUrl("https://blazor.app1.es/Translate")),
+                new BtnFun("OpenAI",()=>Tools.LoadUrl("https://blazor.app1.es/OpenAI")),
            };
 
             StateHasChanged();
@@ -80,7 +80,7 @@ public partial class Components
         return Task.CompletedTask;
     }
 
-    private async Task OnListViewItemClick(ResCustomersDto item)
+    private async Task OnListViewItemClick(BtnFun item)
     {
         item.ClickAction?.Invoke();
         if (item.ClickFunc != null)
@@ -89,15 +89,15 @@ public partial class Components
         }
     }
 
-    public class ResCustomersDto
+    public class BtnFun
     {
-        public ResCustomersDto(string Name, Action? ClickAction)
+        public BtnFun(string Name, Action? ClickAction)
         {
             this.ClickAction = ClickAction;
             this.Name = Name;
         }
 
-        public ResCustomersDto(string CustomerID, Action? ClickAction, Func<Task<string>>? ClickFunc)
+        public BtnFun(string CustomerID, Action? ClickAction, Func<Task<string>>? ClickFunc)
         {
             this.ClickAction = ClickAction;
             this.ClickFunc = ClickFunc;
