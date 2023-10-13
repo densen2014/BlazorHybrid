@@ -30,7 +30,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <Version>0.0.4</Version>
+        <Version>0.0.5</Version>
         <RootNamespace>BlazorHybrid.Maui.Permissions</RootNamespace>
         <AssemblyName>BlazorHybrid.Maui.Permissions</AssemblyName>
         <PackageProjectUrl>https://github.com/densen2014/BlazorHybrid</PackageProjectUrl>
