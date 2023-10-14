@@ -45,7 +45,7 @@ public class Tools
             }
             var targetFilePath = Path.Combine(destinationDir, filename);
             file.CopyTo(targetFilePath);
-            if (new[] { ".csproj", ".html", ".cs", ".razor", ".xaml", ".md" }.Contains(extName))
+            if (new[] { ".csproj", ".cshtml", ".html", ".cs", ".razor", ".xaml", ".md" }.Contains(extName))
             {
                 var content = File.ReadAllText(targetFilePath);
                 var new_htmcontent = content.Replace("BlazorHybrid", projectName);
