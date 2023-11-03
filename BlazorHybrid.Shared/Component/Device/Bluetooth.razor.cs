@@ -16,7 +16,7 @@ public partial class Bluetooth : IAsyncDisposable
     private List<BleService>? Services;
     private List<BleCharacteristic>? Characteristics;
     private string? ReadResult;
-    private string? Message="";
+    private new string? Message="";
 
     BleTagDevice BleInfo { get; set; } = new BleTagDevice();
 
