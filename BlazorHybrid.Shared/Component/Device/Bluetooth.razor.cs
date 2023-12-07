@@ -6,6 +6,7 @@
 
 using BootstrapBlazor.Components;
 using System.IO.Pipelines;
+using System.Text;
 
 namespace BlazorHybrid.Core.Device;
 
@@ -310,6 +311,80 @@ public partial class Bluetooth : IAsyncDisposable
 
         //异步更新UI
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SendDataAsyncCPCL()
+    {
+        //CPCL指令套打
+        StringBuilder cmds = new();
+        cmds.AppendLine("!0 200 200 777 1");
+        cmds.AppendLine("N-DOTS");
+        cmds.AppendLine("PAGE-WIDTH 595");
+        cmds.AppendLine("SETBOLD 1");
+        cmds.AppendLine("SETMAG 3 3");
+        cmds.AppendLine($"TEXT 10 0 8 195 测试-11-12-11");
+        cmds.AppendLine("SETMAG 0 0");
+        cmds.AppendLine("SETBOLD 0");
+        cmds.AppendLine("LINE 0 156 585 156 2");
+        cmds.AppendLine("LINE 0 301 585 301 2");
+        cmds.AppendLine("LINE 0 518 585 518 2");
+        cmds.AppendLine("LINE 0 724 585 724 2");
+        cmds.AppendLine("BOX 4 12 585 724 1");
+        cmds.AppendLine("BOX 4 156 585 301 1");
+        cmds.AppendLine("BOX 4 581 585 724 1");
+        cmds.AppendLine($"TEXT 4 0 22 327 投递机构：测试机构2");
+        cmds.AppendLine($"TEXT 4 0 22 450 处理终端：DLV1233213123123123311");
+        cmds.AppendLine($"TEXT 4 0 22 387 封包时间：{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}");
+        cmds.AppendLine("SETBOLD 1");
+        cmds.AppendLine($"TEXT 4 0 14 529 格口：121");
+        cmds.AppendLine($"TEXT 4 0 397 529 件数：111");
+        cmds.AppendLine($"TEXT 4 0 193 529 序号：123");
+        cmds.AppendLine("SETBOLD 0");
+        cmds.AppendLine($"TEXT 4 0 18 595 测试");
+        cmds.AppendLine($"TEXT 55 0 18 733 打印时间：{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}");
+        cmds.AppendLine($"BARCODE 128 1 20 80 80 27 12345678912346654");//条码
+        cmds.AppendLine("CENTR");
+        cmds.AppendLine($"TEXT 2 0 120 122 P12348785454445555");
+        cmds.AppendLine("FORM");
+        cmds.AppendLine("PRINT");
+
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);//注册Nuget包System.Text.Encoding.CodePages中的编码到.NET Core
+        Encoding utf8 = Encoding.GetEncoding(65001);
+        Encoding gb2312 = Encoding.GetEncoding("gb2312");//这里用转化解决汉字乱码问题Encoding.Default ,936
+        byte[] bytesUtf8 = utf8.GetBytes(cmds.ToString());
+        byte[] bytesGb2312 = Encoding.Convert(utf8, gb2312, bytesUtf8);
+        if (bytesGb2312 != null)
+        {
+            var totalCount = bytesGb2312.Length;
+            var printPageSize = 512;
+            var totalPage = (totalCount / printPageSize) + (totalCount % printPageSize > 0 ? 1 : 0);//返回总页数
+            var index = 0;
+            for (int i = 1; i <= totalPage; i++)
+            {
+                byte[] newbytes;
+                if (totalCount < printPageSize && totalCount > 0)
+                {
+                    newbytes = new byte[totalCount];
+                    Array.Copy(bytesGb2312, index, newbytes, 0, totalCount);
+                }
+                else
+                {
+                    newbytes = new byte[printPageSize];
+                    Array.Copy(bytesGb2312, index, newbytes, 0, printPageSize);
+                    index += printPageSize;
+                    totalCount -= printPageSize;
+                }
+                if (newbytes != null && newbytes.Any())
+                {
+                    await Tools.SendDataAsync(BleInfo.Characteristic, newbytes);
+                }
+            }
+        }
+
+
+
+        //异步更新UI
+        //await InvokeAsync(StateHasChanged);
     }
     ValueTask IAsyncDisposable.DisposeAsync()
     {
