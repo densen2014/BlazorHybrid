@@ -264,3 +264,6 @@
     background-color: var(--bb-bg-violet);
     color: var(--bs-white);
 }
+.is-page .layout-main > .tabs {
+    margin: unset;
+}
