@@ -4,25 +4,43 @@
 
 <h3>蓝牙</h3>
 
+@{ 
+    var btnclass = "col-3 col-sm-3 col-md-4 col-lg-auto";
+}
+
 <Tab IsLazyLoadTabItem>
     <TabItem Text="工具">
         <div class="row g-3">
-            <div class="btn-group" role="group">
+            <div class="@btnclass">
                 <Button Text="返回" OnClick="BackToHome" />
-                <Button Text="扫描外设" @attributes=IsScanningCss OnClick=ScanDevice />
-                @if (Devices != null)
-                {
-                    <Button Text="连接" OnClick="OnDeviceSelect" />
-                    <Button Text="断开" OnClick="OnDisConnectDevice" />
-                    @if (Characteristics != null)
-                    {
-                        <Button Text="写入" OnClick="ReadDeviceName" />
-                        <Button Text="读取" OnClick="ReadDeviceName" />
-                        <Button Text="打印CPCL" OnClick="SendDataAsyncCPCL" />
-                    }
-                }
-                <Select TValue="string" Color="Color.Primary" Items="DemoList" OnSelectedItemChanged="OnDemoDeviceSelect" />
             </div>
+            <div class="@btnclass">
+                <Button Text="扫描外设" @attributes=IsScanningCss OnClick=ScanDevice />
+            </div>
+            @if (Devices != null)
+            {
+                <div class="@btnclass">
+                    <Button Text="连接" OnClick="OnDeviceSelect" />
+                </div>
+                <div class="@btnclass">
+                    <Button Text="断开" OnClick="OnDisConnectDevice" />
+                </div>
+                @if (Characteristics != null)
+                {
+                    <div class="@btnclass">
+                        <Button Text="写入" OnClick="ReadDeviceName" />
+                    </div>
+                    <div class="@btnclass">
+                        <Button Text="读取" OnClick="ReadDeviceName" />
+                    </div>
+                    <div class="@btnclass">
+                        <Button Text="打印CPCL" OnClick="SendDataAsyncCPCL" />
+                    </div>
+                }
+            }
+        <div class="@btnclass">
+            <Select TValue="string" Color="Color.Primary" Items="DemoList" OnSelectedItemChanged="OnDemoDeviceSelect" />
+        </div>
         </div>
         @if (Devices != null)
         {
