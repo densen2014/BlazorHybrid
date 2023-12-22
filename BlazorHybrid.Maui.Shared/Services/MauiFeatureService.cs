@@ -115,7 +115,7 @@ public class MauiFeatureService : Page, INativeFeatures
         return status;
     }
 
-  
+
 
 #endif
 
@@ -798,9 +798,9 @@ public class MauiFeatureService : Page, INativeFeatures
     /// </summary>
     public static WebView2Control WebView { get; set; }
 #elif ANDROID
-        /// <summary>
-        /// Gets the <see cref="AWebView"/> instance that was initialized.
-        /// </summary>
+    /// <summary>
+    /// Gets the <see cref="AWebView"/> instance that was initialized.
+    /// </summary>
     public static AWebView WebView { get; set; }
 #elif MACCATALYST || IOS
     /// <summary>
@@ -845,5 +845,33 @@ public class MauiFeatureService : Page, INativeFeatures
         await WebView.EvaluateJavaScriptAsync(js);
 #elif TIZEN
 #endif
+    }
+
+    public async Task<string> SetFlashlight(bool on)
+    {
+
+        try
+        {
+            if (on)
+                await Flashlight.Default.TurnOnAsync();
+            else
+                await Flashlight.Default.TurnOffAsync();
+        }
+        catch (FeatureNotSupportedException ex)
+        {
+            // Handle not supported on device exception
+            return ex.Message;
+        }
+        catch (PermissionException ex)
+        {
+            // Handle permission exception
+            return ex.Message;
+        }
+        catch (Exception ex)
+        {
+            // Unable to turn on/off flashlight
+            return ex.Message;
+        }
+        return "OK";
     }
 }

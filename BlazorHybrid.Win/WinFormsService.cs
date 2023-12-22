@@ -194,6 +194,10 @@ public class WinFormsService : INativeFeatures
 
     public Task<string> CheckPermissionsNFC()
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");
+    }
+    public Task<string> SetFlashlight(bool on)
+    {
+        return Task.FromResult("未实现");
     }
 }

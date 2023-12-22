@@ -16,6 +16,7 @@ public partial class Components
     /// 显示扫码界面
     /// </summary>
     bool ShowScanBarcode { get; set; } = false;
+    bool FlashlightOn { get; set; } = false;
 
     List<ResCustomersDto>? DeskList { get; set; }
 
@@ -48,6 +49,8 @@ public partial class Components
                 new ResCustomersDto("拍照权限",null, Tools.CheckPermissionsCamera),
                 new ResCustomersDto("蓝牙权限",null,Tools.CheckPermissionsBluetooth),
                 new ResCustomersDto("NFC权限",null,Tools.CheckPermissionsNFC),
+                new ResCustomersDto("手电筒",async() => {await FlashlightToggle(); }),
+                new ResCustomersDto("微信扫码",() => {ShowScanBarcode=!ShowScanBarcode;StateHasChanged(); }),
                 new ResCustomersDto("返回",async ()=>await BackToHome()),
                 new ResCustomersDto("PDF阅读器",()=>NavigationManager.NavigateTo("pdfReaders")),
                 new ResCustomersDto("思维导图",()=>NavigationManager.NavigateTo("MindMaps")),
@@ -72,6 +75,12 @@ public partial class Components
     {
         NavigationManager.NavigateTo("/bluetooth");
         return Task.CompletedTask;
+    }
+
+    private async Task FlashlightToggle()
+    {
+        FlashlightOn = !FlashlightOn;
+        await Tools.SetFlashlight(FlashlightOn);
     }
 
     private Task APP1()

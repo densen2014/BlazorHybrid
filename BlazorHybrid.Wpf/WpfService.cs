@@ -200,4 +200,8 @@ public class WpfService : INativeFeatures
     {
         return Task.FromResult("未实现");
     }
+    public Task<string> SetFlashlight(bool on)
+    {
+        return Task.FromResult("未实现");
+    }
 }
