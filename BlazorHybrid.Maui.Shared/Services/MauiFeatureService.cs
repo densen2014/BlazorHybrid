@@ -846,6 +846,35 @@ public class MauiFeatureService : Page, INativeFeatures
 #elif TIZEN
 #endif
     }
+ 
+    public async Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on)
+    {
+        switch (features)   
+        {
+            case EnumNativeFeatures.Flashlight:
+                var res = await SetFlashlight(on: on??false);
+                return (res, new object()); 
+            case EnumNativeFeatures.SensorSpeed:
+                break;
+            case EnumNativeFeatures.Accelerometer:
+                break;
+            case EnumNativeFeatures.Barometer:
+                break;
+            case EnumNativeFeatures.Compass:
+                break;
+            case EnumNativeFeatures.Shake:
+                break;
+            case EnumNativeFeatures.Gyroscope:
+                break;
+            case EnumNativeFeatures.Magnetometer:
+                break;
+            case EnumNativeFeatures.Orientation:
+                break;
+            default:
+                break;
+        }
+        return ("未实现", new object());
+    }
 
     public async Task<string> SetFlashlight(bool on)
     {

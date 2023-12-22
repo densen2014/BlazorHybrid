@@ -192,12 +192,10 @@ public class WinFormsService : INativeFeatures
         await WebView.ExecuteScriptAsync(js);
     }
 
-    public Task<string> CheckPermissionsNFC()
+    public Task<string> CheckPermissionsNFC() => Task.FromResult("未实现");
+
+    public Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on)
     {
-        return Task.FromResult("未实现");
-    }
-    public Task<string> SetFlashlight(bool on)
-    {
-        return Task.FromResult("未实现");
+        return Task.FromResult(("未实现", new object()));
     }
 }

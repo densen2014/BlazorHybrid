@@ -4,6 +4,7 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
+using BlazorHybrid.Core;
 using BootstrapBlazor.Components;
 using Microsoft.AspNetCore.Components;
 using static BootstrapBlazor.Components.UploadToBase64;
@@ -81,7 +82,8 @@ public partial class Components
     private async Task FlashlightToggle()
     {
         FlashlightOn = !FlashlightOn;
-        await Tools.SetFlashlight(FlashlightOn);
+        var res =await Tools.CallNativeFeatures(EnumNativeFeatures.Flashlight,null, FlashlightOn);
+        await ShowBottomMessage( res.message);
     }
 
     private Task APP1()

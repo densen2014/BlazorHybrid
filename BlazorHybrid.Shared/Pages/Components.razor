@@ -8,32 +8,32 @@
 
 @if (IsBusy)
 {
-<Spinner Color="Color.Primary"></Spinner>
+    <Spinner Color="Color.Primary"></Spinner>
 }
 @if (ShowImageList && !IsBusy)
 {
-<h6>图片列表</h6>
+    <h6>图片列表</h6>
 
     if (PhotoList != null && PhotoList.Any())
     {
-<Viewer Images="PhotoList" Width="300px" Height="300px" />
+        <Viewer Images="PhotoList" Width="300px" Height="300px" />
     }
 }
 @if (IsTakingPhotoH5 && !IsBusy)
 {
-<UploadToBase64 OnError="OnError" OnChanged="OnChanged" />
+    <UploadToBase64 OnError="OnError" OnChanged="OnChanged" />
 }
 @if (ShowScanBarcode)
 {
 
-<BarcodeReader ScanResult="OnResult"
-               Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
-               OnError="OnError"
-               Decodeonce="false" />
+    <BarcodeReader ScanResult="OnResult"
+                   Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
+                   OnError="OnError"
+                   Decodeonce="false" />
 }
 @if (ShowWxQrCode)
 {
-<WxQrCode />
+    <WxQrCode />
 
 }
 
@@ -44,7 +44,7 @@
         <BodyTemplate>
             @if (IsTakingPhoto)
             {
-            <TakePhoto Capture="OnCapture" />
+                <TakePhoto Capture="OnCapture" />
             }
 
         </BodyTemplate>

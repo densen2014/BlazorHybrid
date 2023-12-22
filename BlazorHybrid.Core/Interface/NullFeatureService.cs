@@ -163,13 +163,10 @@ public class NullFeatureService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public Task<string> CheckPermissionsNFC()
-    {
-        return Task.FromResult("未实现");
-    }
+    public Task<string> CheckPermissionsNFC() => Task.FromResult("未实现");
 
-    public Task<string> SetFlashlight(bool on) 
+    public Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on)
     {
-        return Task.FromResult("未实现");
+        return Task.FromResult(  ("未实现", new object()));
     }
 }

@@ -68,6 +68,6 @@ public partial interface INativeFeatures
     void LoadUrl(string? url);
 
     Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')");
-    Task<string> SetFlashlight(bool on);
+    Task<(string message,object callback)> CallNativeFeatures(EnumNativeFeatures features,object[]? args, bool? on);
 
 }
