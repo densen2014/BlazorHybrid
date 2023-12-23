@@ -19,6 +19,7 @@ public partial class Components
     bool ShowScanBarcode { get; set; } = false;
     bool ShowWxQrCode { get; set; } = false;
     bool FlashlightOn { get; set; } = false;
+    protected Modal? ExtraModal { get; set; }
 
     List<ResCustomersDto>? DeskList { get; set; }
 
@@ -34,7 +35,7 @@ public partial class Components
                 new ResCustomersDto("拍照(原生)",async() => await TakePhotoNative()),
                 new ResCustomersDto("拍照(H5)",async() => {await TakePhotoH5();StateHasChanged(); }),
                 new ResCustomersDto("拍照(Blazor)",async() => {await TakePhotoBlazor();StateHasChanged(); }),
-                new ResCustomersDto("扫码",() => {ShowScanBarcode=!ShowScanBarcode;StateHasChanged(); }),
+                new ResCustomersDto("扫码",async () => {ShowScanBarcode=!ShowScanBarcode;await ExtraModal!.Show();}),
                 new ResCustomersDto("导航",null,Tools.NavigateToMadrid),
                 new ResCustomersDto("文件",async () => await ShowBottomMessage("选择文件:" + await Tools.PickFile())),
                 new ResCustomersDto("蓝牙",async() => {await 蓝牙();StateHasChanged(); }),
@@ -52,7 +53,7 @@ public partial class Components
                 new ResCustomersDto("蓝牙权限",null,Tools.CheckPermissionsBluetooth),
                 new ResCustomersDto("NFC权限",null,Tools.CheckPermissionsNFC),
                 new ResCustomersDto("手电筒",async() => {await FlashlightToggle(); }),
-                new ResCustomersDto("微信扫码",() => {ShowWxQrCode=!ShowWxQrCode;StateHasChanged(); }),
+                new ResCustomersDto("微信扫码",async() => {ShowWxQrCode=!ShowWxQrCode;await ExtraModal!.Show();}),
                 new ResCustomersDto("返回",async ()=>await BackToHome()),
                 new ResCustomersDto("PDF阅读器",()=>NavigationManager.NavigateTo("pdfReaders")),
                 new ResCustomersDto("思维导图",()=>NavigationManager.NavigateTo("MindMaps")),
@@ -82,8 +83,8 @@ public partial class Components
     private async Task FlashlightToggle()
     {
         FlashlightOn = !FlashlightOn;
-        var res =await Tools.CallNativeFeatures(EnumNativeFeatures.Flashlight,null, FlashlightOn);
-        await ShowBottomMessage( res.message);
+        var res = await Tools.CallNativeFeatures(EnumNativeFeatures.Flashlight, null, FlashlightOn);
+        await ShowBottomMessage(res.message);
     }
 
     private Task APP1()
@@ -99,6 +100,16 @@ public partial class Components
         {
             item.Description = await item.ClickFunc.Invoke();
         }
+    }
+
+    private Task OnCloseDemoAsync()
+    {
+        ShowImageList = false;
+        IsTakingPhotoH5 = false;
+        ShowScanBarcode = false;
+        ShowWxQrCode = false;
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
     public class ResCustomersDto
