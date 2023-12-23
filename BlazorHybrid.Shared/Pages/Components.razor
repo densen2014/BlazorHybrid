@@ -24,18 +24,18 @@
 {
     <UploadToBase64 OnError="OnError" OnChanged="OnChanged" />
 }
+@if (ShowScanBarcode)
+{
+
+    <BarcodeReader ScanResult="OnResult"
+                   Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
+                   OnError="OnError"
+                   Decodeonce="false" />
+}
 
 <Modal @ref="ExtraModal" OnCloseAsync="OnCloseDemoAsync">
     <ModalDialog Title="Demo" IsDraggable="true">
         <BodyTemplate>
-            @if (ShowScanBarcode)
-            {
-
-                <BarcodeReader ScanResult="OnResult"
-                               Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
-                               OnError="OnError"
-                               Decodeonce="false" />
-            }
             @if (ShowWxQrCode)
             {
                 <WxQrCode />
