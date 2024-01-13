@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+        <TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
         <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
         <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
         <!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -42,6 +42,12 @@
 		<UseInterpreter>true</UseInterpreter> 
 	</PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+      <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
+      <CodesignProvision>VS: es.app1.BlazorHybrid Development</CodesignProvision>
+      <ProvisioningType>automatic</ProvisioningType>
+    </PropertyGroup>
+    
     <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
       <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
       <CodesignProvision>VS: es.app1.BlazorHybrid Development</CodesignProvision>
@@ -53,6 +59,12 @@
         <CodeSignEntitlements>Platforms/MacCatalyst/Entitlements.Debug.plist</CodeSignEntitlements>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+      <CreatePackage>false</CreatePackage>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+      <CreatePackage>false</CreatePackage>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
       <CreatePackage>false</CreatePackage>
     </PropertyGroup>
@@ -80,9 +92,14 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.*" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.*" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.*" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.*" /> 
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.*" />
     </ItemGroup>
 
     <ItemGroup>
