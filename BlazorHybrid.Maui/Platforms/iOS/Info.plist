@@ -71,5 +71,9 @@
 	<string>此应用程序需要访问您的位置。请根据要求授予权限.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>此应用程序需要访问您的位置。请根据要求授予权限.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>此应用程序需要使用语音识别。请根据要求授予权限.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>此应用程序需要使用Face ID。请根据要求授予权限.</string>
 </dict>
 </plist>
