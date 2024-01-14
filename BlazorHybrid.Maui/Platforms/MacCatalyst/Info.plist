@@ -55,5 +55,54 @@
 	<string>此应用程序需要使用语音识别。请根据要求授予权限.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>此应用程序需要使用Face ID。请根据要求授予权限.</string>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+<key>NSExceptionDomains</key>
+<dict>
+<key>0.0.0.0</key>
+<dict>
+<key>NSExceptionAllowsInsecureHTTPLoads</key>
+<true/>
+
+<key>NSExceptionRequiresForwardSecrecy</key>
+
+<false/>
+
+<key>NSIncludesSubdomains</key>
+
+<true/>
+
+<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+
+<false/>
+
+</dict>
+
+<key>aliyuncs.com</key>
+
+<dict>
+
+<key>NSExceptionAllowsInsecureHTTPLoads</key>
+
+<true/>
+
+<key>NSExceptionRequiresForwardSecrecy</key>
+
+<false/>
+
+<key>NSIncludesSubdomains</key>
+
+<true/>
+
+<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+
+<false/>
+
+</dict>
+
+</dict>
+
+</dict> 
 </dict>
 </plist>

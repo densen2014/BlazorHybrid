@@ -94,14 +94,14 @@ public partial class InitBlazorWebView : Page
 #elif WINDOWS
         e.WebView.CoreWebView2.DownloadStarting += (async (s, e) => await CoreWebView2_DownloadStartingAsync(s, e));
         var permissionHandler =
-    #if HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY
+#if HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY
         new SilentPermissionRequestHandler();
-    #else
+#else
         new DialogPermissionRequestHandler(e.WebView);
-    #endif
+#endif
 
         e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested; 
-#elif IOS
+#elif IOS || MACCATALYST
 
         //关闭回弹效果
 
@@ -132,14 +132,36 @@ public partial class InitBlazorWebView : Page
         e.Configuration.AllowsInlineMediaPlayback = true;
         e.Configuration.AllowsAirPlayForMediaPlayback = true;
         e.Configuration.AllowsPictureInPictureMediaPlayback = true;
-        e.Configuration.MediaTypesRequiringUserActionForPlayback = WebKit.WKAudiovisualMediaTypes.None;
+        e.Configuration.MediaTypesRequiringUserActionForPlayback = WebKit.WKAudiovisualMediaTypes.Video;
         if (e.Configuration.DefaultWebpagePreferences != null)
         { 
             e.Configuration.DefaultWebpagePreferences.AllowsContentJavaScript=true;
         }
+        e.Configuration.WebsiteDataStore = WKWebsiteDataStore.DefaultDataStore;
+        e.Configuration.ProcessPool =new WKProcessPool(); 
+        e.Configuration.Preferences.JavaScriptCanOpenWindowsAutomatically = true;
+        e.Configuration.UserContentController =new WKUserContentController();
+
 #endif
     }
-
+#if IOS || MACCATALYST
+    public class CustomWebViewDelegate : WKUIDelegate
+    {
+        [Export("webView:decideMediaCapturePermissionsForOrigin:initiatedByFrame:type:decisionHandler:")]
+        public override void RequestMediaCapturePermission(WKWebView webView, WKSecurityOrigin origin, WKFrameInfo frame, WKMediaCaptureType type, Action<WKPermissionDecision> decisionHandler)
+        {
+            try
+            {
+                decisionHandler(WKPermissionDecision.Grant);
+                base.RequestMediaCapturePermission(webView, origin, frame, type, decisionHandler);
+            }
+            catch (Exception e)
+            {
+                var ex = e.Message;
+            }
+        }
+    }
+#endif
     public virtual void BlazorWebViewUrlLoading(object? sender, UrlLoadingEventArgs e)
     {
         Debug.WriteLine(e.Url);
@@ -240,6 +262,13 @@ public partial class InitBlazorWebView : Page
         WebView.EvaluateJavaScript(new EvaluateJavaScriptAsyncRequest(js));
 #elif MACCATALYST || IOS
         await WebView.EvaluateJavaScriptAsync(js);
+        WebView.UIDelegate = new CustomWebViewDelegate();
+        var JavaScriptFunction2 = "alert(window.getUserMedia)";
+        await WebView.EvaluateJavaScriptAsync(JavaScriptFunction2);
+        //var script2 = new WKUserScript(new NSString(JavaScriptFunction2), WKUserScriptInjectionTime.AtDocumentStart, false);
+        //WebView.Configuration.UserContentController.AddUserScript(script2);
+        //e.Configuration.UserContentController.AddScriptMessageHandler(this, "callbackHandler");
+
 #elif TIZEN
 #endif
     }
