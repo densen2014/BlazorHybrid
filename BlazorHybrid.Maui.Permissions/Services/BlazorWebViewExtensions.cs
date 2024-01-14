@@ -100,7 +100,7 @@ public partial class InitBlazorWebView : Page
 #endif
 
         e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested;
-#elif IOS
+#elif MACCATALYST || IOS
 
         //关闭回弹效果
 
@@ -114,7 +114,7 @@ public partial class InitBlazorWebView : Page
         //e.WebView.ScrollView.BouncesZoom = false;
         // e.WebView.TintColor = UIKit.UIColor.Green;
         e.WebView.AllowsLinkPreview=true;
-        e.WebView.AllowsBackForwardNavigationGestures = true; 
+        e.WebView.AllowsBackForwardNavigationGestures = true;
 #endif
         WebView = e.WebView;
     }
@@ -126,6 +126,13 @@ public partial class InitBlazorWebView : Page
         e.Configuration.AllowsInlineMediaPlayback = true;
         e.Configuration.AllowsAirPlayForMediaPlayback = true;
         e.Configuration.MediaTypesRequiringUserActionForPlayback = WebKit.WKAudiovisualMediaTypes.None;
+
+        //var userScriptURL = Bundle.main.url(forResource: "UserScript", withExtension: "js")!;
+        //var userScriptCode = try!String(contentsOf: userScriptURL);
+        //var userScript = new WKUserScript(source: userScriptCode, injectionTime: atDocumentStart, forMainFrameOnly: false);
+        //e.Configuration.UserContentController.AddUserScript(userScript);
+
+
 #endif
     }
 
