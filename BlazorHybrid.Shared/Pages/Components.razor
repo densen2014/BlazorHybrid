@@ -22,6 +22,7 @@
 }
 @if (IsTakingPhotoH5 && !IsBusy)
 {
+    <UploadToBase64 OnError="OnError" OnChanged="OnChanged" Capture UploadButtonText="拍照" />
     <UploadToBase64 OnError="OnError" OnChanged="OnChanged" />
 }
 @if (ShowScanBarcode)
