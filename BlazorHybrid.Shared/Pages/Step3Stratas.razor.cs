@@ -192,11 +192,7 @@ public partial class Step3Stratas
         }
         return Task.FromResult(item);
     }
-
-    private Task AfterSaveAsync()
-    {
-        return Task.CompletedTask;
-    }
+     
 
     private async Task GetLocation()
     {
