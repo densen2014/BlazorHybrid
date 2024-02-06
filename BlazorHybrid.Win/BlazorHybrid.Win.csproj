@@ -22,7 +22,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\BlazorHybrid.Shared\BlazorHybrid.Shared.csproj" />
+		<ProjectReference Include="..\BlazorHybrid.Shared\BlazorHybrid.Shared.csproj">
+		  <ReferenceSourceTarget></ReferenceSourceTarget>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>

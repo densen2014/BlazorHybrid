@@ -16,7 +16,9 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.*" />
     </ItemGroup>
     <ItemGroup>
-		<ProjectReference Include="..\BlazorHybrid.Shared\BlazorHybrid.Shared.csproj" />
+		<ProjectReference Include="..\BlazorHybrid.Shared\BlazorHybrid.Shared.csproj">
+		  <ReferenceSourceTarget></ReferenceSourceTarget>
+		</ProjectReference>
 	</ItemGroup>
 	<ItemGroup>
 	  <Content Update="appsettings.json">
