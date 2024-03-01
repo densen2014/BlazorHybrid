@@ -1,0 +1,28 @@
+﻿@page "/hwscan"
+@inject IMainActivityService MainActivityService
+@implements IDisposable;
+<h3>华为统一扫码服务在MAUI BLAZOR应用中的演示</h3>
+<p>扫码结果:@ScanResult</p>
+<button @onclick="OnScanBtnClick">扫一扫</button>
+@code {
+    private string ScanResult { get; set; } = string.Empty;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        MainActivityService.ScanResult +=OnGetBarcodeValue;
+    }
+    private void OnScanBtnClick()
+    {
+        MainActivityService.StartScan();
+    }
+    private void OnGetBarcodeValue(object? sender,string val)
+    {
+        ScanResult = val;
+    }
+
+    public void Dispose()
+    {
+        MainActivityService.ScanResult -= OnGetBarcodeValue;
+    }
+
+}
