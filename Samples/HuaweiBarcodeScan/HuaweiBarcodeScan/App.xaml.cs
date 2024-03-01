@@ -1,12 +1,17 @@
-﻿namespace HuaweiBarcodeScan
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
+﻿// ********************************** 
+//  
+// 大王派你去巡山
+// 
+// **********************************
 
-            MainPage = new MainPage();
-        }
+namespace HuaweiBarcodeScan;
+
+public partial class App : Application
+{
+    public App()
+    {
+        InitializeComponent();
+
+        MainPage = new MainPage();
     }
 }

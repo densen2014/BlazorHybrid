@@ -1,10 +1,15 @@
-﻿namespace HuaweiBarcodeScan
+﻿// ********************************** 
+//  
+// 大王派你去巡山
+// 
+// **********************************
+
+namespace HuaweiBarcodeScan;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    public MainPage()
     {
-        public MainPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }
