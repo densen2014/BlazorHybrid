@@ -30,4 +30,9 @@ public class AppLookupService : ILookupService
         }
         return items;
     }
+
+    public IEnumerable<SelectedItem>? GetItemsByKey(string? key, object? data)
+    {
+       return GetItemsByKey(key);
+    }
 }
