@@ -1,4 +1,10 @@
-﻿using BlazorHybrid.Maui.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Maui.Shared;
 
 namespace BlazorHybrid.Maui;
 
@@ -22,7 +28,7 @@ public partial class MainPage : ContentPage
     //    await DisplayAlert("Alert", "Current", "OK");
     //    await initBlazorWebView.ButtonShowCounter_Click($"Current counter value is: {MauiProgram._appState.Counter}"); 
     //}
-  
+
 
     private async void ButtonWebviewAlert_Click(object sender, EventArgs e) => await initBlazorWebView.ExecuteScriptAsync();
     //private void ButtonWebviewAlert_Click(object sender, EventArgs e) => initBlazorWebView.InitializeBridgeAsync();

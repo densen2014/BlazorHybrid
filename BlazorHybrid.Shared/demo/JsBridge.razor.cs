@@ -12,14 +12,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace BlazorHybrid.Shared.Pages;
 
 public partial class JsBridge//: IAsyncDisposable
-{  
+{
     string? message;
     bool BridgeEnabled;
 
-    [Inject,NotNull]
+    [Inject, NotNull]
     IJSRuntime? JS { get; set; }
 
-    [Inject,NotNull]
+    [Inject, NotNull]
     ToastService? ToastService { get; set; }
 
     //private IJSObjectReference? module;
@@ -32,7 +32,7 @@ public partial class JsBridge//: IAsyncDisposable
         message = await JS!.InvokeAsync<string>("eval", $"localStorage.getItem('macAdress');");
         await ToastService.Information("eval macAdress", message);
 
-        message  = await JS!.InvokeAsync<string>("eval", "bridge.Func('测试')");
+        message = await JS!.InvokeAsync<string>("eval", "bridge.Func('测试')");
         await ToastService.Information("eval bridge.Func", message);
     }
 
@@ -44,7 +44,7 @@ public partial class JsBridge//: IAsyncDisposable
             {
                 BridgeEnabled = await JS!.InvokeAsync<bool>("eval", $"typeof bridge != 'undefined'");
 
-                message = await JS!.InvokeAsync<string>("eval", $"localStorage.getItem('macAdress');"); 
+                message = await JS!.InvokeAsync<string>("eval", $"localStorage.getItem('macAdress');");
 
                 //这种js隔离方式不能用,暂时还没空处理
                 //module = await JS!.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorHybrid.Shared/Pages/JsBridge.razor.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
@@ -52,12 +52,12 @@ public partial class JsBridge//: IAsyncDisposable
         }
         catch (Exception e)
         {
-            message=e.Message;
+            message = e.Message;
         }
         StateHasChanged();
     }
 
- 
+
     //async ValueTask IAsyncDisposable.DisposeAsync()
     //{
     //    if (module is not null)

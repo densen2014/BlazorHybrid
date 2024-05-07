@@ -1,4 +1,10 @@
-﻿#if WINDOWS
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+#if WINDOWS
 using BlazorMaui.Platforms.Windows;
 #endif
 using DH.NFC;
@@ -476,10 +482,10 @@ public partial class NfcPage : ContentPage
         }
     }
 
-    async  void Button_Clicked_Close(object sender, System.EventArgs e)
+    async void Button_Clicked_Close(object sender, System.EventArgs e)
     {
         //await Application.re
-          Application.Current.MainPage.Navigation.RemovePage(this);
+        Application.Current.MainPage.Navigation.RemovePage(this);
         await Application.Current.MainPage.Navigation.PushModalAsync(new MainPage());
     }
 

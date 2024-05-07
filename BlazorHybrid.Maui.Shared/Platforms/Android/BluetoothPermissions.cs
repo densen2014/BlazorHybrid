@@ -1,4 +1,10 @@
-﻿namespace BlazorHybrid.Maui.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+namespace BlazorHybrid.Maui.Shared;
 
 /// <summary>
 /// 自定义蓝牙权限，MAUI暂不提供蓝牙权限

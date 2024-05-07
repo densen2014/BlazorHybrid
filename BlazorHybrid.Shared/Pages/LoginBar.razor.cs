@@ -28,11 +28,11 @@ public partial class LoginBar
         if (firstRender)
         {
             States.Width = await JS.InvokeAsync<int>("eval", "window.innerWidth");
-            States.Username = await Storage.GetValue("username","");
+            States.Username = await Storage.GetValue("username", "");
             if (!string.IsNullOrEmpty(States.Username))
             {
                 States.Remember = true;
-                if (!string.IsNullOrEmpty(await Storage.GetValue("hash","")))
+                if (!string.IsNullOrEmpty(await Storage.GetValue("hash", "")))
                 {
                     States.RememberPassword = true;
                     States.Hash = await Storage.GetValue("hash", "");
@@ -79,7 +79,7 @@ public partial class LoginBar
             await ToastService.Error("登录失败! ", "用户名或密码不能为空.");
             return;
         }
-        var res = DataService.Login(States.Username, States.Password??"", States.Hash);
+        var res = DataService.Login(States.Username, States.Password ?? "", States.Hash);
         if (res.users != null)
         {
             States.User = res.users;

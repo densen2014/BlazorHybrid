@@ -1,4 +1,10 @@
-﻿using Android;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using Android;
 using Android.App;
 using Android.Content.PM;
 using Android.Graphics;
@@ -9,7 +15,6 @@ using AndroidX.Activity.Result;
 using AndroidX.Activity.Result.Contract;
 using AndroidX.Core.Content;
 using Java.Interop;
-using Microsoft.AspNetCore.Components.WebView.Maui;
 using View = Android.Views.View;
 using WebView = Android.Webkit.WebView;
 

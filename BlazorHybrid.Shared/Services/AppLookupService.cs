@@ -1,5 +1,11 @@
-﻿using BootstrapBlazor.Components;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
 using BlazorHybrid.Shared;
+using BootstrapBlazor.Components;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +20,7 @@ public class AppLookupService : ILookupService
     public AppLookupService(IServiceProvider provider, DataService dataService)
     {
         Provider = provider;
-        DataService= dataService;
+        DataService = dataService;
     }
 
     public IEnumerable<SelectedItem>? GetItemsByKey(string? key)
@@ -22,10 +28,11 @@ public class AppLookupService : ILookupService
         IEnumerable<SelectedItem>? items = null;
         if (key == "Users")
         {
-            items = DataService.GetUsers()?.Select(a => new SelectedItem() { 
-                Value = a.UserID.ToString(), 
-                Text = a.FullName??"*",
-                GroupName =a.Type?.ToString ()??"",
+            items = DataService.GetUsers()?.Select(a => new SelectedItem()
+            {
+                Value = a.UserID.ToString(),
+                Text = a.FullName ?? "*",
+                GroupName = a.Type?.ToString() ?? "",
             });
         }
         return items;
@@ -33,6 +40,6 @@ public class AppLookupService : ILookupService
 
     public IEnumerable<SelectedItem>? GetItemsByKey(string? key, object? data)
     {
-       return GetItemsByKey(key);
+        return GetItemsByKey(key);
     }
 }

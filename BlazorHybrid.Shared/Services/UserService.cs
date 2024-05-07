@@ -1,4 +1,10 @@
-﻿namespace BlazorHybrid.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+namespace BlazorHybrid.Shared;
 
 /// <summary>
 /// 用户
@@ -6,9 +12,9 @@
 public partial class DataService
 {
 
-    public (Users? users, string? message) Login(string name, string password,string? hash=null)
+    public (Users? users, string? message) Login(string name, string password, string? hash = null)
     {
-        password = hash?? Hasher.HashPassword(password, SysInfo?.Salt);
+        password = hash ?? Hasher.HashPassword(password, SysInfo?.Salt);
         var maxTrialTimes = SysInfo?.MaxTrialTimes ?? 50;
         var user = Fsql.Select<Users>().Where(a => a.Username == name && a.Password == password && (a.TrialTimes ?? maxTrialTimes) > 0).First();
         if (user != null)

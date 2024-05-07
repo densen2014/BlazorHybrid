@@ -1,7 +1,10 @@
-﻿using AME;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
 using BlazorHybrid.Core.Device;
-using DocumentFormat.OpenXml.EMMA;
-using NPOI.SS.Formula.Functions;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
@@ -60,7 +63,7 @@ public partial class BluetoothLEServices
     /// </summary>
     public event Action<bool>? OnStateConnect;
 
-    private IBluetoothLE CurrentBle;
+    private IBluetoothLE? CurrentBle;
     private IAdapter? CurrentAdapter;
 
     private CancellationTokenSource? _scanForAedCts;
@@ -117,6 +120,7 @@ public partial class BluetoothLEServices
     /// <returns></returns>
     public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null)
     {
+
         Devices = new List<BleDevice>();
 
         //检查获取蓝牙权限
@@ -128,10 +132,13 @@ public partial class BluetoothLEServices
 
         LazyLoad();
 
+        if (CurrentAdapter == null)
+        {
+            return null;
+        }
         try
         {
-
-            CurrentAdapter!.DeviceDiscovered += Adapter_DeviceDiscovered;
+            CurrentAdapter.DeviceDiscovered += Adapter_DeviceDiscovered;
             CurrentAdapter.ScanTimeoutElapsed += Adapter_ScanTimeoutElapsed;
 
             //蓝牙扫描时间
@@ -140,7 +147,7 @@ public partial class BluetoothLEServices
             //默认LowPower
             CurrentAdapter.ScanMode = ScanMode.Balanced;
 
-            OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle.IsAvailable}, 已开启={CurrentBle.IsOn}, 状态={CurrentBle.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
+            OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle?.IsAvailable}, 已开启={CurrentBle?.IsOn}, 状态={CurrentBle?.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
 
             if (deviceGuid != null && deviceGuid != Guid.Empty)
                 Device = await CurrentAdapter.ConnectToKnownDeviceAsync(deviceGuid.Value, cancellationToken: _scanForAedCts.Token);
@@ -228,7 +235,7 @@ public partial class BluetoothLEServices
     /// </summary>
     private void BLE_beacon_AdvertisementRecords(IDevice device)
     {
-        if (device.AdvertisementRecords.Count==0) { return; }
+        if (device.AdvertisementRecords.Count == 0) { return; }
         device.AdvertisementRecords.ToList().ForEach((e) => OnMessage?.Invoke($"{device.Name}信标广播: {e}{Environment.NewLine}"));
     }
     private void Adapter_ScanTimeoutElapsed(object? sender, EventArgs e)
@@ -236,7 +243,7 @@ public partial class BluetoothLEServices
         OnMessage?.Invoke("蓝牙扫描超时结束");
     }
 
-#endregion
+    #endregion
 
     #region 连接外设
 
@@ -479,10 +486,10 @@ public partial class BluetoothLEServices
             OnMessage?.Invoke($"没有连接{TagDevice.Name}");
             return false;
         }
-        if (Notify !=null && Device.State == DeviceState.Connected)
+        if (Notify != null && Device.State == DeviceState.Connected)
         {
-           await Notify.StopUpdatesAsync();
-            Notify=null;
+            await Notify.StopUpdatesAsync();
+            Notify = null;
             OnMessage?.Invoke($"停止监听{TagDevice.Name}");
         }
 
@@ -499,7 +506,7 @@ public partial class BluetoothLEServices
     public async Task<string?> ReadDeviceName(Guid? serviceid, Guid? characteristic)
     {
         ReadDeviceNameResult = null;
-        await StopUpdatesAsync(); 
+        await StopUpdatesAsync();
 
         OnMessage?.Invoke($"开始获取服务");
 
@@ -515,7 +522,7 @@ public partial class BluetoothLEServices
         {
             OnMessage?.Invoke("获取特征失败.");
         }
-        else  if (deviceNameCharacteristic.CanRead)
+        else if (deviceNameCharacteristic.CanRead)
         {
             //读取设备名特征值
             var ary = await ReadDataAsync(deviceNameCharacteristic);
@@ -525,20 +532,21 @@ public partial class BluetoothLEServices
             {
                 //getUint8：读取1个字节，返回一个无符号的8位整数。
                 //  logII('> Battery Level is ' + value.getUint8(0) + '%');
-                var hr = (sbyte) ary[0];
-                ReadDeviceNameResult = Encoding.ASCII.GetString(ary) + $"  电池 {hr}%" ;
+                var hr = (sbyte)ary[0];
+                ReadDeviceNameResult = Encoding.ASCII.GetString(ary) + $"  电池 {hr}%";
 
             }
             else if (ary == null)
             {
                 OnMessage?.Invoke("数据为空");
             }
-        }else 
+        }
+        else
         {
             OnMessage?.Invoke("不可读, 接收消息通知.");
             #region notify类型特征值接收消息通知
 
-            Notify= deviceNameCharacteristic;
+            Notify = deviceNameCharacteristic;
             deviceNameCharacteristic.ValueUpdated += NotifyCharacteristic_ValueUpdated;
             await deviceNameCharacteristic.StartUpdatesAsync();
 
@@ -558,12 +566,12 @@ public partial class BluetoothLEServices
         bool HRC2 = (flags & 1) == 1;
         if (HRC2) //this means the BPM is un uint16
         {
-             hr = BitConverter.ToInt16(heartRateRecord, offset);
+            hr = BitConverter.ToInt16(heartRateRecord, offset);
             offset += 2;
         }
         else //BPM is uint8
         {
-             hr = heartRateRecord[offset];
+            hr = heartRateRecord[offset];
             offset += 1;
         }
 

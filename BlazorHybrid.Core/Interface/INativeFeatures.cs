@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BlazorHybrid.Core;
@@ -10,7 +16,7 @@ public partial interface INativeFeatures
     Task<string> TakePhoto();
     Task<string> PickFile();
 
-    Task<string> CheckPermissionsLocation(); 
+    Task<string> CheckPermissionsLocation();
 
     Task<(double? latitude, double? longitude, string message)> GetCachedLocation();
     Task<(double? latitude, double? longitude, string message)> GetCurrentLocation();
@@ -68,6 +74,6 @@ public partial interface INativeFeatures
     void LoadUrl(string? url);
 
     Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')");
-    Task<(string message,object callback)> CallNativeFeatures(EnumNativeFeatures features,object[]? args, bool? on);
+    Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on);
 
 }

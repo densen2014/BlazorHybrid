@@ -1,4 +1,10 @@
-﻿using BlazorHybrid.Core.Device;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Core.Device;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,4 +1,10 @@
-﻿namespace BlazorHybrid.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+namespace BlazorHybrid.Shared;
 
 /// <summary>
 /// 用户类型
@@ -11,4 +17,3 @@ public enum UserType
     管理员,
     超级用户,
 }
- 

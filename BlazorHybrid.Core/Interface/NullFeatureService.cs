@@ -1,9 +1,15 @@
-﻿using System;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Core.Device;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using BlazorHybrid.Core.Device;
 
 namespace BlazorHybrid.Core;
 
@@ -167,6 +173,6 @@ public class NullFeatureService : INativeFeatures
 
     public Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on)
     {
-        return Task.FromResult(  ("未实现", new object()));
+        return Task.FromResult(("未实现", new object()));
     }
 }

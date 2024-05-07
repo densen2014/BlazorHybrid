@@ -59,7 +59,7 @@ public partial class Heartrate : IAsyncDisposable
         {
             if (firstRender)
             {
-                Device??= new BluetoothDevice();
+                Device ??= new BluetoothDevice();
                 module = await JS!.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.Bluetooth/lib/heartrate/app.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
                 InstanceHeartrate = DotNetObjectReference.Create(this);
             }

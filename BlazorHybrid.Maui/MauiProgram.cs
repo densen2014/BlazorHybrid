@@ -1,4 +1,10 @@
-﻿using BlazorHybrid.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using System.Diagnostics;
@@ -145,5 +151,5 @@ public static class MauiProgram
 
         return builder.Build();
     }
-   
+
 }

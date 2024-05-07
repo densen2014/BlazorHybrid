@@ -1,14 +1,18 @@
-﻿using Android.App;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.Nfc;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.Content;
 using DH.NFC;
-using AndroidX.Core.App;
-using Android;
 
 namespace BlazorHybrid.Maui;
 

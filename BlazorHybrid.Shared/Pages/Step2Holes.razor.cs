@@ -106,7 +106,7 @@ public partial class Step2Holes
         StateHasChanged();
         if (dataUrlList.Any())
         {
-            var list = dataUrlList.Where(a=>a.DataUrl!=null).Select(a => a.DataUrl??"").ToList();
+            var list = dataUrlList.Where(a => a.DataUrl != null).Select(a => a.DataUrl ?? "").ToList();
             var res = await DataService.SaveProjectPhotosAsync(list);
             if (res > 0)
             {
@@ -127,8 +127,8 @@ public partial class Step2Holes
         await ToastService.Error("保存照片出错", message);
     }
 
-   
-     
+
+
 }
 
 

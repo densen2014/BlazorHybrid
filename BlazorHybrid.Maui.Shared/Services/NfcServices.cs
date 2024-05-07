@@ -1,4 +1,10 @@
-﻿using BlazorHybrid.Core.Device;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Core.Device;
 using DH.NFC;
 
 namespace BlazorHybrid.Maui.Shared;
@@ -8,7 +14,7 @@ namespace BlazorHybrid.Maui.Shared;
 /// </summary>
 public class NfcServices
 {
- 
+
     public async Task GetBatteryLevel()
     {
         // Event raised when a ndef message is received.
@@ -30,7 +36,7 @@ public class NfcServices
 
         UpdateDevicename?.Invoke($"设备 ");
 
- 
+
         UpdateValue?.Invoke($"%");
 
         var record = new NFCNdefRecord

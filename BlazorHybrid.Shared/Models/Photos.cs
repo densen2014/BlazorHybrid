@@ -1,15 +1,21 @@
-﻿using BootstrapBlazor.Components;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BootstrapBlazor.Components;
 using FreeSql.DataAnnotations;
 using System.ComponentModel;
 
 namespace BlazorHybrid.Shared;
 
- 
+
 /// <summary>
 /// 照片表
 /// </summary>
 [AutoGenerateClass(Searchable = true, Filterable = true, Sortable = true, ShowTips = true)]
-public class Photos  
+public class Photos
 {
 
     [AutoGenerateColumn(Visible = false, Editable = false)]
@@ -17,7 +23,7 @@ public class Photos
     public Guid? PhotoID { get; set; }
 
     [DisplayName("所属工程代号")]
-    public string? ProjectID { get; set; } 
+    public string? ProjectID { get; set; }
 
     [DisplayName("照片")]
     [Column(StringLength = -2)]
@@ -45,7 +51,7 @@ public class Photos
 
     [AutoGenerateColumn(FormatString = "yyyy-MM-dd")]
     [DisplayName("拍摄日期")]
-    public DateTime? Date { get; set; }=DateTime.Now;
+    public DateTime? Date { get; set; } = DateTime.Now;
 
     ///// <summary>
     ///// 位置型,自动填写

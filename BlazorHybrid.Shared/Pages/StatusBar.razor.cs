@@ -80,12 +80,12 @@ public partial class StatusBar
 
     private async Task OnValidChangePasswordSubmit(EditContext context)
     {
-        if (States.User == null || passwordModel?.Password==null)
+        if (States.User == null || passwordModel?.Password == null)
         {
             return;
         }
 
-        var res = DataService.ChangePassword(States.User.UserID , passwordModel.Password);
+        var res = DataService.ChangePassword(States.User.UserID, passwordModel.Password);
         if (res.users != null)
         {
             States.User = res.users;

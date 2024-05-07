@@ -5,7 +5,6 @@
 // **********************************
 
 using BootstrapBlazor.Components;
-using System.IO.Pipelines;
 using System.Text;
 
 namespace BlazorHybrid.Core.Device;
@@ -17,7 +16,7 @@ public partial class Bluetooth : IAsyncDisposable
     private List<BleService>? Services;
     private List<BleCharacteristic>? Characteristics;
     private string? ReadResult;
-    private new string? Message="";
+    private new string? Message = "";
 
     BleTagDevice BleInfo { get; set; } = new BleTagDevice();
 
@@ -61,51 +60,51 @@ public partial class Bluetooth : IAsyncDisposable
         try
         {
 
-        if (IsInit) return true;
+            if (IsInit) return true;
 
-        if (!Tools.IsMaui())
-        {
-            await ToastService.Warning("目前只支持MAUI");
-            return false;
-        }
-        if (await Tools.BluetoothIsBusy())
-        {
-            await ToastService.Warning("蓝牙正在使用中，请稍后再试");
-            return false;
-        }
-        Tools.OnMessage += Tools_OnMessage;
-        Tools.OnDataReceived += Tools_OnDataReceived;
-        Tools.OnStateConnect += Tools_OnStateConnect;
-        Tools.SetTagDeviceName(BleInfo);
-        IsInit = true;
-
-        DemoDeviceList.ForEach(a => DemoList.Add(new SelectedItem() { Text = a.Split('\r')[0], Value = a }));
-
-        StateHasChanged();
-
-        var deviceID = await Storage.GetValue("bleDeviceID",string.Empty);
-        if (!string.IsNullOrEmpty(deviceID))
-        {
-            BleInfo.Name = await Storage.GetValue("bleDeviceName", string.Empty);
-            BleInfo.DeviceID = Guid.Parse(deviceID);
-            var serviceid = await Storage.GetValue("bleServiceid", string.Empty);
-            if (!string.IsNullOrEmpty(serviceid)) BleInfo.Serviceid = Guid.Parse(serviceid);
-            var characteristic = await Storage.GetValue("bleCharacteristic", string.Empty);
-            if (!string.IsNullOrEmpty(characteristic)) BleInfo.Characteristic = Guid.Parse(characteristic);
-            var auto = await Storage.GetValue("bleAutoConnect", string.Empty);
-            if (auto == "True")
+            if (!Tools.IsMaui())
             {
-                IsAuto= true;
-                await AutoRead();
-
+                await ToastService.Warning("目前只支持MAUI");
+                return false;
             }
-        }
-        return true;
+            if (await Tools.BluetoothIsBusy())
+            {
+                await ToastService.Warning("蓝牙正在使用中，请稍后再试");
+                return false;
+            }
+            Tools.OnMessage += Tools_OnMessage;
+            Tools.OnDataReceived += Tools_OnDataReceived;
+            Tools.OnStateConnect += Tools_OnStateConnect;
+            Tools.SetTagDeviceName(BleInfo);
+            IsInit = true;
+
+            DemoDeviceList.ForEach(a => DemoList.Add(new SelectedItem() { Text = a.Split('\r')[0], Value = a }));
+
+            StateHasChanged();
+
+            var deviceID = await Storage.GetValue("bleDeviceID", string.Empty);
+            if (!string.IsNullOrEmpty(deviceID))
+            {
+                BleInfo.Name = await Storage.GetValue("bleDeviceName", string.Empty);
+                BleInfo.DeviceID = Guid.Parse(deviceID);
+                var serviceid = await Storage.GetValue("bleServiceid", string.Empty);
+                if (!string.IsNullOrEmpty(serviceid)) BleInfo.Serviceid = Guid.Parse(serviceid);
+                var characteristic = await Storage.GetValue("bleCharacteristic", string.Empty);
+                if (!string.IsNullOrEmpty(characteristic)) BleInfo.Characteristic = Guid.Parse(characteristic);
+                var auto = await Storage.GetValue("bleAutoConnect", string.Empty);
+                if (auto == "True")
+                {
+                    IsAuto = true;
+                    await AutoRead();
+
+                }
+            }
+            return true;
 
         }
         catch (Exception ex)
         {
-             System.Console.WriteLine(ex.Message);
+            System.Console.WriteLine(ex.Message);
         }
         return false;
     }
@@ -161,7 +160,7 @@ public partial class Bluetooth : IAsyncDisposable
 
     private async void Tools_OnDataReceived(string message)
     {
-        ReadResult=message;
+        ReadResult = message;
         Tools_OnMessage(message);
         await InvokeAsync(StateHasChanged);
     }
@@ -177,7 +176,7 @@ public partial class Bluetooth : IAsyncDisposable
     //扫描外设
     private async void ScanDevice()
     {
-        if (!await Init()) return ;
+        if (!await Init()) return;
         //BleInfo.Name = "QR380A-165D";
 
         IsScanning = true;
