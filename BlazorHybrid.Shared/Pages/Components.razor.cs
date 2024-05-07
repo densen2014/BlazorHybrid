@@ -39,6 +39,7 @@ public partial class Components
                 new ResCustomersDto("导航",null,Tools.NavigateToMadrid),
                 new ResCustomersDto("文件",async () => await ShowBottomMessage("选择文件:" + await Tools.PickFile())),
                 new ResCustomersDto("蓝牙",async() => {await 蓝牙();StateHasChanged(); }),
+                new ResCustomersDto("蓝牙打印",async() => {await 蓝牙打印();StateHasChanged(); }),
                 new ResCustomersDto("NFC",() => NavigationManager.NavigateTo("NfcBase")),
                 new ResCustomersDto("NFC(xaml)",null,Tools.ReadNFC),
                 new ResCustomersDto("原生消息框",async () => await Tools.Alert("Alert", $"hello from native UI", "OK")),
@@ -77,6 +78,12 @@ public partial class Components
     private Task 蓝牙()
     {
         NavigationManager.NavigateTo("/bluetooth");
+        return Task.CompletedTask;
+    }
+
+    private Task 蓝牙打印()
+    {
+        NavigationManager.NavigateTo("/bluetoothprinter");
         return Task.CompletedTask;
     }
 

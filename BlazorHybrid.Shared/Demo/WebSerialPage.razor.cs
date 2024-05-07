@@ -6,11 +6,8 @@
 
 
 using BootstrapBlazor.Components;
-using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.NetworkInformation;
-using System.Threading;
 
 namespace BlazorHybrid.Shared.Pages;
 
@@ -115,5 +112,5 @@ public partial class WebSerialPage
         //StateHasChanged();
         return Task.CompletedTask;
     }
- 
+
 }

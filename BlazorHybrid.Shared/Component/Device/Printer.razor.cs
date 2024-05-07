@@ -108,7 +108,7 @@ PRINT
                 //Opt.ServiceUuid = "e7810a71-73ae-499d-8c15-faa9aef0c3f2";
                 //Opt.FiltersServices =new object[] { 0xff00, 0xfee7, "e7810a71-73ae-499d-8c15-faa9aef0c3f2" };
                 Opt.ServiceUuid = Opt.ServiceUuid ?? 0xff00;
-                await module.InvokeVoidAsync("printFunction", InstancePrinter, PrinterElement,Opt);
+                await module.InvokeVoidAsync("printFunction", InstancePrinter, PrinterElement, Opt);
             }
         }
         catch (Exception e)
@@ -148,7 +148,7 @@ PRINT
     /// <param name="status"></param>
     /// <returns></returns>
     [JSInvokable]
-    public async Task GetResult(PrinterOption opt,string status)
+    public async Task GetResult(PrinterOption opt, string status)
     {
         try
         {
@@ -195,11 +195,11 @@ PRINT
     /// <summary>
     /// 连接指定已配对设备
     /// </summary>
-    public virtual async Task ConnectDevices(string? devicename=null)
+    public virtual async Task ConnectDevices(string? devicename = null)
     {
         try
         {
-            if (devicename!=null) Opt.Devicename = devicename;
+            if (devicename != null) Opt.Devicename = devicename;
             await module!.InvokeVoidAsync("connectdevice", InstancePrinter, PrinterElement, Opt, Commands);
         }
         catch (Exception e)
@@ -213,7 +213,7 @@ PRINT
     /// </summary>
     [Parameter]
     public Func<string, Task>? OnError { get; set; }
- 
+
     /// <summary>
     /// 状态更新回调方法
     /// </summary>

@@ -1,4 +1,9 @@
-﻿using BlazorHybrid.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
 using BootstrapBlazor.Components;
 using FreeSql.DataAnnotations;
 using System.ComponentModel;
@@ -75,7 +80,7 @@ public class Users
 
     [AutoGenerateColumn(Visible = false, IsReadonlyWhenAdd = true, IsReadonlyWhenEdit = true)]
     [DisplayName("登录次数")]
-    public long? LoginTimes { get; set; } = 0; 
+    public long? LoginTimes { get; set; } = 0;
 
     public override string ToString() => $"[{UserID}] {Username} ({FullName})";
 
@@ -131,7 +136,7 @@ public class Users
                 Type=UserType.正式用户,
                 Company="中铁十一局集团第二工程有限公司" ,
                 Enable =true
-                }, 
+                },
         };
 
         return ItemList;

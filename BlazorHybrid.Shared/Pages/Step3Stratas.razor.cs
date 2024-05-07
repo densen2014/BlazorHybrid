@@ -7,7 +7,6 @@
 using BootstrapBlazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System.Diagnostics.CodeAnalysis;
 
 namespace BlazorHybrid.Shared.Pages;
 
@@ -25,7 +24,7 @@ public partial class Step3Stratas
 
     protected Modal? ExtraLargeModal { get; set; }
 
-    int[]? PageItemsSource { get; set; }  
+    int[]? PageItemsSource { get; set; }
 
     protected override void OnInitialized()
     {
@@ -192,7 +191,7 @@ public partial class Step3Stratas
         }
         return Task.FromResult(item);
     }
-     
+
 
     private async Task GetLocation()
     {
@@ -221,7 +220,7 @@ public partial class Step3Stratas
         StateHasChanged();
         return Task.CompletedTask;
         //await ToastService.Success("完成", $"获取定位成功. ({geolocations.Longitude},{geolocations.Latitude})");
-    } 
+    }
 
 }
 

@@ -4,7 +4,6 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using BlazorHybrid;
 using BlazorHybrid.Shared;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
@@ -40,7 +39,7 @@ builder.Services.AddServerSideBlazor(a =>
     //可为客户端上载流缓冲的最大项数。 如果达到此限制，则会阻止处理调用，直到服务器处理流项。
     o.StreamBufferCapacity = 20;
 });
-builder.Services.AddSharedExtensions(); 
+builder.Services.AddSharedExtensions();
 builder.Services.AddSingleton(_appState);
 
 var app = builder.Build();
@@ -57,7 +56,7 @@ else
 app.UseResponseCompression();
 
 app.UseHttpsRedirection();
-var provider = new FileExtensionContentTypeProvider { Mappings = { [".properties"] = "application/octet-stream" , [".mp4"] = "application/octet-stream" } };
+var provider = new FileExtensionContentTypeProvider { Mappings = { [".properties"] = "application/octet-stream", [".mp4"] = "application/octet-stream" } };
 
 app.UseStaticFiles(new StaticFileOptions
 {

@@ -1,5 +1,9 @@
-﻿using BlazorHybrid.Maui.Shared;
-using Microsoft.Maui.Controls;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
 using Application = Microsoft.Maui.Controls.Application;
 
 namespace BlazorHybrid.Maui;
@@ -14,7 +18,7 @@ public partial class App : Application
         MainPage = new MainPage();
         //MainPage = new NavigationPage(new MainPage());
 
-       
+
     }
 
 

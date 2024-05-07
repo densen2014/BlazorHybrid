@@ -1,4 +1,10 @@
-﻿using BlazorHybrid.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using System.Diagnostics;
@@ -130,9 +136,9 @@ public static class MauiProgram
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Services.AddLogging(logging =>
         {
-#if WINDOWS && NET7_0
+#if WINDOWS && NET7_0_OR_GREATER
 				logging.AddDebug();
-#elif NET7_0
+#elif NET7_0_OR_GREATER
             logging.AddConsole();
 #endif
 
@@ -145,5 +151,5 @@ public static class MauiProgram
 
         return builder.Build();
     }
-   
+
 }

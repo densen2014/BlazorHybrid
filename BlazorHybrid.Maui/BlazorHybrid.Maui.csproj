@@ -50,37 +50,17 @@
 		<UseInterpreter>true</UseInterpreter> 
 	</PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
-      <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
-      <CodesignProvision>VS: es.app1.BlazorHybrid Development</CodesignProvision>
-      <ProvisioningType>automatic</ProvisioningType>
-    </PropertyGroup>
-    
-    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-      <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
-      <CodesignProvision>VS: es.app1.BlazorHybrid Development</CodesignProvision>
-      <ProvisioningType>automatic</ProvisioningType>
-    </PropertyGroup>
-
     <!--mac调试-->
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' and '$(Configuration)' == 'Debug'">
         <CodeSignEntitlements>Platforms/MacCatalyst/Entitlements.Debug.plist</CodeSignEntitlements>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
-      <CreatePackage>false</CreatePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
-      <CreatePackage>false</CreatePackage>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+      <AndroidPackageFormat>apk</AndroidPackageFormat>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
       <CreatePackage>false</CreatePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
-      <CreatePackage>false</CreatePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
-      <AndroidPackageFormat>apk</AndroidPackageFormat>
+      <CodesignProvision>iOS Team Provisioning Profile: es.app1.BlazorHybrid</CodesignProvision>
     </PropertyGroup>
     <ItemGroup>
         <!-- App Icon -->
@@ -100,24 +80,16 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.*" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.*" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.*" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.*" />
-        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="8.*" />
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.*" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.*" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\BlazorHybrid.Maui.Shared\BlazorHybrid.Maui.Shared.csproj" />
-    </ItemGroup>
-
-    <ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionBlazorHybridMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
-    
-
+    </ItemGroup> 
+     
 </Project>

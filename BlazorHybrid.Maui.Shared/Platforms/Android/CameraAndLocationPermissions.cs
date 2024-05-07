@@ -1,15 +1,21 @@
-﻿using Android.Webkit;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using Android.Webkit;
 
 namespace BlazorHybrid.Maui.Shared;
 
-    /// <summary>
-    /// 请求摄像机和位置
-    /// </summary>
-    public class CameraAndLocationPerms : Permissions.BasePlatformPermission
-    { 
-        public override (string androidPermission, bool isRuntime)[] RequiredPermissions =>
-            new List<(string androidPermission, bool isRuntime)>
-            {
+/// <summary>
+/// 请求摄像机和位置
+/// </summary>
+public class CameraAndLocationPerms : Permissions.BasePlatformPermission
+{
+    public override (string androidPermission, bool isRuntime)[] RequiredPermissions =>
+        new List<(string androidPermission, bool isRuntime)>
+        {
                             (global::Android.Manifest.Permission.Camera, true),
                             (global::Android.Manifest.Permission.CaptureAudioOutput, true),
                             (global::Android.Manifest.Permission.CaptureSecureVideoOutput, true),
@@ -23,8 +29,8 @@ namespace BlazorHybrid.Maui.Shared;
                             (global::Android.Manifest.Permission.RecordAudio, true),
                             (global::Android.Manifest.Permission.Vibrate , true),
                             (global::Android.Manifest.Permission.WriteSettings , true),
-            }.ToArray();
-    }
+        }.ToArray();
+}
 
 
 public class MauiWebChromeClient : WebChromeClient

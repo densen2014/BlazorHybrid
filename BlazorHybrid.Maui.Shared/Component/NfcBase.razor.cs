@@ -1,4 +1,10 @@
-﻿using BootstrapBlazor.Components;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BootstrapBlazor.Components;
 using DH.NFC;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
@@ -62,7 +68,7 @@ public partial class NfcBase : IAsyncDisposable
     /// 跟踪Android设备是否仍在监听的属性，
     /// 因此它可以向用户指示这一点。
     /// </summary>
-    public bool DeviceIsListening 
+    public bool DeviceIsListening
     {
         get => _deviceIsListening;
         set
@@ -275,7 +281,7 @@ public partial class NfcBase : IAsyncDisposable
         }
     }
 
- 
+
     /// <summary>
     /// 当将引发<see cref="Current_OnTagDiscovered(ITagInfo, bool)"/>事件时，启动发布操作以写入文本标签
     /// </summary>

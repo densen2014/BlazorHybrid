@@ -73,7 +73,7 @@ public partial class BatteryLevel : IAsyncDisposable
 
         if (await Tools.BluetoothIsBusy())
         {
-            await ToastService.Warning("蓝牙正在使用中，请稍后再试");
+            await ToastService.Warning("提示","蓝牙正在使用中，请稍后再试");
             return;
         }
 
@@ -97,7 +97,7 @@ public partial class BatteryLevel : IAsyncDisposable
         {
             if (await Tools.BluetoothIsBusy())
             {
-                await ToastService.Warning("蓝牙正在使用中，请稍后再试");
+                await ToastService.Warning("提示","蓝牙正在使用中，请稍后再试");
                 return;
             }
             await Init();

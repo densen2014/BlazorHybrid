@@ -1,4 +1,10 @@
-﻿#if WINDOWS
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+#if WINDOWS
 using Windows.Storage;
 using Windows.Media.Capture;
 using Windows.System;
@@ -763,7 +769,7 @@ public class MauiFeatureService : Page, INativeFeatures
 
     public async Task<List<BleDevice>?> StartScanAsync() => await MyBleTester.StartScanAsync();
 
-    public async Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble) => await MyBleTester.ConnectDeviceAsync(ble);
+    public async Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble, bool getNotify = false, byte[]? sentbytes = null) => await MyBleTester.ConnectDeviceAsync(ble, getNotify, sentbytes);
 
     public async Task<List<BleService>?> ConnectToKnownDeviceAsync(Guid deviceID, string? deviceName = null) => await MyBleTester.ConnectToKnownDeviceAsync(deviceID, deviceName);
 
@@ -773,7 +779,7 @@ public class MauiFeatureService : Page, INativeFeatures
 
     public async Task<byte[]?> ReadDataAsync(Guid characteristic) => await MyBleTester.ReadDataAsync(characteristic);
 
-    public async Task<bool> SendDataAsync(Guid characteristic, byte[] ary) => await MyBleTester.SendDataAsync(characteristic, ary);
+    public async Task<bool> SendDataAsync(Guid characteristic, byte[]? ary) => await MyBleTester.SendDataAsync(characteristic, ary);
 
     public async Task<bool> DisConnectDeviceAsync() => await MyBleTester.DisConnectDeviceAsync();
 
@@ -846,14 +852,14 @@ public class MauiFeatureService : Page, INativeFeatures
 #elif TIZEN
 #endif
     }
- 
+
     public async Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on)
     {
-        switch (features)   
+        switch (features)
         {
             case EnumNativeFeatures.Flashlight:
-                var res = await SetFlashlight(on: on??false);
-                return (res, new object()); 
+                var res = await SetFlashlight(on: on ?? false);
+                return (res, new object());
             case EnumNativeFeatures.SensorSpeed:
                 break;
             case EnumNativeFeatures.Accelerometer:

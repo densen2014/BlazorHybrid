@@ -4,7 +4,7 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using BlazorHybrid.Core; 
+using BlazorHybrid.Core;
 using BlazorHybrid.Shared;
 using BootstrapBlazor.Components;
 using BootstrapBlazor.WebAPI.Services;
@@ -20,8 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// 服务扩展类
 /// </summary>
 public static class SharedServiceCollectionExtensions
-{  
- 
+{
+
     /// <summary>
     /// 服务扩展类,<para></para>
     /// 包含各平台差异实现
@@ -56,14 +56,14 @@ public static class SharedServiceCollectionExtensions
         services.AddFreeSql(option =>
         {
             option
-//#if DEBUG
+                 //#if DEBUG
                  .UseConnectionString(FreeSql.DataType.Sqlite, $"Data Source={dbpath};")
                  .UseAutoSyncStructure(true)
                  //调试sql语句输出
                  .UseMonitorCommand(cmd => System.Console.WriteLine(cmd.CommandText + Environment.NewLine))
-//#else
-//                 .UseConnectionString(FreeSql.DataType.MySql, connstr, typeof(FreeSql.MySql.MySqlProvider<>))
-//#endif
+                 //#else
+                 //                 .UseConnectionString(FreeSql.DataType.MySql, connstr, typeof(FreeSql.MySql.MySqlProvider<>))
+                 //#endif
                  .UseNoneCommandParameter(true);
 
         }, configEntityPropertyImage: true);

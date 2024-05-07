@@ -4,6 +4,11 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
+using Button = System.Windows.Forms.Button;
+using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
+using SizeF = System.Drawing.SizeF;
+
 namespace BlazorHybrid.Win
 {
     partial class Form1

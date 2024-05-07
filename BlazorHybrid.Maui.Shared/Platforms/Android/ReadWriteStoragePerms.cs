@@ -1,6 +1,12 @@
-﻿namespace BlazorHybrid.Maui.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
 
- /// <summary>
+namespace BlazorHybrid.Maui.Shared;
+
+/// <summary>
 /// 请求读取和写入存储访问
 /// </summary>
 public class ReadWriteStoragePerms : Permissions.BasePlatformPermission

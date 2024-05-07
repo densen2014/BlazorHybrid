@@ -1,4 +1,10 @@
-﻿using BlazorHybrid.Core.Device;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Core.Device;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,13 +31,13 @@ public partial interface INativeFeatures
     /// 扫描外设,返回设备列表
     /// </summary>
     /// <returns></returns>
-    Task<List<BleDevice>?> StartScanAsync();
+    Task<List<BleDevice>?> StartScanAsync(); 
 
     /// <summary>
     /// 连接外设
     /// </summary>
     /// <returns></returns>
-    Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble);
+    Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble, bool getNotify = false, byte[]? sentbytes = null); 
 
     /// <summary>
     /// 断开连接
@@ -63,7 +69,7 @@ public partial interface INativeFeatures
     /// <param name="ary"></param>
     /// <returns></returns>
 
-    Task<bool> SendDataAsync(Guid characteristic, byte[] ary);
+    Task<bool> SendDataAsync(Guid characteristic, byte[]? ary);
     Task GetBatteryLevel();
 
     /// <summary>

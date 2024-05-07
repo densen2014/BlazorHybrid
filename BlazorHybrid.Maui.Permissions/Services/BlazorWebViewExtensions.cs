@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Components.WebView;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Maui.Platform;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components.WebView.Maui;
-using Microsoft.Maui;
 using System.Diagnostics;
 #if ANDROID
 using Android.Webkit;
@@ -113,7 +118,7 @@ public partial class InitBlazorWebView : Page
         //如果设置为 true 且 Bounces 为 true，则在缩放超过该限制后，滚动视图将围绕缩放限制弹跳
         //e.WebView.ScrollView.BouncesZoom = false;
         // e.WebView.TintColor = UIKit.UIColor.Green;
-        e.WebView.AllowsLinkPreview=true;
+        e.WebView.AllowsLinkPreview = true;
         e.WebView.AllowsBackForwardNavigationGestures = true;
 #endif
         WebView = e.WebView;
@@ -138,7 +143,7 @@ public partial class InitBlazorWebView : Page
         e.UrlLoadingStrategy = UrlLoadingStrategy.OpenInWebView;
 
         //拦截可处理 IOS || MACCATALYST 下载文件, 简单测试一下
-        if (e.Url.ToString().EndsWith(".exe") || e.Url.ToString().EndsWith(".jpg") || e.Url.ToString().EndsWith(".png") || e.Url.Scheme == "blob") 
+        if (e.Url.ToString().EndsWith(".exe") || e.Url.ToString().EndsWith(".jpg") || e.Url.ToString().EndsWith(".png") || e.Url.Scheme == "blob")
         {
             Task.Run(async () => await DownloadAsync(e.Url));
         }
@@ -221,7 +226,7 @@ public partial class InitBlazorWebView : Page
         await DisplayAlert("Alert", msg, "OK");
     }
 
-    public async Task ExecuteScriptAsync(string js= "alert('hello from WebView JS')")
+    public async Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
     {
 #if WINDOWS 
         await WebView.ExecuteScriptAsync(js);

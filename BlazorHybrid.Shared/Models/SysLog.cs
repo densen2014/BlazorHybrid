@@ -1,9 +1,15 @@
-﻿using BootstrapBlazor.Components;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BootstrapBlazor.Components;
 using FreeSql.DataAnnotations;
 using System.ComponentModel;
 
 namespace BlazorHybrid.Shared;
- 
+
 
 /// <summary>
 /// 日志表
@@ -11,7 +17,7 @@ namespace BlazorHybrid.Shared;
 public class SysLog
 {
 
-    [AutoGenerateColumn(Editable = false,DefaultSort = true, DefaultSortOrder = SortOrder.Desc)]
+    [AutoGenerateColumn(Editable = false, DefaultSort = true, DefaultSortOrder = SortOrder.Desc)]
     [Column(IsIdentity = true, IsPrimary = true)]
     [DisplayName("序号")]
     public int ID { get; set; }

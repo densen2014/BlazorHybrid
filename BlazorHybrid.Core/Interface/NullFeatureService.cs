@@ -1,9 +1,15 @@
-﻿using System;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BlazorHybrid.Core.Device;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using BlazorHybrid.Core.Device;
 
 namespace BlazorHybrid.Core;
 
@@ -103,11 +109,6 @@ public class NullFeatureService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<bool> DisConnectDeviceAsync()
     {
         throw new NotImplementedException();
@@ -167,6 +168,11 @@ public class NullFeatureService : INativeFeatures
 
     public Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on)
     {
-        return Task.FromResult(  ("未实现", new object()));
+        return Task.FromResult(("未实现", new object()));
+    }
+
+    public Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble, bool getNotify = false, byte[]? sentbytes = null)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -18,7 +18,7 @@ public partial class WindowsTools
     public static AppWindow? AppWindow;
 
     public static void SetTitle(object currentWindow, string title)
-    { 
+    {
         IntPtr _windowHandle = WindowNative.GetWindowHandle(currentWindow);
         var windowId = Win32Interop.GetWindowIdFromWindow(_windowHandle);
 
@@ -26,7 +26,8 @@ public partial class WindowsTools
         SetTitle(title);
     }
 
-    public static void SetTitle(string title) {
+    public static void SetTitle(string title)
+    {
         if (AppWindow != null)
             AppWindow!.Title = title;
     }

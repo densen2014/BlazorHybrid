@@ -1,4 +1,10 @@
-﻿using BootstrapBlazor.Components;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BootstrapBlazor.Components;
 using FreeSql.DataAnnotations;
 using System.ComponentModel;
 
@@ -20,10 +26,10 @@ public class SysInfo
     public string? AppName { get; set; }
 
     [DisplayName("账号注册后默认启用")]
-    public bool AutoEnable { get; set; }  
+    public bool AutoEnable { get; set; }
 
     [DisplayName("强制使用本机功能")]
-    public bool ForceNativeFunction { get; set; }  
+    public bool ForceNativeFunction { get; set; }
 
     [DisplayName("账号试用次数")]
     public long? MaxTrialTimes { get; set; } = 50;
@@ -38,7 +44,7 @@ public class SysInfo
     {
         var Item = new SysInfo
         {
-            AppName= "演示 BlazorHybrid",
+            AppName = "演示 BlazorHybrid",
             Salt = "vG9L7i3dtQac"
         };
 

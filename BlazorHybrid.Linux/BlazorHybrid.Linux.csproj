@@ -23,7 +23,7 @@
 		<PackageReference Include="Bildstein.SpiderEye.Mac" Version="1.0.0-beta.5" />
 		<PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="Bildstein.SpiderEye.Windows" Version="1.0.0-beta.5" />
 		<PackageReference Include="System.IO.Ports" Version="8.*" />
-		<PackageReference Include="GtkSharp" Version="3.24.24.38" />
+		<PackageReference Include="GtkSharp" Version="3.24.24.95" />
     </ItemGroup>
     
     <ItemGroup>

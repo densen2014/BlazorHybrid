@@ -60,12 +60,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="AME.Extensions" Version="8.*" />
-		<PackageReference Include="BootstrapBlazor" Version="8.*" />
-		<PackageReference Include="BootstrapBlazor.FontAwesome" Version="8.*" />
+		<PackageReference Include="BootstrapBlazor" Version="8.5.5" />
+		<PackageReference Include="BootstrapBlazor.FontAwesome" Version="8.0.4" />
 		<PackageReference Include="BootstrapBlazor.Geolocation" Version="8.*" />
 		<PackageReference Include="BootstrapBlazor.ImageHelper" Version="0.0.7" />
 		<PackageReference Include="BootstrapBlazor.Viewer" Version="8.*" />
-		<PackageReference Include="BootstrapBlazor.WebAPI" Version="8.*" />
+		<PackageReference Include="BootstrapBlazor.WebAPI" Version="8.0.5" />
         <PackageReference Include="BootstrapBlazor.PdfReader" Version="8.*" />
         <PackageReference Include="BootstrapBlazor.VideoPlayer" Version="8.*" />
         <PackageReference Include="BootstrapBlazor.FileViewer" Version="8.*" />
@@ -80,6 +80,9 @@
         <PackageReference Include="ZXingBlazor" Version="1.*" />
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.*" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.*" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.21" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.21" />
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
     </ItemGroup>
 
 	<ItemGroup>

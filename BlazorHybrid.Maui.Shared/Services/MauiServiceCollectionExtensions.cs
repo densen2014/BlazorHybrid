@@ -5,7 +5,7 @@
 // **********************************
 
 using BlazorHybrid.Core;
-using BlazorHybrid.Maui.Shared; 
+using BlazorHybrid.Maui.Shared;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class SharedServiceCollectionExtensions
 {
 
- 
+
     /// <summary>
     /// 服务扩展类,<para></para>
     /// 包含各平台差异实现
@@ -26,10 +26,10 @@ public static class SharedServiceCollectionExtensions
     {
 
         services.AddSharedExtensions();
-		services.AddSingleton<BluetoothLEServices>();
+        services.AddSingleton<BluetoothLEServices>();
         services.AddSingleton<INativeFeatures, MauiFeatureService>();
         return services;
-    } 
+    }
 
 }
 

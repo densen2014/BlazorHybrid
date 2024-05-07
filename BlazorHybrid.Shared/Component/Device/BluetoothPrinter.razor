@@ -1,0 +1,147 @@
+﻿@inherits AppComponentBase
+@namespace BlazorHybrid.Core.Device
+@page "/bluetoothprinter"
+
+
+@{
+    var btnclass = "col-3 col-sm-3 col-md-4 col-lg-auto";
+}
+<div class="row">
+    <div class="col-12 col-m-6 col-sm-6">
+
+        <BootstrapInputGroup>
+            <BootstrapInput TValue="string" @bind-Value="NameFilter" />
+            <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
+            <Button Text="查找" OnClick="ScanPrinterDevice" />
+            <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
+            <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(!IsConnected)" />
+            <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@(!IsConnected)" />
+        </BootstrapInputGroup>
+
+        <div class="row mt-1 g-3">
+            <div class="@btnclass">
+                <Button Text="返回" OnClick="BackToHome" />
+            </div>
+            <div class="@btnclass">
+                <Button Text="扫描外设" @attributes=IsScanningCss OnClick="ScanDevice" />
+            </div>
+            @if (Devices != null)
+            {
+                <div class="@btnclass">
+                    <Button Text="连接" OnClick="OnDeviceSelect" />
+                </div>
+                <div class="@btnclass">
+                    <Button Text="断开" OnClick="OnDisConnectDevice" />
+                </div>
+                <div class="@btnclass">
+                    <Button Text="清空" OnClick="OnReset" />
+                </div>
+                @if (Characteristics != null)
+                {
+                    <div class="@btnclass">
+                        <Button Text="写入" OnClick="ReadDeviceName" />
+                    </div>
+                    <div class="@btnclass">
+                        <Button Text="读取" OnClick="ReadDeviceName" />
+                    </div>
+                }
+            }
+        </div>
+        @if (Devices != null)
+        {
+            <Table @ref="Table" TItem="BleDevice" Items="Devices" ShowDetailRow="(e)=>!string.IsNullOrEmpty(e.ServicesRemark)" 
+                   OnDoubleClickRowCallback="OnDoubleClickRowCallback()!" 
+                   IsAccordion IsFixedHeader Height="500" AllowResizing AllowDragColumn >
+                <TableColumns>
+                    <TableColumn @bind-Field="@context.Name" Text="名称" />
+                    <TableColumn @bind-Field="@context.Id" Text="ID" />
+                    <TableColumn @bind-Field="@context.Rssi" Text="信号" />
+                    <TableColumn @bind-Field="@context.Remark" Text="备注" />
+                    <TableColumn @bind-Field="@context.ServicesRemark" Text="服务" />
+                </TableColumns>
+                <DetailRowTemplate>
+                    <Table TItem="BleService" Items="@GetDetailDataSource(context)" ShowDetailRow="ShowDetailRow" 
+                           OnDoubleClickRowCallback="OnDoubleClickRowCallback2()!" 
+                           IsAccordion IsFixedHeader Height="200" AllowResizing AllowDragColumn>
+                        <TableColumns Context="service">
+                            <TableColumn @bind-Field="@service.Name" Text="名称" />
+                            <TableColumn @bind-Field="@service.Id" Text="ID" />
+                            <TableColumn @bind-Field="@service.IsPrimary" Text="主服务" />
+                            <TableColumn @bind-Field="@service.Remark" Text="备注" />
+                            <TableColumn @bind-Field="@service.Id" Text="">
+                                <Template Context="v">
+                                    <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall"
+                                            OnClickWithoutRender="()=> SendDataAsyncCPCLBarcode(context.Name,context.Id,service.Id) " />
+                                </Template>
+                            </TableColumn>
+                        </TableColumns>
+                        <DetailRowTemplate Context="service">
+                            <Table TItem="BleCharacteristic" Items="@service.Characteristics" IsFixedHeader Height="200" AllowResizing AllowDragColumn>
+                                <TableColumns Context="characteristic">
+                                    <TableColumn @bind-Field="@characteristic.Name" Text="名称" />
+                                    <TableColumn @bind-Field="@characteristic.Id" Text="ID" />
+                                    <TableColumn @bind-Field="@characteristic.StringValue" Text="" />
+                                    <TableColumn @bind-Field="@characteristic.CanRead" Text="读" />
+                                    <TableColumn @bind-Field="@characteristic.CanWrite" Text="写" />
+                                    <TableColumn @bind-Field="@characteristic.CanUpdate" Text="通知" />
+                                    <TableColumn @bind-Field="@characteristic.Id" Text="">
+                                        <Template Context="v">
+                                            <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall"
+                                                    OnClickWithoutRender="()=>SendDataAsyncCPCLBarcode(new BleTagDevice(context.Name,context.Id,service.Id,characteristic.Id))" />
+                                        </Template>
+                                    </TableColumn>
+                                </TableColumns>
+                            </Table>
+                        </DetailRowTemplate>
+                    </Table>
+                </DetailRowTemplate>
+            </Table>
+
+
+            <div class="row mt-1 g-3">
+                <div class="col-12 col-m-6 col-sm-6">
+                    <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
+                </div>
+                @if (Services != null)
+                {
+                    <div class="col-12 col-m-6 col-sm-6">
+                        <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
+                    </div>
+                    @if (Characteristics != null)
+                    {
+                        <div class="col-12 col-m-6 col-sm-6">
+                            <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
+                        </div>
+                        @if (ReadResult != null)
+                        {
+                            <div class="col-12 col-m-6 col-sm-6">
+                                <Display TValue="string" Value="@ReadResult" />
+                            </div>
+                        }
+                    }
+                }
+            </div>
+
+        }
+    </div>
+    <div class="col-12 col-m-6 col-sm-6">
+
+        @if (BleInfo.Name != null)
+        {
+
+            <div class="g-3">
+                历史连接 <br />
+                @BleInfo.Name <br />
+                @BleInfo.DeviceID <br />
+                @BleInfo.Serviceid <br />
+                @BleInfo.Characteristic <br />
+                @ReadResult <br />
+            </div>
+
+        }
+        <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
+
+        <pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
+    </div>
+</div>
+

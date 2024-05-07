@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using SpiderEye;
 using Application = SpiderEye.Application;
-using OperatingSystem = SpiderEye.OperatingSystem; 
+using OperatingSystem = SpiderEye.OperatingSystem;
+using Window = SpiderEye.Window;
+
 #if WINDOWS
 using SpiderEye.Windows;
 #else
@@ -54,7 +56,7 @@ internal class Program
             //可为客户端上载流缓冲的最大项数。 如果达到此限制，则会阻止处理调用，直到服务器处理流项。
             o.StreamBufferCapacity = 20;
         });
-        builder.Services.AddSharedExtensions(); 
+        builder.Services.AddSharedExtensions();
         builder.Services.AddSingleton(_appState);
 
         var app = builder.Build();
@@ -136,10 +138,11 @@ internal class Program
                 Console.WriteLine("\n\n\n\n Windows 环境请使用 net7.0-windows10.0.17763 环境执行.\n\nIn windows please use target framework with 'net7.0-windows10.0.17763'. \n\n\n\n");
                 Console.ForegroundColor = ConsoleColor.White;
             }
-            else {
+            else
+            {
                 throw;
             }
-           
+
         }
         #endregion
 

@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Components.WebView;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Maui.Platform;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components.WebView.Maui;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using ICSharpCode.SharpZipLib.Zip;
 #if ANDROID
 using Android.Webkit;
 using AndroidX.Activity;
@@ -67,7 +72,7 @@ public partial class InitBlazorWebView : Page
         _blazorWebView = blazorWebView;
         _blazorWebView.BlazorWebViewInitialized += BlazorWebViewInitialized;
         _blazorWebView.BlazorWebViewInitializing += BlazorWebViewInitializing;
-        _blazorWebView.UrlLoading += BlazorWebViewUrlLoading; 
+        _blazorWebView.UrlLoading += BlazorWebViewUrlLoading;
     }
 
 
@@ -94,13 +99,13 @@ public partial class InitBlazorWebView : Page
 #elif WINDOWS
         e.WebView.CoreWebView2.DownloadStarting += (async (s, e) => await CoreWebView2_DownloadStartingAsync(s, e));
         var permissionHandler =
-    #if HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY
+#if HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY
         new SilentPermissionRequestHandler();
-    #else
+#else
         new DialogPermissionRequestHandler(e.WebView);
-    #endif
+#endif
 
-        e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested; 
+        e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested;
 #elif IOS
 
         //关闭回弹效果
@@ -149,7 +154,7 @@ public partial class InitBlazorWebView : Page
         e.UrlLoadingStrategy = UrlLoadingStrategy.OpenInWebView;
 
         //拦截可处理 IOS || MACCATALYST 下载文件, 简单测试一下
-        if (e.Url.ToString().EndsWith(".exe") || e.Url.ToString().EndsWith(".jpg") || e.Url.ToString().EndsWith(".png") || e.Url.Scheme == "blob") 
+        if (e.Url.ToString().EndsWith(".exe") || e.Url.ToString().EndsWith(".jpg") || e.Url.ToString().EndsWith(".png") || e.Url.Scheme == "blob")
         {
             Task.Run(async () => await DownloadAsync(e.Url));
         }
@@ -232,7 +237,7 @@ public partial class InitBlazorWebView : Page
         await DisplayAlert("Alert", msg, "OK");
     }
 
-    public async Task ExecuteScriptAsync(string js= "alert('hello from WebView JS')")
+    public async Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
     {
 #if WINDOWS 
         await WebView.ExecuteScriptAsync(js);

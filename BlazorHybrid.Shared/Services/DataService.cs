@@ -1,4 +1,10 @@
-﻿using BootstrapBlazor.Components; 
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using BootstrapBlazor.Components;
 
 namespace BlazorHybrid.Shared;
 
@@ -8,22 +14,22 @@ public partial class DataService
     States? States { get; set; }
     public SysInfo? SysInfo { get; set; }
 
-    PasswordHasher Hasher { get; set; }= new PasswordHasher();
+    PasswordHasher Hasher { get; set; } = new PasswordHasher();
 
     public DataService(IFreeSql fsql, States? states)
     {
         this.Fsql = fsql;
         this.States = states;
-        InitDatas(); 
+        InitDatas();
     }
 
 
 
-    public async Task<List<string?>?> GetPhotosAsync(string? ProjectID=null)
+    public async Task<List<string?>?> GetPhotosAsync(string? ProjectID = null)
     {
         return await Fsql.Select<Photos>()
-            .WhereIf(ProjectID != null,a => a.ProjectID == ProjectID )
-            .Where(a=>a.PhotoPath != null)
+            .WhereIf(ProjectID != null, a => a.ProjectID == ProjectID)
+            .Where(a => a.PhotoPath != null)
             .ToListAsync(a => a.PhotoPath);
 
     }

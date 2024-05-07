@@ -13,11 +13,11 @@ namespace BlazorHybrid.Shared;
 public class States
 {
     [DisplayName("用户名")]
-    [Required (ErrorMessage = "请输入用户名")]
+    [Required(ErrorMessage = "请输入用户名")]
     public string? Username { get; set; }
 
     [DisplayName("密码")]
-    [Required (ErrorMessage = "请输入密码")]
+    [Required(ErrorMessage = "请输入密码")]
     public string? Password { get; set; }
     public string? Hash { get; set; }
 
@@ -25,16 +25,16 @@ public class States
     public bool Remember { get; set; } = true;
 
     [DisplayName("保持登录")]
-    public bool RememberPassword { get; set; } 
+    public bool RememberPassword { get; set; }
 
     public bool IsLoging { get; set; } = false;
 
     public int Steps { get; set; } = 0;
 
 
-    public Users? User { get; set; } 
+    public Users? User { get; set; }
 
-    public bool IsMobile{ get; set; }
+    public bool IsMobile { get; set; }
     public int Width { get; set; }
 
     public static List<TableImgField> ImgFields = new List<TableImgField>() {

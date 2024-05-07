@@ -15,7 +15,7 @@
                 <Button Text="返回" OnClick="BackToHome" />
             </div>
             <div class="@btnclass">
-                <Button Text="扫描外设" @attributes=IsScanningCss OnClick=ScanDevice />
+                <Button Text="扫描外设" @attributes=IsScanningCss OnClick="ScanDevice" />
             </div>
             @if (Devices != null)
             {
@@ -34,34 +34,34 @@
                         <Button Text="读取" OnClick="ReadDeviceName" />
                     </div>
                     <div class="@btnclass">
-                        <Button Text="打印CPCL" OnClick="SendDataAsyncCPCL" />
+                        <Button Text="打印CPCL" OnClick="SendDataAsyncCPCLBarcode" />
                     </div>
                 }
             }
         <div class="@btnclass">
-            <Select TValue="string" Color="Color.Primary" Items="DemoList" OnSelectedItemChanged="OnDemoDeviceSelect" />
+            <Select TValue="string" Color="Color.Primary" Items="DemoList" OnSelectedItemChanged="OnDemoDeviceSelect"  />
         </div>
         </div>
         @if (Devices != null)
         {
 
-            <div class="row g-3">
-                <div class="col-12 col-m-3 col-sm-3">
+            <div class="row mt-3 g-3">
+                <div class="col-12 col-m-6 col-sm-6">
                     <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
                 </div>
                 @if (Services != null)
                 {
-                    <div class="col-12 col-m-3 col-sm-3">
+                    <div class="col-12 col-m-6 col-sm-6">
                         <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
                     </div>
                     @if (Characteristics != null)
                     {
-                        <div class="col-12 col-m-3 col-sm-3">
+                        <div class="col-12 col-m-6 col-sm-6">
                             <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
                         </div>
                         @if (ReadResult != null)
                         {
-                            <div class="col-12 col-m-3 col-sm-3">
+                            <div class="col-12 col-m-6 col-sm-6">
                                 <Display TValue="string" Value="@ReadResult" />
                             </div>
                         }
@@ -95,6 +95,6 @@
         <BtBatteryLevelPage />
     </TabItem>
     <TabItem Text="打印">
-
+        <BluetoothPrinter />
     </TabItem>
 </Tab>

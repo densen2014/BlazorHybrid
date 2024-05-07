@@ -20,8 +20,8 @@ namespace BlazorHybrid.Shared;
 /// </summary>
 public abstract partial class AppComponentBase : ComponentBase, IDisposable
 {
-    [Inject, NotNull] protected DataService? DataService { get; set; } 
-    [Inject, NotNull] protected States? States { get; set; } 
+    [Inject, NotNull] protected DataService? DataService { get; set; }
+    [Inject, NotNull] protected States? States { get; set; }
 
     [Inject, NotNull] protected ToastService? ToastService { get; set; }
     [Inject, NotNull] protected MessageService? MessageService { get; set; }

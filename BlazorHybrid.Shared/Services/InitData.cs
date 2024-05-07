@@ -1,4 +1,10 @@
-﻿namespace BlazorHybrid.Shared;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+namespace BlazorHybrid.Shared;
 
 public partial class DataService
 {
@@ -43,7 +49,7 @@ public partial class DataService
             Fsql.CodeFirst.SyncStructure<Photos>();
             Fsql.CodeFirst.SyncStructure<SysLog>();
             Fsql.CodeFirst.SyncStructure<Users>();
-            Fsql.CodeFirst.SyncStructure<SysInfo>(); 
+            Fsql.CodeFirst.SyncStructure<SysInfo>();
             Log($"建立演示数据成功");
             return null;
         }
@@ -60,14 +66,14 @@ public partial class DataService
         {
             Fsql.Insert<SysLog>().AppendData(new SysLog { Message = message }).ExecuteAffrows();
         }
-        catch{}
+        catch { }
     }
 
     public List<Users> GetUsers() => Fsql.Select<Users>().ToList();
 
     public bool InitDemoProjects(bool rebuild = false)
     {
- 
+
 
         return false;
 
