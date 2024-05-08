@@ -203,7 +203,7 @@ public partial class Bluetooth : IAsyncDisposable
         BleInfo.Serviceid = Guid.Parse(sp[2]);
         BleInfo.Characteristic = Guid.Parse(sp[3]);
         await AutoRead();
-        await SendDataAsyncCPCL();
+        await SendDataAsyncCPCLBarcode();
         autoread = true;
     }
 
@@ -334,6 +334,11 @@ public partial class Bluetooth : IAsyncDisposable
                 await OnServiceidSelect();
             }
         }
+        else
+        {
+            Message = $"连接{BleInfo.Name}失败";
+            await ToastService.Error(Message);
+        }
 
         //异步更新UI
         await InvokeAsync(StateHasChanged);
@@ -369,6 +374,12 @@ public partial class Bluetooth : IAsyncDisposable
                 await ReadDeviceName();
             }
         }
+        else
+        {
+            Message = $"获取服务失败. {BleInfo.Serviceid}";
+            await ToastService.Error(Message);
+        }
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -398,7 +409,7 @@ public partial class Bluetooth : IAsyncDisposable
         Message = "";
         //读取数值
         var res = await Tools.ReadDataAsync(BleInfo.Characteristic);
-        if (!string.IsNullOrEmpty(ReadResult)) await ToastService.Information("读取成功", res.ToString());
+        if (!string.IsNullOrEmpty(ReadResult)) await ToastService.Information("读取成功", res?.ToString());
 
         //异步更新UI
         await InvokeAsync(StateHasChanged);
@@ -475,10 +486,10 @@ PRINT
     {
 
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);//注册Nuget包System.Text.Encoding.CodePages中的编码到.NET Core
-        Encoding utf8 = Encoding.GetEncoding(65001);
-        Encoding gb2312 = Encoding.GetEncoding("gb2312");//这里用转化解决汉字乱码问题Encoding.Default ,936
-        byte[] bytesUtf8 = utf8.GetBytes(commands);
-        byte[] bytesGb2312 = Encoding.Convert(utf8, gb2312, bytesUtf8);
+        var utf8 = Encoding.GetEncoding(65001);
+        var gb2312 = Encoding.GetEncoding("gb2312");//这里用转化解决汉字乱码问题Encoding.Default ,936
+        var bytesUtf8 = utf8.GetBytes(commands);
+        var bytesGb2312 = Encoding.Convert(utf8, gb2312, bytesUtf8);
         if (bytesGb2312 != null)
         {
             var totalCount = bytesGb2312.Length;
@@ -506,7 +517,11 @@ PRINT
                 }
             }
         }
-
+        else
+        {
+            Message = $"打印数据无效";
+            await ToastService.Warning(Message);
+        }
 
 
         //异步更新UI

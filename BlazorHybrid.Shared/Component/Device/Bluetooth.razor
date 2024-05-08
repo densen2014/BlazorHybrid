@@ -97,9 +97,10 @@
     <TabItem Text="打印">
         <BootstrapInputGroup>
             <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
-            <Button Text="打印ESC/POS" OnClick="SendDataAsyncESC" />
-            <Button Text="打印CPCL" OnClick="SendDataAsyncCPCLBarcode" />
-            <Button Text="打印CPCL票据" OnClick="SendDataAsyncCPCL" />
+            <BootstrapInputGroupLabel @bind-Value="@Message"  />
+            <Button Text="ESC/POS" OnClick="SendDataAsyncESC" />
+            <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" />
+            <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" />
         </BootstrapInputGroup>
     </TabItem>
 </Tab>
