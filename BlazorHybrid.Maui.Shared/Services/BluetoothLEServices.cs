@@ -602,6 +602,11 @@ public partial class BluetoothLEServices
 
     async Task<ICharacteristic?> GetdeviceNameCharacteristic(Guid? serviceid, Guid? characteristic)
     {
+        if (Device == null)
+        {
+            OnMessage?.Invoke($"没有连接{TagDevice.Name}");
+            return null;
+        }
         //获取常规信息服务UUID: 
         Guid genericServiceGuid = serviceid ?? Guid.Parse("00001800-0000-1000-8000-00805f9b34fb");
 

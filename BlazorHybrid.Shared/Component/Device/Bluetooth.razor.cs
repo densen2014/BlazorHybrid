@@ -12,28 +12,85 @@ namespace BlazorHybrid.Core.Device;
 public partial class Bluetooth : IAsyncDisposable
 {
     private bool IsScanning = false;
-    private List<BleDevice>? Devices { get; set; }
-    private List<BleService>? Services;
-    private List<BleCharacteristic>? Characteristics;
-    private string? ReadResult;
-    private new string? Message = "";
 
     BleTagDevice BleInfo { get; set; } = new BleTagDevice();
 
+    private string? ReadResult;
+
+    private new string? Message = "";
+
+    private bool autoread = true;
+
+    /// <summary>
+    /// 设备列表
+    /// </summary>
+    private List<BleDevice>? Devices { get; set; }
+
+    /// <summary>
+    /// 服务列表
+    /// </summary>
+    private List<BleService>? Services;
+
+    /// <summary>
+    /// 特征列表
+    /// </summary>
+    private List<BleCharacteristic>? Characteristics;
+
     private List<SelectedItem> DemoList { get; set; } = new List<SelectedItem>() { new SelectedItem() { Text = "测试数据", Value = "" } };
+    private List<SelectedItem> PrinterDemoList { get; set; } = new List<SelectedItem>() { new SelectedItem() { Text = "演示打印机型号列表", Value = "" } };
+
+    /// <summary>
+    /// 设备下拉列表
+    /// </summary>
     private List<SelectedItem> DeviceList { get; set; } = new List<SelectedItem>();
+
+    /// <summary>
+    /// 服务下拉列表
+    /// </summary>
     private List<SelectedItem> ServiceidList { get; set; } = new List<SelectedItem>();
+
+    /// <summary>
+    /// 特征下拉列表
+    /// </summary>
     private List<SelectedItem> CharacteristicList { get; set; } = new List<SelectedItem>();
 
     private Dictionary<string, object>? IsScanningCss => IsScanning ? new() { { "disabled", "" }, } : null;
 
+    /// <summary>
+    /// 演示设备列表
+    /// </summary>
     List<string> DemoDeviceList = new List<string>() {
-        "iPad\r\n00000000-0000-0000-0000-6ed0f225bb9d\r\n0000180a-0000-1000-8000-00805f9b34fb\r\n00002a24-0000-1000-8000-00805f9b34fb",
-        "iPad\r\n00000000-0000-0000-0000-6ed0f225bb9d\r\n0000180a-0000-1000-8000-00805f9b34fb\r\n00002a29-0000-1000-8000-00805f9b34fb",
-        "QR380A-165D\r\n00000000-0000-0000-0000-047f0ea2165d\r\n0000180a-0000-1000-8000-00805f9b34fb\r\n00002a29-0000-1000-8000-00805f9b34fb",
-        "QR380A-165D\r\n00000000-0000-0000-0000-047f0ea2165d\r\n0000180a-0000-1000-8000-00805f9b34fb\r\n00002a24-0000-1000-8000-00805f9b34fb",
-        "QR380A-165D\r\n00000000-0000-0000-0000-047f0ea2165d\r\n0000180a-0000-1000-8000-00805f9b34fb\r\n00002a25-0000-1000-8000-00805f9b34fb",
-        "",
+@"iPad
+00000000-0000-0000-0000-6ed0f225bb9d
+0000180a-0000-1000-8000-00805f9b34fb
+00002a24-0000-1000-8000-00805f9b34fb",
+@"iPad
+00000000-0000-0000-0000-6ed0f225bb9d
+0000180a-0000-1000-8000-00805f9b34fb
+00002a29-0000-1000-8000-00805f9b34fb",
+@"QR380A-165D
+00000000-0000-0000-0000-047f0ea2165d
+0000ff00-0000-1000-8000-00805f9b34fb
+0000ff02-0000-1000-8000-00805f9b34fb",
+        };
+
+    List<string> PrinterList = new List<string>() {
+@"QR380A-165D
+00000000-0000-0000-0000-047f0ea2165d
+0000ff00-0000-1000-8000-00805f9b34fb
+0000ff02-0000-1000-8000-00805f9b34fb",
+@"BMAU
+00000000-0000-0000-0000-047f0ea2165d
+0000ff00-0000-1000-8000-00805f9b34fb
+0000ff02-0000-1000-8000-00805f9b34fb",
+@"HM-A300
+00000000-0000-0000-0000-047f0ea2165d
+49535300-0000-1000-8000-00805f9b34fb
+0000ff02-0000-1000-8000-00805f9b34fb",
+@"SUNMI
+00001101-0000-1000-8000-00805F9B34FB
+49535300-0000-1000-8000-00805f9b34fb
+0000ff02-0000-1000-8000-00805f9b34fb",
         };
 
     bool IsAutoConnect { get; set; }
@@ -80,6 +137,8 @@ public partial class Bluetooth : IAsyncDisposable
 
             DemoDeviceList.ForEach(a => DemoList.Add(new SelectedItem() { Text = a.Split('\r')[0], Value = a }));
 
+            PrinterList.ForEach(a => PrinterDemoList.Add(new SelectedItem() { Text = a.Split('\r')[0], Value = a }));
+
             StateHasChanged();
 
             var deviceID = await Storage.GetValue("bleDeviceID", string.Empty);
@@ -117,7 +176,7 @@ public partial class Bluetooth : IAsyncDisposable
         Message = "";
         ReadResult = "";
         Devices = new List<BleDevice>() { new BleDevice() { Id = BleInfo.DeviceID, Name = BleInfo.Name } };
-        DeviceList = new List<SelectedItem>() { new SelectedItem() { Text = BleInfo.Name, Value = BleInfo.DeviceID.ToString() } };
+        DeviceList = new List<SelectedItem>() { new SelectedItem() { Text = BleInfo.Name ?? "未知设备", Value = BleInfo.DeviceID.ToString() } };
         IsAutoConnect = true;
         await OnDeviceSelect();
         IsAutoConnect = false;
@@ -134,15 +193,28 @@ public partial class Bluetooth : IAsyncDisposable
         await Test(item.Value);
     }
 
+    private async Task OnPrinterSelect(SelectedItem item)
+    {
+        if (IsAutoConnect || item.Value == "") return;
+        autoread = false;
+        var sp = item.Value.Replace("\r\n", ",").Split(',');
+        BleInfo.Name = sp[0];
+        BleInfo.DeviceID = Guid.Parse(sp[1]);
+        BleInfo.Serviceid = Guid.Parse(sp[2]);
+        BleInfo.Characteristic = Guid.Parse(sp[3]);
+        await AutoRead();
+        await SendDataAsyncCPCL();
+        autoread = true;
+    }
+
     private async Task Test(string type)
     {
-        var S_Battery = 0x0000180f;
-
-        var BatteryLevel = 0x00002a19;
-        var DeviceName = 0x00002a00;
-        var ManufacturerName = 0x00002a29;
-        var ModelNumber = 0x00002a24;
-        var SerialNumber = 0x00002a25;
+        //var S_Battery = 0x0000180f;
+        //var BatteryLevel = 0x00002a19;
+        //var DeviceName = 0x00002a00;
+        //var ManufacturerName = 0x00002a29;
+        //var ModelNumber = 0x00002a24;
+        //var SerialNumber = 0x00002a25;
 
         var sp = type.Replace("\r\n", ",").Split(',');
         BleInfo.Name = sp[0];
@@ -192,7 +264,14 @@ public partial class Bluetooth : IAsyncDisposable
 
         if (Devices != null)
         {
-            Devices.ForEach(a => DeviceList.Add(new SelectedItem() { Active = IsAutoConnect && a.Id == BleInfo.DeviceID, Text = a.Name ?? a.Id.ToString(), Value = a.Id.ToString() }));
+            Devices.ForEach(a => DeviceList.Add(
+                new SelectedItem()
+                {
+                    Active = IsAutoConnect && a.Id == BleInfo.DeviceID,
+                    Text = $"{a.Name}({a.Id})",
+                    Value = a.Id.ToString()
+                })
+            );
         }
 
         IsScanning = false;
@@ -213,9 +292,19 @@ public partial class Bluetooth : IAsyncDisposable
     private async Task OnDisConnectDevice()
     {
         if (await Tools.DisConnectDeviceAsync())
+        {
+            Message = "断开成功";
             await ToastService.Success("断开成功");
+        }
         else
+        {
+            Message = "断开失败";
             await ToastService.Error("断开失败");
+        }
+        Services = null;
+        Characteristics = null;
+        Message = "";
+        ReadResult = "";
     }
 
     private async Task OnDeviceSelect()
@@ -230,7 +319,14 @@ public partial class Bluetooth : IAsyncDisposable
         Services = await Tools.ConnectToKnownDeviceAsync(BleInfo.DeviceID, BleInfo.Name);
         if (Services != null)
         {
-            Services.ForEach(a => ServiceidList.Add(new SelectedItem() { Active = IsAutoConnect && a.Id == BleInfo.Serviceid, Text = a.Name ?? a.Id.ToString(), Value = a.Id.ToString() }));
+            Services.ForEach(a => ServiceidList.Add(
+                new SelectedItem()
+                {
+                    Active = IsAutoConnect && a.Id == BleInfo.Serviceid,
+                    Text = a.Name != "Unknown Service" ? $"{a.Name}({a.Id})" : a.Id.ToString(),
+                    Value = a.Id.ToString()
+                })
+            );
             await Storage.SetValue("bleDeviceID", BleInfo.DeviceID.ToString());
             await Storage.SetValue("bleDeviceName", BleInfo.Name ?? "上次设备");
             if (BleInfo.Serviceid != Guid.Empty && IsAutoConnect)
@@ -259,9 +355,16 @@ public partial class Bluetooth : IAsyncDisposable
         Characteristics = await Tools.GetCharacteristicsAsync(BleInfo.Serviceid);
         if (Characteristics != null)
         {
-            Characteristics.ForEach(a => CharacteristicList.Add(new SelectedItem() { Active = IsAutoConnect && a.Id == BleInfo.Characteristic, Text = a.Name ?? a.Id.ToString(), Value = a.Id.ToString() }));
+            Characteristics.ForEach(a => CharacteristicList.Add(
+                new SelectedItem()
+                {
+                    Active = IsAutoConnect && a.Id == BleInfo.Characteristic,
+                    Text = a.Name != "Unknown characteristic" ? $"{a.Name}({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")}{a.StringValue})({a.Id})" : $"({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")}{a.StringValue})({a.Id})",
+                    Value = a.Id.ToString()
+                })
+            );
             await Storage.SetValue("bleServiceid", BleInfo.Serviceid.ToString());
-            if (BleInfo.Characteristic != Guid.Empty && IsAutoConnect)
+            if (autoread && BleInfo.Characteristic != Guid.Empty && IsAutoConnect)
             {
                 await ReadDeviceName();
             }
@@ -347,10 +450,34 @@ public partial class Bluetooth : IAsyncDisposable
         cmds.AppendLine("FORM");
         cmds.AppendLine("PRINT");
 
+        await SendDataAsyncPrinter(cmds.ToString());
+    }
+
+       private string CpclCommands = @"! 10 200 200 400 1
+BEEP 1
+PW 380
+SETMAG 1 1
+CENTER
+TEXT 10 2 10 40 Micro Bar
+TEXT 12 3 10 75 Blazor
+TEXT 10 2 10 350 eMenu
+B QR 30 150 M 2 U 7
+MA,https://google.com
+ENDQR
+FORM
+PRINT
+";
+
+    private async Task SendDataAsyncCPCLBarcode()=> await SendDataAsyncPrinter(CpclCommands);
+    private async Task SendDataAsyncESC()=> await SendDataAsyncPrinter(CpclCommands);
+
+    private async Task SendDataAsyncPrinter(string commands)
+    {
+
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);//注册Nuget包System.Text.Encoding.CodePages中的编码到.NET Core
         Encoding utf8 = Encoding.GetEncoding(65001);
         Encoding gb2312 = Encoding.GetEncoding("gb2312");//这里用转化解决汉字乱码问题Encoding.Default ,936
-        byte[] bytesUtf8 = utf8.GetBytes(cmds.ToString());
+        byte[] bytesUtf8 = utf8.GetBytes(commands);
         byte[] bytesGb2312 = Encoding.Convert(utf8, gb2312, bytesUtf8);
         if (bytesGb2312 != null)
         {

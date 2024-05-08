@@ -69,7 +69,7 @@ public partial interface INativeFeatures
     /// <param name="ary"></param>
     /// <returns></returns>
 
-    Task<bool> SendDataAsync(Guid characteristic, byte[] ary);
+    Task<bool> SendDataAsync(Guid characteristic, byte[]? ary);
     Task GetBatteryLevel();
 
     /// <summary>
