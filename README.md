@@ -6,6 +6,15 @@
 
 [快速上手](https://github.com/densen2014/BlazorHybrid/blob/master/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B.md)
 
+
+参考资料
+
+[.NET Core 跨平台 GUI 开发 与 Blazor / MAUI](https://www.cnblogs.com/densen2014/p/17012141.html)
+
+[树莓派4b装系统到运行 Blazor Linux 本地程序全记录](https://www.cnblogs.com/densen2014/p/17706168.html)
+
+[系列文章](https://www.cnblogs.com/densen2014/collections/5701)
+
 ![image](https://github.com/densen2014/BlazorHybrid/assets/8428709/0731b967-bd23-4173-bca7-b8d67bee225e)
 
 ![image](https://github.com/densen2014/BlazorHybrid/assets/8428709/63c5d1c0-b3a5-4940-946b-22867ee1698c)
