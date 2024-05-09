@@ -34,7 +34,11 @@ public partial class BluetoothLEServices
 
         UpdateDevicename?.Invoke($"设备{Device.Name}");
 
-        await CurrentAdapter!.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
+        if (CurrentAdapter == null)
+        {
+            return;
+        }
+        await CurrentAdapter.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
 
         var ReadResult = await ReadDeviceName(Battery_Service, BatteryLevelCharacteristic);
 

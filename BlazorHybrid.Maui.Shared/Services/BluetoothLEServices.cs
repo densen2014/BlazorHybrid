@@ -154,10 +154,14 @@ public partial class BluetoothLEServices
         {
             return null;
         }
+        if (CurrentAdapter == null)
+        {
+            return null;
+        }
 
         try
         {
-            CurrentAdapter!.DeviceDiscovered += Adapter_DeviceDiscovered;
+            CurrentAdapter.DeviceDiscovered += Adapter_DeviceDiscovered;
             CurrentAdapter.ScanTimeoutElapsed += Adapter_ScanTimeoutElapsed;
 
             if (deviceGuid != null && deviceGuid != Guid.Empty)
@@ -220,7 +224,7 @@ public partial class BluetoothLEServices
         }
         finally
         {
-            CurrentAdapter!.DeviceDiscovered -= Adapter_DeviceDiscovered;
+            CurrentAdapter.DeviceDiscovered -= Adapter_DeviceDiscovered;
             CurrentAdapter.ScanTimeoutElapsed -= Adapter_ScanTimeoutElapsed;
         }
 
@@ -316,11 +320,15 @@ public partial class BluetoothLEServices
         {
             return null;
         }
+        if (CurrentAdapter == null)
+        {
+            return null;
+        }
 
         List<string> result = new List<string>(); 
 
         //订阅连接丢失
-        CurrentAdapter!.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
+        CurrentAdapter.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
 
         //订阅连接断开
         CurrentAdapter.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
@@ -468,6 +476,10 @@ public partial class BluetoothLEServices
         {
             return null;
         }
+        if (CurrentAdapter == null)
+        {
+            return null;
+        }
 
         if (Device != null && Device.Id == deviceID)
         {
@@ -485,14 +497,14 @@ public partial class BluetoothLEServices
             // <param name="connect Parameters">连接参数。包含实现连接所需的平台特定参数。默认值为 None。</param> 
             // <param name="cancellation Token">用于监控取消请求的令牌。默认值为 None。</param> 
             // <returns>连接的设备。</returns>
-            Device = await CurrentAdapter!.ConnectToKnownDeviceAsync(deviceID, cancellationToken: _scanForAedCts.Token);
+            Device = await CurrentAdapter.ConnectToKnownDeviceAsync(deviceID, cancellationToken: _scanForAedCts.Token);
         }
 
         //订阅连接丢失
-        CurrentAdapter!.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
+        CurrentAdapter.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
 
         //订阅连接断开
-        CurrentAdapter!.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
+        CurrentAdapter.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
 
         if (Device == null)
         {
@@ -616,7 +628,11 @@ public partial class BluetoothLEServices
     {
         OnMessage?.Invoke($"蓝牙连接丢失, {e.Device?.State}");
 
-        CurrentAdapter!.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
+        if (CurrentAdapter == null)
+        {
+            return;
+        }
+        CurrentAdapter.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
         CurrentAdapter.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
     }
 
@@ -625,7 +641,11 @@ public partial class BluetoothLEServices
     {
         OnMessage?.Invoke($"蓝牙连接状态变化, {e.Device?.State}");
 
-        CurrentAdapter!.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
+        if (CurrentAdapter == null)
+        {
+            return;
+        }
+        CurrentAdapter.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
         CurrentAdapter.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
     }
     public async Task<bool> DisConnectDeviceAsync()
@@ -638,7 +658,10 @@ public partial class BluetoothLEServices
         if (Device.State == DeviceState.Connected)
         {
             await StopUpdatesAsync();
-            await CurrentAdapter!.DisconnectDeviceAsync(Device);
+            if (CurrentAdapter != null)
+            {
+                await CurrentAdapter.DisconnectDeviceAsync(Device);
+            }
         }
 
         OnMessage?.Invoke($"断开连接{TagDevice.Name}");
