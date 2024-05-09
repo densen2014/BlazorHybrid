@@ -4,6 +4,8 @@
 
 用 c # 和 Razor 创建本机移动应用和桌面应用。可以快速开发共享代码库运行于 Windows (Winforms/WPF/WinUI3)、Android、iOS、macOS 和 Linux 的应用。
 
+[快速上手](https://github.com/densen2014/BlazorHybrid/blob/master/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B.md)
+
 ![image](https://github.com/densen2014/BlazorHybrid/assets/8428709/0731b967-bd23-4173-bca7-b8d67bee225e)
 
 ![image](https://github.com/densen2014/BlazorHybrid/assets/8428709/63c5d1c0-b3a5-4940-946b-22867ee1698c)
