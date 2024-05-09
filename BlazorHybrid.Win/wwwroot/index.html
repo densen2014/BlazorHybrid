@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -9,6 +9,9 @@
     <link href="_content/BootstrapBlazor.FontAwesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css" rel="stylesheet">
     <link href="_content/BootstrapBlazor/css/motronic.min.css" rel="stylesheet">
+    <!--启用maui支持,直接忽略共享库并到主项目,所以不用引用共享库名称-->
+    <link href="css/app.css" rel="stylesheet" />
+    <!--不启用maui支持,引用共享库名称的css-->
     <link href="_content/BlazorHybrid.Shared/css/app.css" rel="stylesheet" />
     <link href="BlazorHybrid.Win.styles.css" rel="stylesheet" />
 </head>

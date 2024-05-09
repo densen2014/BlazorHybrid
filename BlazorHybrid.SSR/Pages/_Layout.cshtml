@@ -13,6 +13,9 @@
     <link href="_content/BootstrapBlazor.FontAwesome/css/font-awesome.min.css" rel="stylesheet" asp-append-version="true">
     <link href="_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css" rel="stylesheet" asp-append-version="true">
     <link href="_content/BootstrapBlazor/css/motronic.min.css" rel="stylesheet" asp-append-version="true">
+    <!--启用maui支持,直接忽略共享库并到主项目,所以不用引用共享库名称-->
+    <link href="css/app.css" rel="stylesheet" />
+    <!--不启用maui支持,引用共享库名称的css-->
     <link href="_content/BlazorHybrid.Shared/css/app.css" rel="stylesheet" asp-append-version="true" />
     <link href="_content/BlazorHybrid.Shared/manifest.json" rel="manifest" asp-append-version="true" />
     <link href="BlazorHybrid.SSR.styles.css" rel="stylesheet" asp-append-version="true" />

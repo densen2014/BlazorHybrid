@@ -15,6 +15,9 @@
     <link href="_content/BootstrapBlazor/css/motronic.min.css" rel="stylesheet" asp-append-version="true">
     <link href="_content/BlazorHybrid.Shared/css/app.css" rel="stylesheet" asp-append-version="true" />
     <link href="BlazorHybrid.Linux.styles.css" rel="stylesheet" asp-append-version="true" />
+    <!--启用maui支持,直接忽略共享库并到主项目,所以不用引用共享库名称-->
+    <link href="css/app.css" rel="stylesheet" />
+    <!--不启用maui支持,引用共享库名称的css-->
     <link href="_content/BlazorHybrid.Shared/css/app.css" rel="stylesheet" asp-append-version="true" />
     <link href="_content/BlazorHybrid.Shared/manifest.json" rel="manifest" asp-append-version="true" />
     <link rel="apple-touch-icon" sizes="512x512" href="_content/BlazorHybrid.Shared/icon-512.png" asp-append-version="true" />
