@@ -62,6 +62,10 @@
       <CreatePackage>false</CreatePackage>
       <CodesignProvision>iOS Team Provisioning Profile: es.app1.BlazorHybrid</CodesignProvision>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+      <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
+      <CodesignProvision>VS: es.app1.BlazorHybrid Development</CodesignProvision>
+    </PropertyGroup>
     <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#ffffff" />
