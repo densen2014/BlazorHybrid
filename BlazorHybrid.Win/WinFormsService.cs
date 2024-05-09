@@ -157,7 +157,7 @@ public class WinFormsService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public Task<bool> SendDataAsync(Guid characteristic, byte[] ary)
+    public Task<bool> SendDataAsync(Guid characteristic, byte[]? ary)
     {
         throw new NotImplementedException();
     }

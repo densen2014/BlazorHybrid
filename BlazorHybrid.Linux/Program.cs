@@ -135,7 +135,7 @@ internal class Program
             if (e.HResult == -2146233079 && Application.OS == OperatingSystem.Windows)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\n\n\n\n Windows 环境请使用 net7.0-windows10.0.17763 环境执行.\n\nIn windows please use target framework with 'net7.0-windows10.0.17763'. \n\n\n\n");
+                Console.WriteLine("\n\n\n\n Windows 环境请使用 net8.0-windows10.0.17763 环境执行.\n\nIn windows please use target framework with 'net8.0-windows10.0.17763'. \n\n\n\n");
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else

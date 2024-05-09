@@ -217,7 +217,7 @@ public partial class NfcPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void Current_OniOSReadingSessionCancelled(object sender, EventArgs e) => Debug("iOS NFC Session has been cancelled");
+    void Current_OniOSReadingSessionCancelled(object? sender, EventArgs e) => Debug("iOS NFC Session has been cancelled");
 
     /// <summary>
     /// 在标记上发布数据时引发的事件
@@ -255,7 +255,7 @@ public partial class NfcPage : ContentPage
 
         try
         {
-            NFCNdefRecord record = null;
+            NFCNdefRecord? record = null;
             switch (_type)
             {
                 case NFCNdefTypeFormat.WellKnown:
@@ -479,7 +479,7 @@ public partial class NfcPage : ContentPage
     async  void Button_Clicked_Close(object sender, System.EventArgs e)
     {
         //await Application.re
-          Application.Current.MainPage.Navigation.RemovePage(this);
+          Application.Current!.MainPage!.Navigation.RemovePage(this);
         await Application.Current.MainPage.Navigation.PushModalAsync(new MainPage());
     }
 

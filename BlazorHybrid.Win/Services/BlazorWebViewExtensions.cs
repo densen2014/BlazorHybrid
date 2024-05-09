@@ -1,18 +1,15 @@
 ﻿#if WEBVIEW2_WINFORMS
-using Microsoft.Web.WebView2.Core;
 using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
 #elif WEBVIEW2_WPF
-using Microsoft.Web.WebView2.Core;
 using WebView2Control = Microsoft.Web.WebView2.Wpf.WebView2;
-#endif
-
-using Microsoft.AspNetCore.Components.WebView;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.WinForms; 
-using System.Runtime.InteropServices;
+#else
 using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
-#nullable disable
+using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using Microsoft.Web.WebView2.WinForms;
+#endif
+using Microsoft.Web.WebView2.Core;
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Components.WebView;
 
 namespace BlazorHybrid.Win.Shared;
 
