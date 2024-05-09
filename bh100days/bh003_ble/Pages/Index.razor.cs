@@ -43,7 +43,7 @@ public partial class Index : IAsyncDisposable
 
     public async Task<byte[]?> ReadDataAsync(Guid characteristic) => await MyBleTester.ReadDataAsync(characteristic);
 
-    public async Task<bool> SendDataAsync(Guid characteristic, byte[] ary) => await MyBleTester.SendDataAsync(characteristic, ary);
+    public async Task<bool> SendDataAsync(Guid characteristic, byte[]? ary) => await MyBleTester.SendDataAsync(characteristic, ary);
 
     public async Task<bool> DisConnectDeviceAsync() => await MyBleTester.DisConnectDeviceAsync();
 
@@ -90,7 +90,7 @@ public partial class Index : IAsyncDisposable
 
             if (await BluetoothIsBusy())
             {
-                await ToastService.Warning("蓝牙正在使用中，请稍后再试");
+                await ToastService.Warning("提示","蓝牙正在使用中，请稍后再试");
                 return false;
             }
             OnMessage += Tools_OnMessage;
@@ -206,9 +206,9 @@ public partial class Index : IAsyncDisposable
     private async Task OnDisConnectDevice()
     {
         if (await DisConnectDeviceAsync())
-            await ToastService.Success("断开成功");
+            await ToastService.Success("提示", "断开成功");
         else
-            await ToastService.Error("断开失败");
+            await ToastService.Error("提示", "断开失败");
     }
 
     private async Task OnDeviceSelect()
@@ -288,7 +288,7 @@ public partial class Index : IAsyncDisposable
         Message = "";
         //读取数值
         var res = await ReadDataAsync(BleInfo.Characteristic);
-        if (!string.IsNullOrEmpty(ReadResult)) await ToastService.Information("读取成功", res.ToString());
+        if (!string.IsNullOrEmpty(ReadResult)) await ToastService.Information("读取成功", res?.ToString());
 
         //异步更新UI
         await InvokeAsync(StateHasChanged);

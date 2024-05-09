@@ -109,11 +109,6 @@ public class NullFeatureService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<bool> DisConnectDeviceAsync()
     {
         throw new NotImplementedException();
@@ -174,5 +169,10 @@ public class NullFeatureService : INativeFeatures
     public Task<(string message, object callback)> CallNativeFeatures(EnumNativeFeatures features, object[]? args, bool? on)
     {
         return Task.FromResult(("未实现", new object()));
+    }
+
+    public Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble, bool getNotify = false, byte[]? sentbytes = null)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -63,7 +63,7 @@ public partial class BluetoothLEServices
     /// </summary>
     public event Action<bool>? OnStateConnect;
 
-    private IBluetoothLE CurrentBle;
+    private IBluetoothLE? CurrentBle;
     private IAdapter? CurrentAdapter;
 
     private CancellationTokenSource? _scanForAedCts;
@@ -130,6 +130,17 @@ public partial class BluetoothLEServices
         _scanForAedCts = new CancellationTokenSource();
 
         LazyLoad();
+
+        if (CurrentAdapter == null)
+        {
+            OnMessage?.Invoke("蓝牙适配器未初始化");
+            return null;
+        }
+        if (CurrentBle==null || !CurrentBle.IsAvailable)
+        {
+            OnMessage?.Invoke("蓝牙不可用");
+            return null;
+        }
 
         try
         {

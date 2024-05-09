@@ -10,6 +10,8 @@ using System.IO.Compression;
 using SpiderEye;
 using Application = SpiderEye.Application;
 using OperatingSystem = SpiderEye.OperatingSystem;
+using Window = SpiderEye.Window;
+
 #if WINDOWS
 using SpiderEye.Windows;
 #else

@@ -136,9 +136,9 @@ public static class MauiProgram
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Services.AddLogging(logging =>
         {
-#if WINDOWS && NET7_0
+#if WINDOWS && NET7_0_OR_GREATER
 				logging.AddDebug();
-#elif NET7_0
+#elif NET7_0_OR_GREATER
             logging.AddConsole();
 #endif
 

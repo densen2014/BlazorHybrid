@@ -15,7 +15,7 @@
                 <Button Text="返回" OnClick="BackToHome" />
             </div>
             <div class="@btnclass">
-                <Button Text="扫描外设" @attributes=IsScanningCss OnClick=ScanDevice />
+                <Button Text="扫描外设" @attributes=IsScanningCss OnClick="ScanDevice" />
             </div>
             @if (Devices != null)
             {
@@ -45,19 +45,19 @@
         @if (Devices != null)
         {
 
-            <div class="row g-3">
+            <div class="row mt-3 g-3">
                 <div class="col-12 col-m-6 col-sm-6">
-                    <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" ShowSearch />
+                    <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
                 </div>
                 @if (Services != null)
                 {
                     <div class="col-12 col-m-6 col-sm-6">
-                        <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" ShowSearch />
+                        <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
                     </div>
                     @if (Characteristics != null)
                     {
                         <div class="col-12 col-m-6 col-sm-6">
-                            <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" ShowSearch />
+                            <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
                         </div>
                         @if (ReadResult != null)
                         {
@@ -95,12 +95,6 @@
         <BtBatteryLevelPage />
     </TabItem>
     <TabItem Text="打印">
-        <BootstrapInputGroup>
-            <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
-            <BootstrapInputGroupLabel @bind-Value="@Message"  />
-            <Button Text="ESC/POS" OnClick="SendDataAsyncESC" />
-            <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" />
-            <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" />
-        </BootstrapInputGroup>
+        <BluetoothPrinter />
     </TabItem>
 </Tab>

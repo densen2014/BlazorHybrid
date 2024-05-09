@@ -4,6 +4,7 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
+using AME;
 using BlazorHybrid.Core.Device;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
@@ -72,7 +73,7 @@ public partial class BluetoothLEServices
     {
     }
 
-    private void LazyLoad()
+    private bool LazyLoad()
     {
         if (CurrentAdapter == null)
         {
@@ -84,6 +85,25 @@ public partial class BluetoothLEServices
             CurrentAdapter.DeviceConnected += Adapter_DeviceConnected;
             CurrentAdapter.DeviceDisconnected += Adapter_DeviceDisconnected;
         }
+
+        if (CurrentAdapter == null)
+        {
+            OnMessage?.Invoke("蓝牙适配器未初始化");
+            return false;
+        }
+        if (CurrentBle == null || !CurrentBle.IsAvailable)
+        {
+            OnMessage?.Invoke("蓝牙不可用");
+            return false;
+        }
+
+        //蓝牙扫描时间
+        CurrentAdapter.ScanTimeout = TagDevice.ScanTimeout * 1000;
+
+        //默认LowPower
+        CurrentAdapter.ScanMode = ScanMode.Balanced;
+
+        return true;
     }
 
     #region BLE状态管理
@@ -130,35 +150,64 @@ public partial class BluetoothLEServices
 
         _scanForAedCts = new CancellationTokenSource();
 
-        LazyLoad();
-
-        if (CurrentAdapter == null)
+        if (!LazyLoad())
         {
             return null;
         }
+
         try
         {
-            CurrentAdapter.DeviceDiscovered += Adapter_DeviceDiscovered;
+            CurrentAdapter!.DeviceDiscovered += Adapter_DeviceDiscovered;
             CurrentAdapter.ScanTimeoutElapsed += Adapter_ScanTimeoutElapsed;
 
-            //蓝牙扫描时间
-            CurrentAdapter.ScanTimeout = TagDevice.ScanTimeout * 1000;
-
-            //默认LowPower
-            CurrentAdapter.ScanMode = ScanMode.Balanced;
-
-            OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle?.IsAvailable}, 已开启={CurrentBle?.IsOn}, 状态={CurrentBle?.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
-
             if (deviceGuid != null && deviceGuid != Guid.Empty)
+            {
+                OnMessage?.Invoke($"连接指定设备{deviceGuid.Value}");
+                // <summary> 
+                // 如果在范围内，则连接到具有已知 GUID 的设备而无需扫描。不扫描设备。
+                // </summary> 
+                // <param name="device Guid"></param> 
+                // <param name="connect Parameters">连接参数。包含实现连接所需的平台特定参数。默认值为 None。</param> 
+                // <param name="cancellation Token">用于监控取消请求的令牌。默认值为 None。</param> 
+                // <returns>连接的设备。</returns>
                 Device = await CurrentAdapter.ConnectToKnownDeviceAsync(deviceGuid.Value, cancellationToken: _scanForAedCts.Token);
-            if (scanFilterOptions != null)
-                await CurrentAdapter.StartScanningForDevicesAsync(scanFilterOptions: scanFilterOptions, cancellationToken: _scanForAedCts.Token);
-            else if (serviceUuids == null)
-                await CurrentAdapter.StartScanningForDevicesAsync(cancellationToken: _scanForAedCts.Token);
+            }
             else
+            {
+                OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle?.IsAvailable}, 已开启={CurrentBle?.IsOn}, 状态={CurrentBle?.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
+            }
+            if (scanFilterOptions != null) {
+                // <摘要>
+                // 开始扫描满足 <paramref name="device Filter"/> 的 BLE 设备。
+                // 仅当 <paramref name="device Filter"/> 对于已发现设备返回 <c>true</c> 时，才会调用 Device Discovered。
+                // </摘要>
+                // <param name="scan Filter Options">传递给本机 BLE 扫描过滤器的选项，可以提高扫描性能。</param>
+                // <param name="device Filter">过滤扫描返回的设备的函数。默认是一个返回 true 的函数。</param>
+                // <returns>表示异步读取操作的任务。扫描结束后任务将完成。</returns>
+                await CurrentAdapter.StartScanningForDevicesAsync(scanFilterOptions: scanFilterOptions, cancellationToken: _scanForAedCts.Token);
+            }
+            else if (serviceUuids == null)
+            {              
+                await CurrentAdapter.StartScanningForDevicesAsync(cancellationToken: _scanForAedCts.Token);
+            }
+            else
+            {
+#if WINDOWS
+                await CurrentAdapter.StartScanningForDevicesAsync(cancellationToken: _scanForAedCts.Token);
+#else
+                OnMessage?.Invoke($"连接指定服务{serviceUuids.FirstOrDefault()}");
+
+                // <摘要>
+                // 开始扫描满足 <paramref name="device Filter"/> 的 BLE 设备。
+                // 仅当 <paramref name="device Filter"/> 对于已发现设备返回 <c>true</c> 时，才会调用 Device Discovered。
+                // 此重载采用服务 ID 列表，保留它只是为了向后兼容。可能会在未来版本中删除。
+                // </摘要>
+                // <param name="service Uuids">请求的服务 ID。</param>
+                // <param name="device Filter">过滤设备的函数。默认是一个返回 true 的函数。</param>
+                // <returns>表示异步读取操作的任务。扫描结束后任务将完成。</returns>
                 await CurrentAdapter.StartScanningForDevicesAsync(serviceUuids, cancellationToken: _scanForAedCts.Token);
-
-
+#endif
+            }
             OnMessage?.Invoke($"结束扫描外设");
         }
         catch (OperationCanceledException)
@@ -171,7 +220,7 @@ public partial class BluetoothLEServices
         }
         finally
         {
-            CurrentAdapter.DeviceDiscovered -= Adapter_DeviceDiscovered;
+            CurrentAdapter!.DeviceDiscovered -= Adapter_DeviceDiscovered;
             CurrentAdapter.ScanTimeoutElapsed -= Adapter_ScanTimeoutElapsed;
         }
 
@@ -184,7 +233,7 @@ public partial class BluetoothLEServices
     /// <returns></returns>
     public async Task<bool> CheckAndRequestBluetoothPermission()
     {
-#if ANDROID 
+#if ANDROID
         var status = await Permissions.CheckStatusAsync<BluetoothPermissions>();
 
         if (status != PermissionStatus.Granted)
@@ -194,12 +243,13 @@ public partial class BluetoothLEServices
 
         return status == PermissionStatus.Granted;
 #else
+        await Task.Delay(1);
         return true;
 #endif
     }
 
     /// <summary>
-    /// 查找到设备处理
+    /// 查找到设备处理, 如果找到目标设备(按名称前段匹配)，停止扫描
     /// </summary>
     private void Adapter_DeviceDiscovered(object? sender, DeviceEventArgs e)
     {
@@ -214,9 +264,18 @@ public partial class BluetoothLEServices
 
         BLE_beacon_AdvertisementRecords(e.Device);
 
-        Devices.Add(new BleDevice() { Id = e.Device.Id, Name = e.Device.Name });
+        Devices.Add(new BleDevice()
+        {
+            Id = e.Device.Id,
+            Name = e.Device.Name,
+            Rssi = e.Device.Rssi,
+            Remark = $"状态={e.Device.State}, " +
+            $"可连接={e.Device.IsConnectable}, " +
+            $"广播={e.Device.AdvertisementRecords.Count}"
+        });
 
-        if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) || (!string.IsNullOrWhiteSpace(TagDevice.Name) && string.Compare(e.Device.Name, TagDevice.Name, true) == 0))
+        if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) ||
+            (!string.IsNullOrWhiteSpace(TagDevice.Name) && e.Device.Name.ToLower().StartsWith(TagDevice.Name.ToLower())))
         {
             TagDeviceInfo = $"{e.Device}, Id={e.Device.Id}, 名称={e.Device.Name}, Rssi={e.Device.Rssi}, 状态={e.Device.State}, 广播记录总数={e.Device.AdvertisementRecords.Count}";
 
@@ -236,33 +295,50 @@ public partial class BluetoothLEServices
     private void BLE_beacon_AdvertisementRecords(IDevice device)
     {
         if (device.AdvertisementRecords.Count == 0) { return; }
-        device.AdvertisementRecords.ToList().ForEach((e) => OnMessage?.Invoke($"{device.Name}信标广播: {e}{Environment.NewLine}"));
+        device.AdvertisementRecords.ToList().ForEach((e) => OnMessage?.Invoke($"{device.Name}信标广播: {e}"));
     }
     private void Adapter_ScanTimeoutElapsed(object? sender, EventArgs e)
     {
         OnMessage?.Invoke("蓝牙扫描超时结束");
     }
 
-    #endregion
+#endregion
 
     #region 连接外设
 
     //连接蓝牙外设
-    public async Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble)
+    public async Task<List<string>?> ConnectDeviceAsync(BleTagDevice device, bool getNotify = false, byte[]? sentbytes = null)
     {
-        List<string> result = new List<string>();
+        TagDevice = device.Clone();
+        Device = null;
 
-        if (ble.DeviceID != Guid.Empty)
+        if (!LazyLoad())
         {
-            TagDevice.DeviceID = ble.DeviceID;
-            TagDevice.Name = "";
-            await StartScanAsync(ble.DeviceID);
+            return null;
         }
-        else if (ble.Name != null)
+
+        List<string> result = new List<string>(); 
+
+        //订阅连接丢失
+        CurrentAdapter!.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
+
+        //订阅连接断开
+        CurrentAdapter.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
+
+        if (!device.ByName && device.DeviceID != Guid.Empty)
         {
-            TagDevice.Name = ble.Name;
+            //按DeviceID查找指定设备 
+            TagDevice.DeviceID = device.DeviceID;
+            TagDevice.Name = "";
+            await StartScanAsync(device.DeviceID, [device.Serviceid]);
+        }
+        else if (device.Name != null)
+        {
+            //按Name查找指定设备 
+            TagDevice.Name = device.Name?.Split("(").FirstOrDefault();
+            OnMessage?.Invoke($"查找指定设备 {TagDevice.Name}");
             TagDevice.DeviceID = Guid.Empty;
-            await StartScanAsync();
+            await StartScanAsync(null, [device.Serviceid]);
         }
         if (Device == null)
         {
@@ -270,7 +346,7 @@ public partial class BluetoothLEServices
             return null;
         }
 
-        OnMessage?.Invoke($"开始连接{TagDevice.Name}");
+        OnMessage?.Invoke($"开始连接{TagDevice.Name}"); 
 
         //这个是函数只发起连接，不代表连接成功
         try
@@ -278,7 +354,17 @@ public partial class BluetoothLEServices
             //连接外设
             //设置第二个参数 forceBleTransport = true, 否则错误GattCallback error: 133
             // 连接设备
-            await CurrentAdapter!.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
+
+            // <摘要>
+            // 连接到 <paramref name="device"/>。
+            // </摘要>
+            // <param name="device">要连接的设备。</param>
+            // <param name="connectParameters">连接参数。包含实现连接所需的平台特定参数。默认值为无。</param>
+            // <param name="cancellation Token">用于监视取消请求的令牌。默认值为无。</param>
+            // <returns>表示异步读取操作的任务。设备连接成功后任务将完成。</returns>
+            // <exception cref="设备连接异常">设备连接失败抛出</exception>
+            // <exception cref="Argument Null Exception">如果 <paramref name="device"/> 为 null，则抛出。</exception>
+            await CurrentAdapter.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
             OnMessage?.Invoke("连接成功");
         }
         catch (DataException ex)
@@ -288,20 +374,20 @@ public partial class BluetoothLEServices
         }
 
 
-        if (Device!.State == DeviceState.Connected)
+        if (Device.State == DeviceState.Connected)
         {
             OnMessage?.Invoke($"连接成功{TagDevice.Name}");
 
-            if (ble.Serviceid == Guid.Empty)
+            if (device.Serviceid == Guid.Empty)
             {
                 var getServices = await Device.GetServicesAsync();
-                ble.Serviceid = getServices.Where(a => a.IsPrimary == true).Select(a => a.Id).FirstOrDefault();
+                device.Serviceid = getServices.Where(a => a.IsPrimary == true).Select(a => a.Id).FirstOrDefault();
             }
 
-            var genericService = await Device.GetServiceAsync(ble.Serviceid);
+            var genericService = await Device.GetServiceAsync(device.Serviceid);
             if (genericService == null)
             {
-                OnMessage?.Invoke($"获取常规信息服务{ble.Serviceid}失败");
+                OnMessage?.Invoke($"获取常规信息服务{device.Serviceid}失败");
                 return null;
             }
 
@@ -309,35 +395,52 @@ public partial class BluetoothLEServices
 
             //获取特征值集合
             var characteristics = await genericService.GetCharacteristicsAsync();
-            if (ble.Characteristic == Guid.Empty)
+            if (characteristics == null)
             {
-                ble.Characteristic = characteristics.FirstOrDefault().Id;
+                OnMessage?.Invoke($"获取特征值集合{device.Serviceid}失败");
+                return null;
+            }
+            if (device.Characteristic == Guid.Empty)
+            {
+                var characteristic = characteristics.FirstOrDefault()?.Id;
+                if (characteristic == null)
+                {
+                    OnMessage?.Invoke($"获取特征值{device.Serviceid}失败");
+                    return null;
+                }
+                device.Characteristic = characteristic.Value;
             }
 
-            var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == ble.Characteristic);
+            var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == device.Characteristic);
             if (deviceNameCharacteristic == null)
             {
-                OnMessage?.Invoke($"获取设备名特征值{ble.Characteristic}失败");
+                OnMessage?.Invoke($"获取设备名特征值{device.Characteristic}失败");
                 return null;
             }
 
             bool connectState = true;
             OnStateConnect?.Invoke(connectState);//这里获取成功才为真的连接成功，并可以开始读取Notify数据
 
-            //新增测试代码
-            var notifyCharacteristic = await genericService.GetCharacteristicAsync(ble.Characteristic);
-
-            if (notifyCharacteristic != null)
+            if (getNotify)
             {
-                // 订阅通知，在特征值的 Received 事件中处理设备返回的数据
-                notifyCharacteristic.ValueUpdated += NotifyCharacteristic_ValueUpdated;
-                await notifyCharacteristic.StartUpdatesAsync();
-            }
-            else if (notifyCharacteristic == null)
-            {
-                return null;
-            }
+                //新增测试代码
+                var notifyCharacteristic = await genericService.GetCharacteristicAsync(device.Characteristic);
 
+                if (notifyCharacteristic != null)
+                {
+                    // 订阅通知，在特征值的 Received 事件中处理设备返回的数据
+                    notifyCharacteristic.ValueUpdated += NotifyCharacteristic_ValueUpdated;
+                    await notifyCharacteristic.StartUpdatesAsync();
+                }
+                else if (notifyCharacteristic == null)
+                {
+                    return null;
+                }
+            }
+            if (sentbytes != null)
+            {
+                await SendDataAsync(device.Characteristic, sentbytes);
+            }
             return result;
         }
 
@@ -352,51 +455,86 @@ public partial class BluetoothLEServices
     //连接指定 deviceID 蓝牙外设
     public async Task<List<BleService>?> ConnectToKnownDeviceAsync(Guid deviceID, string? deviceName = null)
     {
-        deviceName = deviceName ?? deviceID.ToString();
-        if (deviceID != Guid.Empty)
+        TagDevice.ScanTimeout = 10;
+
+        if (deviceID == Guid.Empty)
         {
-            LazyLoad();
+            OnMessage?.Invoke("参数不正确");
+            return null;
+        }
+
+        deviceName = deviceName ?? deviceID.ToString();
+        if (!LazyLoad())
+        {
+            return null;
+        }
+
+        if (Device != null && Device.Id == deviceID)
+        {
+            OnMessage?.Invoke("设备已初始化");
+        }
+        else
+        {
+            OnMessage?.Invoke($"连接指定设备{deviceID}");
             _scanForAedCts = new CancellationTokenSource();
+            
+            // <summary> 
+            // 如果在范围内，则连接到具有已知 GUID 的设备而无需扫描。不扫描设备。
+            // </summary> 
+            // <param name="device Guid"></param> 
+            // <param name="connect Parameters">连接参数。包含实现连接所需的平台特定参数。默认值为 None。</param> 
+            // <param name="cancellation Token">用于监控取消请求的令牌。默认值为 None。</param> 
+            // <returns>连接的设备。</returns>
             Device = await CurrentAdapter!.ConnectToKnownDeviceAsync(deviceID, cancellationToken: _scanForAedCts.Token);
         }
+
+        //订阅连接丢失
+        CurrentAdapter!.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
+
+        //订阅连接断开
+        CurrentAdapter!.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
+
         if (Device == null)
         {
             OnMessage?.Invoke($"没有找到{deviceName}");
             return null;
         }
-
-        OnMessage?.Invoke($"开始连接{deviceName}");
-
-        //这个是函数只发起连接，不代表连接成功
-        try
+        if (!Device.IsConnectable)
         {
-            //连接外设
-            //设置第二个参数 forceBleTransport = true, 否则错误GattCallback error: 133
-            // 连接设备
-            await CurrentAdapter!.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
-            OnMessage?.Invoke("连接成功");
+            OnMessage?.Invoke("设备不可连接");
         }
-        catch (DataException ex)
+        else if (Device.State == DeviceState.Connected)
         {
-            OnMessage?.Invoke($"Gatt 错误:{ex.Message}");
-            return null;
+            OnMessage?.Invoke("设备已连接");
         }
-
-
-        if (Device!.State == DeviceState.Connected)
+        else
         {
-            OnMessage?.Invoke($"连接成功{TagDevice.Name}");
+            OnMessage?.Invoke($"开始连接{deviceName}");
 
-            var getServices = await Device.GetServicesAsync();
-            var list = new List<BleService>();
-            getServices.ToList().ForEach(a =>
+            //这个是函数只发起连接，不代表连接成功
+            try
             {
-                OnMessage?.Invoke($"获取服务, Id={a.Id}, Name={a.Name}, IsPrimary={a.IsPrimary},");
-                list.Add(new BleService() { Id = a.Id, Name = a.Name, IsPrimary = a.IsPrimary });
-            });
+                //连接外设
+                //设置第二个参数 forceBleTransport = true, 否则错误GattCallback error: 133
+                // 连接设备
 
-
-            return list;
+                // <摘要>
+                // 连接到 <paramref name="device"/>。
+                // </摘要>
+                // <param name="device">要连接的设备。</param>
+                // <param name="connectParameters">连接参数。包含实现连接所需的平台特定参数。默认值为无。</param>
+                // <param name="cancellation Token">用于监视取消请求的令牌。默认值为无。</param>
+                // <returns>表示异步读取操作的任务。设备连接成功后任务将完成。</returns>
+                // <exception cref="设备连接异常">设备连接失败抛出</exception>
+                // <exception cref="Argument Null Exception">如果 <paramref name="device"/> 为 null，则抛出。</exception>
+                await CurrentAdapter.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
+                OnMessage?.Invoke("连接成功");
+            }
+            catch (DataException ex)
+            {
+                OnMessage?.Invoke($"Gatt 错误:{ex.Message}");
+                return null;
+            }
         }
 
         //订阅连接丢失
@@ -404,7 +542,26 @@ public partial class BluetoothLEServices
 
         //订阅连接断开
         CurrentAdapter.DeviceConnectionLost += CurrentAdapter_DeviceConnectionLost;
-        return null; //连接失败
+
+        return await GetServices();
+    }
+
+    private async Task<List<BleService>?> GetServices()
+    {
+        if (Device!.State == DeviceState.Connected)
+        {
+            OnMessage?.Invoke($"连接成功{TagDevice.Name}");
+
+            var services = new List<BleService>();
+            var getServices = await Device.GetServicesAsync();
+            getServices.ToList().ForEach(a =>
+            {
+                OnMessage?.Invoke($"获取服务, Id={a.Id}, Name={a.Name}, IsPrimary={a.IsPrimary},");
+                services.Add(new BleService() { Id = a.Id, Name = a.Name, IsPrimary = a.IsPrimary });
+            });
+            return services;
+        }
+        return null;
     }
 
     public async Task<List<BleCharacteristic>?> GetCharacteristicsAsync(Guid serviceid)
@@ -415,34 +572,43 @@ public partial class BluetoothLEServices
             return null;
         }
 
-        //{0000180a-0000-1000-8000-00805f9b34fb}
-        var genericService = await Device.GetServiceAsync(serviceid);
-
-        if (genericService == null)
+        try
         {
-            OnMessage?.Invoke($"获取常规信息服务失败");
+
+            //{0000180a-0000-1000-8000-00805f9b34fb}
+            var genericService = await Device.GetServiceAsync(serviceid);
+
+            if (genericService == null)
+            {
+                OnMessage?.Invoke($"获取常规信息服务失败");
+                return null;
+            }
+
+            OnMessage?.Invoke($"开始获取特征值");
+
+            var characteristics = await genericService.GetCharacteristicsAsync();
+            var list = new List<BleCharacteristic>();
+            characteristics.ToList().ForEach(a =>
+            {
+                OnMessage?.Invoke($"获取特征, Id={a.Id}, Name={a.Name}, Uuid={a.Uuid}, CanRead={a.CanRead}, CanUpdate={a.CanUpdate}, CanWrite={a.CanWrite}, StringValue={a.StringValue},");
+                list.Add(new BleCharacteristic()
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Uuid = a.Uuid,
+                    CanRead = a.CanRead,
+                    CanUpdate = a.CanUpdate,
+                    CanWrite = a.CanWrite,
+                    StringValue = a.StringValue
+                });
+            });
+            return list;
+        }
+        catch (Exception e)
+        {
+            OnMessage?.Invoke($"获取特征值失败. {e.Message}");
             return null;
         }
-
-        OnMessage?.Invoke($"开始获取特征值");
-
-        var characteristics = await genericService.GetCharacteristicsAsync();
-        var list = new List<BleCharacteristic>();
-        characteristics.ToList().ForEach(a =>
-        {
-            OnMessage?.Invoke($"获取特征, Id={a.Id}, Name={a.Name}, Uuid={a.Uuid}, CanRead={a.CanRead}, CanUpdate={a.CanUpdate}, CanWrite={a.CanWrite}, StringValue={a.StringValue},");
-            list.Add(new BleCharacteristic()
-            {
-                Id = a.Id,
-                Name = a.Name,
-                Uuid = a.Uuid,
-                CanRead = a.CanRead,
-                CanUpdate = a.CanUpdate,
-                CanWrite = a.CanWrite,
-                StringValue = a.StringValue
-            });
-        });
-        return list;
     }
 
     //订阅连接丢失
@@ -679,8 +845,13 @@ public partial class BluetoothLEServices
 
     }
 
-    public async Task<bool> SendDataAsync(Guid characteristicID, byte[] ary)
+    public async Task<bool> SendDataAsync(Guid characteristicID, byte[]? ary)
     {
+        if (ary == null)
+        {
+            OnMessage?.Invoke($"数据无效");
+            return false;
+        }
         var characteristic = await GetdeviceNameCharacteristic(TagDevice.Serviceid, characteristicID);
         if (characteristic == null)
         {

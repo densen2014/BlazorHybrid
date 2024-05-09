@@ -105,7 +105,7 @@ public partial class InitBlazorWebView : Page
         new DialogPermissionRequestHandler(e.WebView);
 #endif
 
-        e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested; 
+        e.WebView.CoreWebView2.PermissionRequested += permissionHandler.OnPermissionRequested;
 #elif IOS
 
         //关闭回弹效果
