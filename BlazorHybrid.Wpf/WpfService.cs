@@ -202,4 +202,9 @@ public class WpfService : INativeFeatures
     {
         return Task.FromResult(("未实现", new object()));
     }
+
+    public Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble, bool getNotify = false, byte[]? sentbytes = null)
+    {
+        throw new NotImplementedException();
+    }
 }
