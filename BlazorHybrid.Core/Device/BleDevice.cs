@@ -110,6 +110,12 @@ public class BleDevice
     /// </summary>
     [DisplayName("信号")]
     public int Rssi { get; set; }
+    
+    /// <summary>
+    /// 可连接
+    /// </summary>
+    [DisplayName("可连接")]
+    public bool IsConnectable { get; set; }
 
     /// <summary>
     /// 服务列表

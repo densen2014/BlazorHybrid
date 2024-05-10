@@ -275,6 +275,7 @@ public partial class BluetoothLEServices
             Id = device.Id,
             Name = device.Name,
             Rssi = device.Rssi,
+            IsConnectable = device.IsConnectable,
             Remark = $"状态={device.State}, " +
             $"可连接={device.IsConnectable}, " +
             $"广播={device.AdvertisementRecords.Count}"

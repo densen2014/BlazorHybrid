@@ -296,10 +296,15 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
         if (Devices != null)
         {
-            if (!string.IsNullOrEmpty(NameFilter))
+             if (!string.IsNullOrEmpty(NameFilter))
             {
-                Devices = Devices.Where(a => a.Name != null && a.Name.Contains(NameFilter)).OrderBy(a => a.Name).ToList();
+                Devices = Devices.Where(a => a.IsConnectable == true && a.Name != null && a.Name.Contains(NameFilter)).OrderBy(a => a.Name).ToList();
             }
+            else
+            {
+                Devices = Devices.Where(a => a.IsConnectable == true).OrderBy(a => a.Name).ToList();
+            }
+ 
 
             foreach (var bleDevice in Devices)
             {
@@ -336,7 +341,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                                         bleService.Remark = $"特征: {characteristics.Count}";
                                         if (characteristics.Where(a => a.CanWrite).Count() > 0)
                                         {
-                                            stop = true;
+                                            //stop = true;
                                             bleDevice.ServicesRemark += "+w";
                                             await InvokeAsync(StateHasChanged);
                                         }
