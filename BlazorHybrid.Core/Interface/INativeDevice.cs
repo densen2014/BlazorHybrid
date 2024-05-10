@@ -13,6 +13,7 @@ namespace BlazorHybrid.Core;
 
 public partial interface INativeFeatures
 {
+    Task<bool> ResetBluetooth();
 
     Task<bool> BluetoothIsBusy();
 
@@ -32,6 +33,12 @@ public partial interface INativeFeatures
     /// </summary>
     /// <returns></returns>
     Task<List<BleDevice>?> StartScanAsync(); 
+
+    /// <summary>
+    /// 扫描外设,返回设备列表
+    /// </summary>
+    /// <returns></returns>
+    Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null); 
 
     /// <summary>
     /// 连接外设

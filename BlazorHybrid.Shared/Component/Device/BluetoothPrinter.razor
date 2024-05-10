@@ -10,15 +10,18 @@
 
         <Tab>
             <TabItem Text="打印">
+                @{
+                    var isDisabled = !IsConnected && Devices == null;
+                }
                 @if (ScreenSize > BreakPoint.Medium)
                 {
                     <BootstrapInputGroup>
                         <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" />
                         <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
                         <Button Text="查找" OnClick="ScanPrinterDevice" />
-                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
-                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(!IsConnected)" />
-                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@(!IsConnected)" />
+                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
+                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
+                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
                     </BootstrapInputGroup>
                 }
                 else
@@ -29,9 +32,9 @@
                     </BootstrapInputGroup>
                     <BootstrapInputGroup class="m-1">
                         <Button Text="查找" OnClick="ScanPrinterDevice" />
-                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
-                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(!IsConnected)" />
-                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@(!IsConnected)" />
+                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
+                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
+                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
                     </BootstrapInputGroup>
                 }
 
@@ -40,7 +43,7 @@
                     <Button Text="扫描" @attributes=IsScanningCss OnClick="ScanDevice" />
                     <Button Text="连接" OnClick="OnDeviceSelect" IsDisabled="@(Devices == null)" />
                     <Button Text="断开" OnClick="OnDisConnectDevice" IsDisabled="@(Devices == null)" />
-                    <Button Text="清空" OnClick="OnReset" IsDisabled="@(Devices == null)" />
+                    <Button Text="清空" OnClick="OnReset" />
                 </BootstrapInputGroup>
                 <BootstrapInputGroup class="m-1">
                     <Button Text="打印" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(Characteristics == null)" />
@@ -75,7 +78,7 @@
                         }
                     </div>
 
-                    <Table @ref="Table" TItem="BleDevice" Items="Devices"
+                    <Table @ref="Table" TItem="BleDevice" Items='Devices.Where(a=>a.ServicesRemark !="isNotPrinter")'
                            ShowDetailRow='(e)=>!(string.IsNullOrEmpty(e.ServicesRemark) && e.ServicesRemark !="-")'
                            OnDoubleClickRowCallback="OnDoubleClickRowCallback()!"
                            AllowResizing AllowDragColumn
@@ -142,14 +145,16 @@
             </TabItem>
             <TabItem Text="设置">
                 <ValidateForm Model="@Option" style="margin-top: 1.5rem;">
-                    <EditorForm TModel="BluetoothPrinterConfig" RowType="RowType.Inline">
+                    <EditorForm TModel="BluetoothPrinterOption" RowType="RowType.Inline">
                         <Buttons>
-                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位设置吗？" />
-                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设1吗？" />
-                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设2吗？" />
-                            <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
-                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设3吗？" />
-                            <Button Icon="fa-solid fa-floppy-disk" Text="保存" OnClick="SaveConfig" />
+                            <BootstrapInputGroup>
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位设置吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设1吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设2吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设3吗？" />
+                                <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
+                                <Button Icon="fa-solid fa-floppy-disk" Text="保存" OnClick="SaveConfigOK" />
+                            </BootstrapInputGroup>
                         </Buttons>
                     </EditorForm>
                 </ValidateForm>

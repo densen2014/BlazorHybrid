@@ -186,4 +186,9 @@ public class NullFeatureService : INativeFeatures
     {
         throw new NotImplementedException();
     }
+
+    public Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null)
+    {
+        throw new NotImplementedException();
+    }
 }

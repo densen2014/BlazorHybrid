@@ -41,7 +41,7 @@ using System.IO.Ports;
 
 namespace BlazorHybrid.Maui.Shared;
 
-public class MauiFeatureService : Page, INativeFeatures
+public partial class MauiFeatureService : Page, INativeFeatures
 {
     [NotNull]
     BluetoothLEServices? MyBleTester;
@@ -767,29 +767,6 @@ public class MauiFeatureService : Page, INativeFeatures
 
     bool isInit = false;
 
-    public async Task<List<BleDevice>?> StartScanAsync() => await MyBleTester.StartScanAsync();
-
-    public async Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble, bool getNotify = false, byte[]? sentbytes = null) => await MyBleTester.ConnectDeviceAsync(ble, getNotify, sentbytes);
-
-    public async Task<List<BleService>?> ConnectToKnownDeviceAsync(Guid deviceID, string? deviceName = null) => await MyBleTester.ConnectToKnownDeviceAsync(deviceID, deviceName);
-
-    public async Task<List<BleCharacteristic>?> GetCharacteristicsAsync(Guid serviceid) => await MyBleTester.GetCharacteristicsAsync(serviceid);
-
-    public async Task<string?> ReadDeviceName(Guid? serviceid, Guid? characteristic) => await MyBleTester.ReadDeviceName(serviceid, characteristic);
-
-    public async Task<byte[]?> ReadDataAsync(Guid characteristic) => await MyBleTester.ReadDataAsync(characteristic);
-
-    public async Task<bool> SendDataAsync(Guid characteristic, byte[]? ary) => await MyBleTester.SendDataAsync(characteristic, ary);
-
-    public async Task<bool> SendDataAsyncChunk(Guid characteristic, byte[]? ary, int chunk = 20) => await MyBleTester.SendDataAsync(characteristic, ary, chunk);
-
-    public async Task<bool> SendDataAsync(Guid characteristic, string commands, int chunk = 0) => await MyBleTester.SendDataAsync(characteristic, commands, chunk);
-
-    public async Task<bool> DisConnectDeviceAsync() => await MyBleTester.DisConnectDeviceAsync();
-
-    public async Task GetBatteryLevel() => await MyBleTester.GetBatteryLevel();
-
-    public Task<bool> BluetoothIsBusy() => MyBleTester.BluetoothIsBusy();
 
     public async Task Alert(string title, string message, string cancel)
     {

@@ -23,7 +23,7 @@ public partial class BluetoothLEServices
     public async Task GetBatteryLevel()
     {
         var scanFilterOptions = new ScanFilterOptions();
-        scanFilterOptions.ServiceUuids = new[] { Battery_Service, HeartRateMeasurement_Service, DeviceInformation_Service };
+        scanFilterOptions.ServiceUuids = [Battery_Service, HeartRateMeasurement_Service, DeviceInformation_Service];
         var devices = await StartScanAsync(scanFilterOptions: scanFilterOptions);
 
         if (Device == null)

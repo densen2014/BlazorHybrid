@@ -1,7 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 namespace BlazorHybrid.Core.Device;
 
-public class BluetoothPrinterConfig
+public class BluetoothPrinterOption
 {
     // Store name
     public string? StoreTitle { get; set; }
@@ -45,6 +46,10 @@ public class BluetoothPrinterConfig
     public string? CharacteristicID { get; set; }
     public bool AutoConnect { get; set; }
     public int Chunk { get; set; } = 20;
+    public bool PrinterOnly { get; set; } = true;
+
+    [DisplayName("最低RSSI(-db)")]
+    public int MinRssi { get; set; } = 80;
 
     // 测试数据
     public string? TestTitle { get; set; } = "Informatica Co.Ltd.";

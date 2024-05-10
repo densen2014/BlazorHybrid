@@ -119,8 +119,8 @@ public partial class InitBlazorWebView : Page
         //如果设置为 true 且 Bounces 为 true，则在缩放超过该限制后，滚动视图将围绕缩放限制弹跳
         //e.WebView.ScrollView.BouncesZoom = false;
         // e.WebView.TintColor = UIKit.UIColor.Green;
-        e.WebView.AllowsLinkPreview=true;
-        e.WebView.AllowsBackForwardNavigationGestures = true; 
+        e.WebView.AllowsLinkPreview = true;
+        e.WebView.AllowsBackForwardNavigationGestures = true;
 #endif
         WebView = e.WebView;
 
@@ -139,8 +139,8 @@ public partial class InitBlazorWebView : Page
         e.Configuration.AllowsPictureInPictureMediaPlayback = true;
         e.Configuration.MediaTypesRequiringUserActionForPlayback = WebKit.WKAudiovisualMediaTypes.None;
         if (e.Configuration.DefaultWebpagePreferences != null)
-        { 
-            e.Configuration.DefaultWebpagePreferences.AllowsContentJavaScript=true;
+        {
+            e.Configuration.DefaultWebpagePreferences.AllowsContentJavaScript = true;
         }
 #endif
     }

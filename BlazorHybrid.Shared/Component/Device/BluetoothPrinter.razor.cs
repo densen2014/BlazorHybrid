@@ -7,11 +7,11 @@
 using AME;
 using BootstrapBlazor.Components;
 using Newtonsoft.Json;
-using OpenXmlPowerTools;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using static BlazorHybrid.Core.Device.BleUUID;
+using BlazorHybrid.Shared;
 
 namespace BlazorHybrid.Core.Device;
 
@@ -23,7 +23,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
     BleTagDevice BleInfo { get; set; } = new BleTagDevice();
 
-    private BluetoothPrinterConfig Option = new();
+    private BluetoothPrinterOption Option = new();
 
     private string? ReadResult;
 
@@ -179,7 +179,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
             {
                 try
                 {
-                    var config = JsonConvert.DeserializeObject<BluetoothPrinterConfig>(configJson);
+                    var config = JsonConvert.DeserializeObject<BluetoothPrinterOption>(configJson);
                     if (config != null)
                     {
                         Option = config;
@@ -247,6 +247,11 @@ public partial class BluetoothPrinter : IAsyncDisposable
         await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
     }
 
+    private async Task SaveConfigOK()
+    {
+        await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
+        await ToastService.Success("提示", "保存成功");
+    }
     private async Task SaveConfig() => await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
 
     private async Task ConnectLastDevice()
@@ -326,12 +331,18 @@ public partial class BluetoothPrinter : IAsyncDisposable
         ReadResult = "";
         DeviceList = new List<SelectedItem>() { new SelectedItem() { Text = "请选择...", Value = "" } };
 
+        Guid[]? serviceUuids = Option.PrinterOnly ? [Guid.Parse(PrinterServiceUUID), Guid.Parse(PrinterNormalServiceUUID)] : null;
+
         //开始扫描
-        Devices = await Tools.StartScanAsync();
+        Devices = await Tools.StartScanAsync(serviceUuids: serviceUuids);
         //StateHasChanged();
 
         if (Devices != null)
         {
+            if (Option.MinRssi!=0)
+            {
+                Devices = Devices.Where(a => a.Rssi >= -Option.MinRssi).ToList();
+            }
             if (!string.IsNullOrEmpty(Option.NameFilter))
             {
                 Devices = Devices.Where(a => a.IsConnectable == true && a.Name != null && a.Name.Contains(Option.NameFilter)).OrderBy(a => a.Name).ToList();
@@ -345,13 +356,6 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
             foreach (var bleDevice in Devices)
             {
-                DeviceList.Add(
-                    new SelectedItem()
-                    {
-                        Active = IsAutoConnect && bleDevice.Id == BleInfo.DeviceID,
-                        Text = string.IsNullOrWhiteSpace(bleDevice.Name) ? bleDevice.Id.ToString() : bleDevice.Name,
-                        Value = bleDevice.Id.ToString()
-                    });
                 //await InvokeAsync(StateHasChanged);
 
                 //_ = Task.Run(async () =>
@@ -361,6 +365,17 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name); 
                 if (services != null)
                 {
+                    if (serviceUuids != null )
+                    {
+                        var isPrinter = services.Where(a => serviceUuids.Contains (a.Id)).Any();
+                        if (!isPrinter)
+                        {
+                            bleDevice.ServicesRemark = "isNotPrinter";
+                            await Tools_OnMessage($"排除{bleDevice.Name}");
+                            await InvokeAsync(StateHasChanged);
+                            continue;
+                        }
+                    }
 
                     services.ForEach(a =>
                     {
@@ -417,8 +432,8 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 }
                 else
                 {
-                    bleDevice.ServicesRemark = $"连接失败";
-                    Message = $"连接{bleDevice.Name}失败";
+                    bleDevice.ServicesRemark = $"连接超时";
+                    Message = $"连接{bleDevice.Name}超时";
                     await ToastService.Error("提示", Message);
                 }
                 await OnDisConnectDevice(true);
@@ -426,8 +441,19 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 await ToastService.Success("提示", Message);
                 await InvokeAsync(StateHasChanged);
 
+                DeviceList.Add(
+                    new SelectedItem()
+                    {
+                        Active = IsAutoConnect && bleDevice.Id == BleInfo.DeviceID,
+                        Text = string.IsNullOrWhiteSpace(bleDevice.Name) ? bleDevice.Id.ToString() : bleDevice.Name,
+                        Value = bleDevice.Id.ToString()
+                    });
+
                 //});
             };
+
+            Devices = Devices.Where(a => a.ServicesRemark != "isNotPrinter").ToList(); 
+
         }
 
         IsScanning = false;
@@ -449,6 +475,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
     private async Task OnReset(bool silent)
     {
         await OnDisConnectDevice(silent);
+        await Tools.ResetBluetooth();
         Devices = null;
     }
 
@@ -548,8 +575,8 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
         else
         {
-            Message = $"获取特征失败. {BleInfo.Serviceid}";
-            await ToastService.Error("提示", Message);
+            var message = $"获取特征失败. {BleInfo.Serviceid}";
+            await ToastService.Error("提示", message);
         }
 
         await InvokeAsync(StateHasChanged);

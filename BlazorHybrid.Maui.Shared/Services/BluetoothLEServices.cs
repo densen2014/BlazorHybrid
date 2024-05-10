@@ -22,6 +22,8 @@ namespace BlazorHybrid.Maui.Shared;
 /// </summary>
 public partial class BluetoothLEServices
 {
+    //var opt = new ConnectParameters(true, true);
+
     public List<BleDevice> Devices { get; set; } = new List<BleDevice>();
 
     /// <summary>
@@ -72,19 +74,36 @@ public partial class BluetoothLEServices
 
     public BluetoothLEServices()
     {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    }
+    public Task<bool> ResetBluetooth()
+    {
+        if (CurrentBle != null)
+        {
+            CurrentBle.StateChanged -= Ble_StateChanged;
+        }
+        if (CurrentAdapter != null)
+        {
+            CurrentAdapter.DeviceConnected -= Adapter_DeviceConnected;
+            CurrentAdapter.DeviceDisconnected -= Adapter_DeviceDisconnected;
+        }
+        CurrentBle = null;
+        CurrentAdapter = null;
+        Device = null;
+        Devices = new List<BleDevice>();
+        TagDevice = new BleTagDevice();
+
+        return Task.FromResult(Device != null && Device.State == DeviceState.Connected);
     }
 
     private bool LazyLoad()
     {
         if (CurrentAdapter == null)
-        {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
+        { 
             CurrentBle = CrossBluetoothLE.Current;
             CurrentAdapter = CrossBluetoothLE.Current.Adapter;
 
             CurrentBle.StateChanged += Ble_StateChanged;
-
             CurrentAdapter.DeviceConnected += Adapter_DeviceConnected;
             CurrentAdapter.DeviceDisconnected += Adapter_DeviceDisconnected;
         }
@@ -129,7 +148,7 @@ public partial class BluetoothLEServices
     private void Adapter_DeviceDisconnected(object? sender, DeviceEventArgs e)
     {
         OnMessage?.Invoke($"断开连接{e.Device.Name}");
-        bool connectState = false;
+        bool connectState = e.Device.State == DeviceState.Disconnected;
         OnStateConnect?.Invoke(connectState);
     }
 
@@ -285,7 +304,7 @@ public partial class BluetoothLEServices
             $"广播={device.AdvertisementRecords.Count}"
         });
 
-        if (IsMatchID(device) || NewMethod(device))
+        if (IsMatchID(device) || IsStartWithName(device))
         {
             TagDeviceInfo = $"{device}, Id={device.Id}, 名称={device.Name}, Rssi={device.Rssi}, 状态={device.State}, 广播记录总数={device.AdvertisementRecords.Count}";
 
@@ -299,7 +318,7 @@ public partial class BluetoothLEServices
         }
     }
 
-    private bool NewMethod(IDevice device)
+    private bool IsStartWithName(IDevice device)
     {
         try
         {
@@ -412,7 +431,7 @@ public partial class BluetoothLEServices
         }
 
 
-        if (Device.State == DeviceState.Connected)
+        if (Device?.State == DeviceState.Connected)
         {
             OnMessage?.Invoke($"连接成功{TagDevice.Name}");
 
@@ -493,7 +512,6 @@ public partial class BluetoothLEServices
     //连接指定 deviceID 蓝牙外设
     public async Task<List<BleService>?> ConnectToKnownDeviceAsync(Guid deviceID, string? deviceName = null)
     {
-        TagDevice.ScanTimeout = 10;
 
         if (deviceID == Guid.Empty)
         {
@@ -517,17 +535,37 @@ public partial class BluetoothLEServices
         }
         else
         {
-            OnMessage?.Invoke($"连接指定设备{deviceID}");
-            _scanForAedCts = new CancellationTokenSource();
+            try
+            {
 
-            // <summary> 
-            // 如果在范围内，则连接到具有已知 GUID 的设备而无需扫描。不扫描设备。
-            // </summary> 
-            // <param name="device Guid"></param> 
-            // <param name="connect Parameters">连接参数。包含实现连接所需的平台特定参数。默认值为 None。</param> 
-            // <param name="cancellation Token">用于监控取消请求的令牌。默认值为 None。</param> 
-            // <returns>连接的设备。</returns>
-            Device = await CurrentAdapter.ConnectToKnownDeviceAsync(deviceID, cancellationToken: _scanForAedCts.Token);
+                OnMessage?.Invoke($"连接指定设备{deviceID}");
+                var _scanForAedCts = new CancellationTokenSource();
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(10));
+                    if (!_scanForAedCts!.IsCancellationRequested)
+                        _scanForAedCts.Cancel(false);
+                });
+
+                // <summary> 
+                // 如果在范围内，则连接到具有已知 GUID 的设备而无需扫描。不扫描设备。
+                // </summary> 
+                // <param name="device Guid"></param> 
+                // <param name="connect Parameters">连接参数。包含实现连接所需的平台特定参数。默认值为 None。</param> 
+                // <param name="cancellation Token">用于监控取消请求的令牌。默认值为 None。</param> 
+                // <returns>连接的设备。</returns>
+                Device = await CurrentAdapter.ConnectToKnownDeviceAsync(deviceID, cancellationToken: _scanForAedCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                OnMessage?.Invoke($"扫描外设任务取消");
+            }
+            catch (Exception ex)
+            {
+                OnMessage?.Invoke($"扫描外设出错, {ex.Message}");
+            }
+
         }
 
         //订阅连接丢失
