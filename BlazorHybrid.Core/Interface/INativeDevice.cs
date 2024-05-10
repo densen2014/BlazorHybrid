@@ -70,6 +70,22 @@ public partial interface INativeFeatures
     /// <returns></returns>
 
     Task<bool> SendDataAsync(Guid characteristic, byte[]? ary);
+
+    /// <summary>
+    /// 写数据
+    /// </summary>
+    /// <param name="characteristic"></param>
+    /// <param name="commands"></param>
+    /// <returns></returns>
+    Task<bool> SendDataAsyncChunk(Guid characteristic, byte[]? ary, int chunk = 20);
+    /// <summary>
+    /// 写数据
+    /// </summary>
+    /// <param name="characteristic"></param>
+    /// <param name="commands"></param>
+    /// <returns></returns>
+    Task<bool> SendDataAsync(Guid characteristic, string commands,int chunk = 0);
+
     Task GetBatteryLevel();
 
     /// <summary>

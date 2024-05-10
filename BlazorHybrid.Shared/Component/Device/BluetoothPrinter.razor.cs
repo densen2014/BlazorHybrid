@@ -23,7 +23,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
     BleTagDevice BleInfo { get; set; } = new BleTagDevice();
 
-    private BluetoothPrinterConfig Config = new();
+    private BluetoothPrinterConfig Option = new();
 
     private string? ReadResult;
 
@@ -182,7 +182,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                     var config = JsonConvert.DeserializeObject<BluetoothPrinterConfig>(configJson);
                     if (config != null)
                     {
-                        Config = config;
+                        Option = config;
                     }
                 }
                 catch
@@ -218,13 +218,13 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
             StateHasChanged();
 
-            if (!string.IsNullOrEmpty(Config.DeviceID))
+            if (!string.IsNullOrEmpty(Option.DeviceID))
             {
-                BleInfo.Name = Config.DeviceName;
-                BleInfo.DeviceID = Guid.Parse(Config.DeviceID);
-                if (!string.IsNullOrEmpty(Config.ServiceID)) BleInfo.Serviceid = Guid.Parse(Config.ServiceID);
-                if (!string.IsNullOrEmpty(Config.CharacteristicID)) BleInfo.Characteristic = Guid.Parse(Config.CharacteristicID);
-                if (Config.AutoConnect)
+                BleInfo.Name = Option.DeviceName;
+                BleInfo.DeviceID = Guid.Parse(Option.DeviceID);
+                if (!string.IsNullOrEmpty(Option.ServiceID)) BleInfo.Serviceid = Guid.Parse(Option.ServiceID);
+                if (!string.IsNullOrEmpty(Option.CharacteristicID)) BleInfo.Characteristic = Guid.Parse(Option.CharacteristicID);
+                if (Option.AutoConnect)
                 {
                     IsAuto = true;
                     await ConnectLastDevice();
@@ -243,11 +243,11 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
     private async Task ResetConfig()
     {
-        Config = new();
-        await Storage.SetValue("BluetoothPrinterConfig", Config.ObjectToJson());
+        Option = new();
+        await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
     }
 
-    private async Task SaveConfig() => await Storage.SetValue("BluetoothPrinterConfig", Config.ObjectToJson());
+    private async Task SaveConfig() => await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
 
     private async Task ConnectLastDevice()
     {
@@ -264,7 +264,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
     private async Task OnStateChanged(bool value)
     {
-        Config.AutoConnect = value;
+        Option.AutoConnect = value;
         await SaveConfig();
     }
 
@@ -332,9 +332,9 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
         if (Devices != null)
         {
-            if (!string.IsNullOrEmpty(Config.NameFilter))
+            if (!string.IsNullOrEmpty(Option.NameFilter))
             {
-                Devices = Devices.Where(a => a.IsConnectable == true && a.Name != null && a.Name.Contains(Config.NameFilter)).OrderBy(a => a.Name).ToList();
+                Devices = Devices.Where(a => a.IsConnectable == true && a.Name != null && a.Name.Contains(Option.NameFilter)).OrderBy(a => a.Name).ToList();
             }
             else
             {
@@ -496,8 +496,8 @@ public partial class BluetoothPrinter : IAsyncDisposable
                     Value = a.Id.ToString()
                 })
             );
-            Config.DeviceID = BleInfo.DeviceID.ToString();
-            Config.DeviceName = BleInfo.Name ?? "上次设备";
+            Option.DeviceID = BleInfo.DeviceID.ToString();
+            Option.DeviceName = BleInfo.Name ?? "上次设备";
             await SaveConfig();
             if (BleInfo.Serviceid != Guid.Empty && IsAutoConnect)
             {
@@ -543,7 +543,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                     Value = a.Id.ToString()
                 })
             );
-            Config.ServiceID = BleInfo.Serviceid.ToString();
+            Option.ServiceID = BleInfo.Serviceid.ToString();
             await SaveConfig();
         }
         else
@@ -567,7 +567,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
     {
         Message = "";
 
-        Config.CharacteristicID = BleInfo.Characteristic.ToString();
+        Option.CharacteristicID = BleInfo.Characteristic.ToString();
         await SaveConfig();
         //读取数值
         ReadResult = await Tools.ReadDeviceName(BleInfo.Serviceid, BleInfo.Characteristic);
@@ -588,16 +588,16 @@ public partial class BluetoothPrinter : IAsyncDisposable
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task SendDataAsync()
-    {
-        Message = "";
-        //读取数值
-        var res = await Tools.SendDataAsync(BleInfo.Characteristic, null);
-        await ToastService.Information("成功发送", res.ToString());
+    //private async Task SendDataAsync()
+    //{
+    //    Message = "";
+    //    //读取数值
+    //    var res = await Tools.SendDataAsync(BleInfo.Characteristic, null);
+    //    await ToastService.Information("成功发送", res.ToString());
 
-        //异步更新UI
-        await InvokeAsync(StateHasChanged);
-    }
+    //    //异步更新UI
+    //    await InvokeAsync(StateHasChanged);
+    //}
 
     private async Task SendDataAsyncCPCL()
     {
@@ -672,36 +672,66 @@ public partial class BluetoothPrinter : IAsyncDisposable
     //     .value) + CRLF + CRLF + CRLF + qrCode(str_barcode.value) +
     //CRLF + CRLF + CRLF;
 
+    public string PrintLabelBMAU_QR(string? title = null, string? barcode = null, string? price = null)
+    {
+        title = title ?? Option.TestTitle;
+        barcode = barcode ?? Option.TestBarcode;
+        price = price ?? Option.TestPrice;
+
+        // 方形标签
+        // 店名
+        string storeTitleQR1 = Option.StoreTitleQR1 ?? "";
+        string storeTitleQR2 = Option.StoreTitleQR2 ?? "";
+        string storeTitleQR3 = Option.StoreTitleQR3 ?? "";
+        // 标签
+        string storeQRSize = Option.StoreQRSize ?? "10 200 200 400";
+        string storeQRWidth = Option.StoreQRWidth ?? "450";
+
+        return "! " + storeQRSize + " 1\r\n" +
+               "BEEP 1\r\n" +
+               "PW " + storeQRWidth + "\r\n" +
+               "CENTER\r\n" +
+               "TEXT 10 2 10 40 " + storeTitleQR1 + "\r\n" +
+               "TEXT 12 3 10 75 " + storeTitleQR2 + "\r\n" +
+               "TEXT 10 2 10 350 " + storeTitleQR3 + "\r\n" +
+               "B QR 30 150 M 2 U 7\r\n" +
+               "MA," + barcode + "\r\n" +
+               "ENDQR\r\n" +
+               "FORM\r\n" +
+               "PRINT\r\n";
+    }
+
+
     public string PrintLabelBMAU(string? title = null, string? barcode = null, string? price = null)
     {
-        title = title ?? Config.TestTitle;
-        barcode = barcode ?? Config.TestBarcode;
-        price = price ?? Config.TestPrice;
+        title = title ?? Option.TestTitle;
+        barcode = barcode ?? Option.TestBarcode;
+        price = price ?? Option.TestPrice;
 
         // Store name
-        string storeTitle = Config.StoreTitle ?? "";
-        string storeTitleSize = Config.StoreTitleSize ?? "1 1";
-        string storePoint = Config.StorePoint ?? "1 0 0 10";
+        string storeTitle = Option.StoreTitle ?? "";
+        string storeTitleSize = Option.StoreTitleSize ?? "1 1";
+        string storePoint = Option.StorePoint ?? "1 0 0 10";
 
         // Name
-        string nameSize = Config.NameSize ?? "1 2";
-        string namePoint = Config.NamePoint ?? "2 0 10 50";
+        string nameSize = Option.NameSize ?? "1 2";
+        string namePoint = Option.NamePoint ?? "2 0 10 50";
 
         // Barcode
-        string _barcode = Config.Barcode ?? "1 0 50 0 110";
+        string _barcode = Option.Barcode ?? "1 0 50 0 110";
 
         // Price
-        string pricePoint = Config.PricePoint ?? "4 0 0 205";
-        string priceSize = Config.PriceSize ?? "2 2";
+        string pricePoint = Option.PricePoint ?? "4 0 0 205";
+        string priceSize = Option.PriceSize ?? "2 2";
 
         // Price PVP and Euros
-        string priceTagSize = Config.PriceTagSize ?? "1 1";
-        string priceTagPoint = Config.PriceTagPoint ?? "4 0 10 230";
-        string priceTagPoint2 = Config.PriceTagPoint2 ?? "4 0 10 230";
+        string priceTagSize = Option.PriceTagSize ?? "1 1";
+        string priceTagPoint = Option.PriceTagPoint ?? "4 0 10 230";
+        string priceTagPoint2 = Option.PriceTagPoint2 ?? "4 0 10 230";
 
         // Label
-        string labelPoint = Config.LabelPoint ?? "0 200 200 290";
-        string labelwidth = Config.Labelwidth ?? "450";
+        string labelPoint = Option.LabelPoint ?? "0 200 200 290";
+        string labelwidth = Option.Labelwidth ?? "450";
 
         return "! " + labelPoint + " 1\r\n" +
                "BEEP 1" + "\r\n" +
@@ -719,9 +749,9 @@ public partial class BluetoothPrinter : IAsyncDisposable
                "TEXT " + pricePoint + " " + price + "\r\n" +
                "SETMAG " + priceTagSize + "\r\n" +
                "LEFT\r\n" +
-               "TEXT " + priceTagPoint2 + " " + Config.PriceTagPVP + ":\r\n" +
+               "TEXT " + priceTagPoint2 + " " + Option.PriceTagPVP + ":\r\n" +
                "RIGHT\r\n" +
-               "TEXT " + priceTagPoint + " " + Config.PriceTagEuros + "\r\n" +
+               "TEXT " + priceTagPoint + " " + Option.PriceTagEuros + "\r\n" +
                "SETBOLD 0\r\n" +
                "FORM\r\n" +
                "PRINT\r\n";
@@ -732,7 +762,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
         if (barcode == "") return "";
 
         //店名
-        string title0 = Config.StoreTitle ?? "";
+        string title0 = Option.StoreTitle ?? "";
         string OutputDataQrCode = "";
         ////initialize
         //OutputDataQrCode += ESC + "@";
@@ -835,8 +865,8 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
         else
         {
-            Message = $"参数无效";
-            await ToastService.Warning("提示", Message);
+            var message = $"参数无效";
+            await ToastService.Warning("提示", message);
         }
     }
 
@@ -862,8 +892,8 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
         else
         {
-            Message = $"参数无效";
-            await ToastService.Warning("提示", Message);
+            var message = $"参数无效";
+            await ToastService.Warning("提示", message);
         }
     }
 
@@ -873,48 +903,12 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
     private async Task SendDataAsyncPrinter(string commands)
     {
-
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);//注册Nuget包System.Text.Encoding.CodePages中的编码到.NET Core
-        var utf8 = Encoding.GetEncoding(65001);
-        var gb2312 = Encoding.GetEncoding("gb2312");//这里用转化解决汉字乱码问题Encoding.Default ,936
-        var bytesUtf8 = utf8.GetBytes(commands);
-        var bytesGb2312 = Encoding.Convert(utf8, gb2312, bytesUtf8);
-        if (bytesGb2312 != null)
-        {
-            var totalCount = bytesGb2312.Length;
-            var printPageSize = 512;
-            var totalPage = (totalCount / printPageSize) + (totalCount % printPageSize > 0 ? 1 : 0);//返回总页数
-            var index = 0;
-            for (int i = 1; i <= totalPage; i++)
-            {
-                byte[] newbytes;
-                if (totalCount < printPageSize && totalCount > 0)
-                {
-                    newbytes = new byte[totalCount];
-                    Array.Copy(bytesGb2312, index, newbytes, 0, totalCount);
-                }
-                else
-                {
-                    newbytes = new byte[printPageSize];
-                    Array.Copy(bytesGb2312, index, newbytes, 0, printPageSize);
-                    index += printPageSize;
-                    totalCount -= printPageSize;
-                }
-                if (newbytes != null && newbytes.Any())
-                {
-                    await Tools.SendDataAsync(BleInfo.Characteristic, newbytes);
-                }
-            }
+        if (!await Tools.SendDataAsync(BleInfo.Characteristic, commands,Option.Chunk))
+        { 
+            var message = $"打印数据出错";
+            await ToastService.Warning("提示", message);
         }
-        else
-        {
-            Message = $"打印数据无效";
-            await ToastService.Warning("提示", Message);
-        }
-
-
-        //异步更新UI
-        //await InvokeAsync(StateHasChanged);
+     
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()

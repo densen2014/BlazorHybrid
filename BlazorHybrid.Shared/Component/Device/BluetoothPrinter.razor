@@ -13,7 +13,7 @@
                 @if (ScreenSize > BreakPoint.Medium)
                 {
                     <BootstrapInputGroup>
-                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Config.NameFilter" />
+                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" />
                         <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
                         <Button Text="查找" OnClick="ScanPrinterDevice" />
                         <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
@@ -24,7 +24,7 @@
                 else
                 {
                     <BootstrapInputGroup class="m-1">
-                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Config.NameFilter" />
+                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" />
                         <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
                     </BootstrapInputGroup>
                     <BootstrapInputGroup class="m-1">
@@ -141,7 +141,7 @@
 
             </TabItem>
             <TabItem Text="设置">
-                <ValidateForm Model="@Config" style="margin-top: 1.5rem;">
+                <ValidateForm Model="@Option" style="margin-top: 1.5rem;">
                     <EditorForm TModel="BluetoothPrinterConfig" RowType="RowType.Inline">
                         <Buttons>
                             <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位设置吗？" />

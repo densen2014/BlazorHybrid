@@ -31,12 +31,20 @@ public class BluetoothPrinterConfig
     public string? Labelwidth { get; set; } = "450";
     public string? NameFilter { get; set; }
 
+    // QR
+    public string? StoreTitleQR1 { get; set; }
+    public string? StoreTitleQR2 { get; set; } 
+    public string? StoreTitleQR3 { get; set; }
+    public string? StoreQRSize { get; set; } = "10 200 200 400";
+    public string? StoreQRWidth { get; set; } = "450";
+
     // 配置
     public string? DeviceID { get; set; }
     public string? DeviceName { get; set; }
     public string? ServiceID { get; set; }
     public string? CharacteristicID { get; set; }
     public bool AutoConnect { get; set; }
+    public int Chunk { get; set; } = 20;
 
     // 测试数据
     public string? TestTitle { get; set; } = "Informatica Co.Ltd.";

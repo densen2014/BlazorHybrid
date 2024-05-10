@@ -382,17 +382,7 @@ public partial class Bluetooth : IAsyncDisposable
         //异步更新UI
         await InvokeAsync(StateHasChanged);
     }
-
-    private async Task SendDataAsync()
-    {
-        Message = "";
-        //读取数值
-        var res = await Tools.SendDataAsync(BleInfo.Characteristic, null);
-        await ToastService.Information("成功发送", res.ToString());
-
-        //异步更新UI
-        await InvokeAsync(StateHasChanged);
-    }
+     
 
     private async Task SendDataAsyncCPCL()
     {

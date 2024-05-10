@@ -6,6 +6,7 @@
 
 using AME;
 using BlazorHybrid.Core.Device;
+using BootstrapBlazor.Components;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
@@ -77,6 +78,8 @@ public partial class BluetoothLEServices
     {
         if (CurrentAdapter == null)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             CurrentBle = CrossBluetoothLE.Current;
             CurrentAdapter = CrossBluetoothLE.Current.Adapter;
 
@@ -180,7 +183,8 @@ public partial class BluetoothLEServices
             {
                 OnMessage?.Invoke($"开始扫描外设, 可用={CurrentBle?.IsAvailable}, 已开启={CurrentBle?.IsOn}, 状态={CurrentBle?.State}, 扫描模式={CurrentAdapter.ScanMode}, 扫描超时={CurrentAdapter.ScanTimeout / 1000}");
             }
-            if (scanFilterOptions != null) {
+            if (scanFilterOptions != null)
+            {
                 // <摘要>
                 // 开始扫描满足 <paramref name="device Filter"/> 的 BLE 设备。
                 // 仅当 <paramref name="device Filter"/> 对于已发现设备返回 <c>true</c> 时，才会调用 Device Discovered。
@@ -191,7 +195,7 @@ public partial class BluetoothLEServices
                 await CurrentAdapter.StartScanningForDevicesAsync(scanFilterOptions: scanFilterOptions, cancellationToken: _scanForAedCts.Token);
             }
             else if (serviceUuids == null)
-            {              
+            {
                 await CurrentAdapter.StartScanningForDevicesAsync(cancellationToken: _scanForAedCts.Token);
             }
             else
@@ -301,7 +305,7 @@ public partial class BluetoothLEServices
         {
             return TagDevice.ByName && (!string.IsNullOrWhiteSpace(TagDevice.Name) && device.Name.ToLower().StartsWith(TagDevice.Name.ToLower()));
         }
-        catch  
+        catch
         {
             return false;
         }
@@ -332,7 +336,7 @@ public partial class BluetoothLEServices
         OnMessage?.Invoke("蓝牙扫描超时结束");
     }
 
-#endregion
+    #endregion
 
     #region 连接外设
 
@@ -351,7 +355,7 @@ public partial class BluetoothLEServices
             return null;
         }
 
-        List<string> result = new List<string>(); 
+        List<string> result = new List<string>();
 
         //订阅连接丢失
         CurrentAdapter.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
@@ -380,7 +384,7 @@ public partial class BluetoothLEServices
             return null;
         }
 
-        OnMessage?.Invoke($"开始连接{TagDevice.Name}"); 
+        OnMessage?.Invoke($"开始连接{TagDevice.Name}");
 
         //这个是函数只发起连接，不代表连接成功
         try
@@ -515,7 +519,7 @@ public partial class BluetoothLEServices
         {
             OnMessage?.Invoke($"连接指定设备{deviceID}");
             _scanForAedCts = new CancellationTokenSource();
-            
+
             // <summary> 
             // 如果在范围内，则连接到具有已知 GUID 的设备而无需扫描。不扫描设备。
             // </summary> 
@@ -570,7 +574,7 @@ public partial class BluetoothLEServices
                 // <exception cref="Argument Null Exception">如果 <paramref name="device"/> 为 null，则抛出。</exception>
                 await CurrentAdapter.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
                 OnMessage?.Invoke("连接成功");
-                OnStateConnect?.Invoke(true); 
+                OnStateConnect?.Invoke(true);
 
             }
             catch (DataException ex)
@@ -828,6 +832,7 @@ public partial class BluetoothLEServices
             OnMessage?.Invoke($"没有连接{TagDevice.Name}");
             return null;
         }
+
         //获取常规信息服务UUID: 
         Guid genericServiceGuid = serviceid ?? Guid.Parse("00001800-0000-1000-8000-00805f9b34fb");
 
@@ -900,9 +905,102 @@ public partial class BluetoothLEServices
 
     }
 
-    public async Task<bool> SendDataAsync(Guid characteristicID, byte[]? ary)
+    public async Task<bool> SendDataAsync(Guid characteristicID, byte[]? ary,int chunk=0)
     {
         if (ary == null)
+        {
+            OnMessage?.Invoke($"数据无效");
+            return false;
+        }
+
+        var characteristic = await GetdeviceNameCharacteristic(TagDevice.Serviceid, characteristicID);
+        if (characteristic == null)
+        {
+            OnMessage?.Invoke("获取特征失败.");
+            return false;
+        }
+
+        if (chunk!=0 && ary.Length > chunk)
+        {
+            return await SendDataAsyncChunk(characteristic, ary);
+        }
+        else
+        {
+            return await SendDataAsync(characteristic, ary);
+        }
+    }
+
+    //写特征值
+    private async Task<bool> SendDataAsync(ICharacteristic characteristic, byte[] ary, bool silent = false)
+    {
+        try
+        {
+            //写入数据
+            var res = await characteristic.WriteAsync(ary);
+            bool writeSuccess = res > 0;
+
+            if (!silent)
+            {
+                OnMessage?.Invoke($"写入结果={writeSuccess}，长度={ary.Length}");
+            }
+
+            return writeSuccess;
+        }
+        catch (Exception ex)
+        {
+            if (!silent)
+            {
+                OnMessage?.Invoke($"写入错误, 目标设备蓝牙连接状态={Device?.State}, {ex.Message}");
+            }
+            return false;
+        }
+    }
+
+    private async Task<bool> SendDataAsyncChunk(ICharacteristic characteristic, byte[] ary, int chunk = 0)
+    {
+        try
+        {
+            if (chunk == 0)
+            {
+                return await SendDataAsync(characteristic, ary);
+            }
+
+            var totalCount = ary.Length;
+            var printPageSize = chunk;
+            var totalPage = (totalCount / printPageSize) + (totalCount % printPageSize > 0 ? 1 : 0);//返回总页数
+            var index = 0;
+            for (int i = 1; i <= totalPage; i++)
+            {
+                byte[] newbytes;
+                if (totalCount < printPageSize && totalCount > 0)
+                {
+                    newbytes = new byte[totalCount];
+                    Array.Copy(ary, index, newbytes, 0, totalCount);
+                }
+                else
+                {
+                    newbytes = new byte[printPageSize];
+                    Array.Copy(ary, index, newbytes, 0, printPageSize);
+                    index += printPageSize;
+                    totalCount -= printPageSize;
+                }
+                if (newbytes != null && newbytes.Any())
+                {
+                    await SendDataAsync(characteristic, newbytes, false);
+                }
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            OnMessage?.Invoke($"写入错误, 目标设备蓝牙连接状态={Device?.State}, {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<bool> SendDataAsync(Guid characteristicID, string commands, int chunk = 20)
+    {
+        if (string.IsNullOrWhiteSpace(commands))
         {
             OnMessage?.Invoke($"数据无效");
             return false;
@@ -913,26 +1011,23 @@ public partial class BluetoothLEServices
             OnMessage?.Invoke("获取特征失败.");
             return false;
         }
-        return await SendDataAsync(characteristic, ary);
+        return await SendDataAsyncChunk(characteristic, commands, chunk);
     }
 
-    //写特征值
-    private async Task<bool> SendDataAsync(ICharacteristic characteristic, byte[] ary)
+    public async Task<bool> SendDataAsyncChunk(ICharacteristic characteristic, string commands, int chunk = 20)
     {
-        try
+        //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);//注册Nuget包System.Text.Encoding.CodePages中的编码到.NET Core
+        var utf8 = Encoding.GetEncoding(65001);
+        var gb2312 = Encoding.GetEncoding("gb2312");//这里用转化解决汉字乱码问题Encoding.Default ,936
+        var bytesUtf8 = utf8.GetBytes(commands);
+        var bytesGb2312 = Encoding.Convert(utf8, gb2312, bytesUtf8);
+        if (bytesGb2312 != null)
         {
-            //写入数据
-            var res = await characteristic.WriteAsync(ary);
-            bool writeSuccess = res > 0;
-
-            OnMessage?.Invoke($"写入结果={writeSuccess}，长度={ary.Length}");
-
-            return writeSuccess;
+            return await SendDataAsyncChunk(characteristic, bytesGb2312, chunk);
         }
-        catch (Exception ex)
+        else
         {
-            OnMessage?.Invoke($"写入错误, 目标设备蓝牙连接状态={Device?.State}, {ex.Message}");
-
+            OnMessage?.Invoke($"打印数据无效");
             return false;
         }
     }

@@ -176,4 +176,14 @@ public class NullFeatureService : INativeFeatures
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> SendDataAsyncChunk(Guid characteristic, byte[]? ary, int chunk = 20)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> SendDataAsync(Guid characteristic, string commands, int chunk = 20)
+    {
+        throw new NotImplementedException();
+    }
 }

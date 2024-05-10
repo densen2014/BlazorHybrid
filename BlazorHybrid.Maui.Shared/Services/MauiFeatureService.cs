@@ -781,6 +781,10 @@ public class MauiFeatureService : Page, INativeFeatures
 
     public async Task<bool> SendDataAsync(Guid characteristic, byte[]? ary) => await MyBleTester.SendDataAsync(characteristic, ary);
 
+    public async Task<bool> SendDataAsyncChunk(Guid characteristic, byte[]? ary, int chunk = 20) => await MyBleTester.SendDataAsync(characteristic, ary, chunk);
+
+    public async Task<bool> SendDataAsync(Guid characteristic, string commands, int chunk = 0) => await MyBleTester.SendDataAsync(characteristic, commands, chunk);
+
     public async Task<bool> DisConnectDeviceAsync() => await MyBleTester.DisConnectDeviceAsync();
 
     public async Task GetBatteryLevel() => await MyBleTester.GetBatteryLevel();
@@ -909,4 +913,5 @@ public class MauiFeatureService : Page, INativeFeatures
         }
         return "OK";
     }
+
 }
