@@ -10,11 +10,30 @@ using System.ComponentModel;
 
 namespace BlazorHybrid.Core.Device;
 
+public class BleUUID
+{
+
+    //Android的SSP（协议栈默认）的UUID：00001101-0000-1000-8000-00805F9B34FB，只有使用该UUID才能正常和外部的，也是SSP串口的蓝牙设备去连接。
+    public static readonly string SerialPortServiceUUID = "00001101-0000-1000-8000-00805F9B34FB";
+
+    //正常打印机的打印服务
+    public static readonly string PrinterNormalServiceUUID = "e7810a71-73ae-499d-8c15-faa9aef0c3f2";
+    public static readonly string PrinterNormalCharacteristicUUID = "BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F";
+    
+    public static readonly string PrinterServiceUUID = "0000ff00-0000-1000-8000-00805f9b34fb";
+
+    public static readonly string PrinterCharacteristicUUID = "0000ff02-0000-1000-8000-00805f9b34fb";
+
+    public static readonly string GattServiceUUID = "49535343-fe7d-4ae5-8fa9-9fafd205e455";
+    public static readonly string GattCharacteristicUUID = "49535343-8841-43F4-A8D4-ECBE34729BB3";
+}
+
 /// <summary>
 /// 蓝牙设备
 /// </summary>
 public class BleTagDevice
 {
+
 
     /// <summary>
     /// 设备名称

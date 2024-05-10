@@ -167,16 +167,16 @@
 @media only screen and (max-width: 600px) {
 
     .deskTitle {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
     }
 
     .card-text {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
 
     .deskIcon {
-        width: 98px;
-        height: 98px;
+        width: 79px;
+        height: 79px;
     }
 
     .orderIcon {
@@ -190,7 +190,7 @@
     }
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 414px) {
     /*iphone13pro*/
 
     .layout.is-page .layout-main {
@@ -198,16 +198,16 @@
     }
 
     .deskTitle {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
     }
 
     .card-text {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
 
     .deskIcon {
-        width: 93px;
-        height: 93px;
+        width: 82px;
+        height: 82px;
     }
 
     .orderIcon {
@@ -219,6 +219,28 @@
         width: 66px;
         height: 60px
     }
+}
+
+@media only screen and (max-width: 390px) {
+    /*iphone13pro*/
+
+    .layout.is-page .layout-main {
+        padding: 0;
+    }
+
+    .deskTitle {
+        font-size: 0.7rem;
+    }
+
+    .card-text {
+        font-size: 0.6rem;
+    }
+
+    .deskIcon {
+        width: 73px;
+        height: 73px;
+    }
+     
 }
 
 

@@ -7,147 +7,174 @@
 
 <div class="row">
     <div class="col-12 col-m-6 col-sm-6">
-        @if (ScreenSize > BreakPoint.Medium)
-        {
-            <BootstrapInputGroup>
-                <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="NameFilter" />
-                <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
-                <Button Text="查找" OnClick="ScanPrinterDevice" />
-                <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
-                <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(!IsConnected)" />
-                <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@(!IsConnected)" />
-            </BootstrapInputGroup>
-        }
-        else
-        {
-            <BootstrapInputGroup class="m-1">
-                <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="NameFilter" />
-                <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
-            </BootstrapInputGroup>
-            <BootstrapInputGroup class="m-1">
-                <Button Text="查找" OnClick="ScanPrinterDevice" />
-                <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
-                <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(!IsConnected)" />
-                <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@(!IsConnected)" />
-            </BootstrapInputGroup>
-        }
 
-        <BootstrapInputGroup class="m-1">
-            <Button Text="返回" OnClick="BackToHome" />
-            <Button Text="扫描" @attributes=IsScanningCss OnClick="ScanDevice" />
-            <Button Text="连接" OnClick="OnDeviceSelect" IsDisabled="@(Devices == null)" />
-            <Button Text="断开" OnClick="OnDisConnectDevice" IsDisabled="@(Devices == null)" />
-            <Button Text="清空" OnClick="OnReset" IsDisabled="@(Devices == null)" />
-        </BootstrapInputGroup>
-        <BootstrapInputGroup class="m-1">
-            <Button Text="打印" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(Characteristics == null)" />
-            <Button Text="写入" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
-            <Button Text="读取" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
-        </BootstrapInputGroup>
-
-        @if (Devices != null)
-        {
-
-            <div class="row mt-1 g-3">
-                <div class="col-12 col-m-6 col-sm-6">
-                    <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
-                </div>
-                @if (Services != null)
+        <Tab>
+            <TabItem Text="打印">
+                @if (ScreenSize > BreakPoint.Medium)
                 {
-                    <div class="col-12 col-m-6 col-sm-6">
-                        <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
-                    </div>
-                    @if (Characteristics != null)
-                    {
+                    <BootstrapInputGroup>
+                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Config.NameFilter" />
+                        <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
+                        <Button Text="查找" OnClick="ScanPrinterDevice" />
+                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
+                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(!IsConnected)" />
+                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@(!IsConnected)" />
+                    </BootstrapInputGroup>
+                }
+                else
+                {
+                    <BootstrapInputGroup class="m-1">
+                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Config.NameFilter" />
+                        <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
+                    </BootstrapInputGroup>
+                    <BootstrapInputGroup class="m-1">
+                        <Button Text="查找" OnClick="ScanPrinterDevice" />
+                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@(!IsConnected)" />
+                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(!IsConnected)" />
+                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@(!IsConnected)" />
+                    </BootstrapInputGroup>
+                }
+
+                <BootstrapInputGroup class="m-1">
+                    <Button Text="返回" OnClick="BackToHome" />
+                    <Button Text="扫描" @attributes=IsScanningCss OnClick="ScanDevice" />
+                    <Button Text="连接" OnClick="OnDeviceSelect" IsDisabled="@(Devices == null)" />
+                    <Button Text="断开" OnClick="OnDisConnectDevice" IsDisabled="@(Devices == null)" />
+                    <Button Text="清空" OnClick="OnReset" IsDisabled="@(Devices == null)" />
+                </BootstrapInputGroup>
+                <BootstrapInputGroup class="m-1">
+                    <Button Text="打印" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(Characteristics == null)" />
+                    <Button Text="写入" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
+                    <Button Text="读取" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
+                </BootstrapInputGroup>
+
+                @if (Devices != null)
+                {
+
+                    <div class="row mt-1 g-3">
                         <div class="col-12 col-m-6 col-sm-6">
-                            <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
+                            <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
                         </div>
-                        @if (ReadResult != null)
+                        @if (Services != null)
                         {
                             <div class="col-12 col-m-6 col-sm-6">
-                                <Display TValue="string" Value="@ReadResult" />
+                                <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
                             </div>
+                            @if (Characteristics != null)
+                            {
+                                <div class="col-12 col-m-6 col-sm-6">
+                                    <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
+                                </div>
+                                @if (ReadResult != null)
+                                {
+                                    <div class="col-12 col-m-6 col-sm-6">
+                                        <Display TValue="string" Value="@ReadResult" />
+                                    </div>
+                                }
+                            }
                         }
-                    }
-                }
-            </div>
+                    </div>
 
-            <Table @ref="Table" TItem="BleDevice" Items="Devices"
-                   ShowDetailRow="(e)=>!string.IsNullOrEmpty(e.ServicesRemark)"
-                   OnDoubleClickRowCallback="OnDoubleClickRowCallback()!"
-                   IsAccordion AllowResizing AllowDragColumn
-                   TableSize="TableSize.Compact"
-                   RenderMode="TableRenderMode.Table">
-                <TableColumns>
-                    <TableColumn @bind-Field="@context.Name" Text="名称" Width="200" />
-                    <TableColumn @bind-Field="@context.Remark" Text="备注" Width="200" />
-                    <TableColumn @bind-Field="@context.ServicesRemark" Text="服务" Width="50" />
-                    <TableColumn @bind-Field="@context.Rssi" Text="信号" Width="50" />
-                    <TableColumn @bind-Field="@context.Id" Text="ID" />
-                </TableColumns>
-                <DetailRowTemplate>
-                    <Table TItem="BleService" Items="@GetDetailDataSource(context)" ShowDetailRow="ShowDetailRow"
-                           OnDoubleClickRowCallback="OnDoubleClickRowCallback2()!"
-                           IsAccordion AllowResizing AllowDragColumn
+                    <Table @ref="Table" TItem="BleDevice" Items="Devices"
+                           ShowDetailRow='(e)=>!(string.IsNullOrEmpty(e.ServicesRemark) && e.ServicesRemark !="-")'
+                           OnDoubleClickRowCallback="OnDoubleClickRowCallback()!"
+                           AllowResizing AllowDragColumn
                            TableSize="TableSize.Compact"
                            RenderMode="TableRenderMode.Table">
-                        <TableColumns Context="service">
-                            <TableColumn @bind-Field="@service.Id" Text="">
-                                <Template Context="v">
-                                    <Button Color="Color.Primary" Text="Test" Size="Size.Small"
-                                            OnClickWithoutRender="()=> SendDataAsyncCPCLBarcode(context.Name,context.Id,service.Id) " />
-                                </Template>
-                            </TableColumn>
-                            <TableColumn @bind-Field="@service.Name" Text="名称" Width="200" />
-                            <TableColumn @bind-Field="@service.IsPrimary" Text="主服务" />
-                            <TableColumn @bind-Field="@service.Remark" Text="备注" Width="100" />
-                            <TableColumn @bind-Field="@service.Id" Text="ID" />
+                        <TableColumns>
+                            <TableColumn @bind-Field="@context.Name" Text="名称" Width="100" />
+                            <TableColumn @bind-Field="@context.Remark" Text="备注" Width="200" />
+                            <TableColumn @bind-Field="@context.ServicesRemark" Text="服务" Width="50" />
+                            <TableColumn @bind-Field="@context.Rssi" Text="信号" Width="50" />
+                            <TableColumn @bind-Field="@context.Id" Text="ID" />
                         </TableColumns>
-                        <DetailRowTemplate Context="service">
-                            <Table TItem="BleCharacteristic" Items="@service.Characteristics"
-                                   AllowResizing AllowDragColumn
+                        <DetailRowTemplate>
+                            <Table TItem="BleService" Items="@context.Services" ShowDetailRow="ShowDetailRow"
+                                   OnDoubleClickRowCallback="OnDoubleClickRowCallback2()!"
+                                   IsAccordion AllowResizing AllowDragColumn
                                    TableSize="TableSize.Compact"
                                    RenderMode="TableRenderMode.Table">
-                                <TableColumns Context="characteristic">
-                                    <TableColumn @bind-Field="@characteristic.Id" Text="">
+                                <TableColumns Context="service">
+                                    <TableColumn @bind-Field="@service.Name" Text="名称" Width="100" />
+                                    <TableColumn @bind-Field="@service.Id" Text="操作">
                                         <Template Context="v">
-                                            <Button Color="Color.Primary" Text="Test" Size="Size.Small"
-                                                    OnClickWithoutRender="()=>SendDataAsyncCPCLBarcode(new BleTagDevice(context.Name,context.Id,service.Id,characteristic.Id))" />
+                                            @if (((BleService)v.Row).Characteristics.Where(a => a.CanWrite).Any())
+                                            {
+                                                <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall" IsDisabled="@(!((BleService) v.Row).Characteristics.Where(a=>a.CanWrite).Any())"
+                                                        OnClickWithoutRender="()=> SendDataAsyncCPCLBarcode(context.Name,context.Id,v.Value) " />
+
+                                            }
                                         </Template>
                                     </TableColumn>
-                                    <TableColumn @bind-Field="@characteristic.Name" Text="名称" Width="200" />
-                                    <TableColumn @bind-Field="@characteristic.CanRead" Text="读" Width="50" />
-                                    <TableColumn @bind-Field="@characteristic.CanWrite" Text="写" Width="50" />
-                                    <TableColumn @bind-Field="@characteristic.CanUpdate" Text="通知" Width="50" />
-                                    <TableColumn @bind-Field="@characteristic.StringValue" Text="值" />
-                                    <TableColumn @bind-Field="@characteristic.Id" Text="ID" />
+                                    <TableColumn @bind-Field="@service.Remark" Text="备注" Width="100" />
+                                    <TableColumn @bind-Field="@service.Id" Text="ID" />
                                 </TableColumns>
+                                <DetailRowTemplate Context="service">
+                                    <Table TItem="BleCharacteristic" Items="@service.Characteristics"
+                                           AllowResizing AllowDragColumn
+                                           TableSize="TableSize.Compact"
+                                           RenderMode="TableRenderMode.Table">
+                                        <TableColumns Context="characteristic">
+                                            <TableColumn @bind-Field="@characteristic.Name" Text="名称" Width="100" />
+                                            <TableColumn @bind-Field="@characteristic.Id" Text="操作">
+                                                <Template Context="v">
+                                                    @if (((BleCharacteristic)v.Row).CanWrite)
+                                                    {
+                                                        <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall" IsDisabled="@(!((BleCharacteristic) v.Row).CanWrite)"
+                                                                OnClickWithoutRender="()=>SendDataAsyncCPCLBarcode(new BleTagDevice(context.Name,context.Id,service.Id,v.Value))" />
+                                                    }
+                                                </Template>
+                                            </TableColumn>
+                                            <TableColumn @bind-Field="@characteristic.CanRead" Text="读" Width="50" />
+                                            <TableColumn @bind-Field="@characteristic.CanWrite" Text="写" Width="50" />
+                                            <TableColumn @bind-Field="@characteristic.CanUpdate" Text="通知" Width="50" />
+                                            <TableColumn @bind-Field="@characteristic.StringValue" Text="值" />
+                                            <TableColumn @bind-Field="@characteristic.Id" Text="ID" />
+                                        </TableColumns>
+                                    </Table>
+                                </DetailRowTemplate>
                             </Table>
                         </DetailRowTemplate>
                     </Table>
-                </DetailRowTemplate>
-            </Table>
 
-        }
+                }
+
+            </TabItem>
+            <TabItem Text="设置">
+                <ValidateForm Model="@Config" style="margin-top: 1.5rem;">
+                    <EditorForm TModel="BluetoothPrinterConfig" RowType="RowType.Inline">
+                        <Buttons>
+                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位设置吗？" />
+                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设1吗？" />
+                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设2吗？" />
+                            <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
+                            <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设3吗？" />
+                            <Button Icon="fa-solid fa-floppy-disk" Text="保存" OnClick="SaveConfig" />
+                        </Buttons>
+                    </EditorForm>
+                </ValidateForm>
+            </TabItem>
+        </Tab>
+
     </div>
-    <div class="col-12 col-m-6 col-sm-6">
 
-        @if (BleInfo.Name != null)
-        {
+<div class="col-12 col-m-6 col-sm-6">
 
-            <div class="g-3">
-                历史连接 <br />
-                @BleInfo.Name <br />
-                @BleInfo.DeviceID <br />
-                @BleInfo.Serviceid <br />
-                @BleInfo.Characteristic <br />
-                @ReadResult <br />
-            </div>
+    @if (BleInfo.Name != null)
+    {
 
-        }
-        <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
+        <div class="g-3">
+            历史连接 <br />
+            @BleInfo.Name <br />
+            @BleInfo.DeviceID <br />
+            @BleInfo.Serviceid <br />
+            @BleInfo.Characteristic <br />
+            @ReadResult <br />
+        </div>
 
-        <pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
-    </div>
+    }
+    <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
+
+    <pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
 </div>
-
+</div>

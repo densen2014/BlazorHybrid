@@ -359,20 +359,20 @@ public partial class BluetoothLEServices
         //订阅连接断开
         CurrentAdapter.DeviceConnectionLost -= CurrentAdapter_DeviceConnectionLost;
 
-        if (!device.ByName && device.DeviceID != Guid.Empty)
+        if (!TagDevice.ByName && TagDevice.DeviceID != Guid.Empty)
         {
             //按DeviceID查找指定设备 
-            TagDevice.DeviceID = device.DeviceID;
-            TagDevice.Name = "";
-            await StartScanAsync(device.DeviceID, [device.Serviceid]);
+            //TagDevice.DeviceID = device.DeviceID;
+            //TagDevice.Name = "";
+            await StartScanAsync(TagDevice.DeviceID, [TagDevice.Serviceid]);
         }
-        else if (device.Name != null)
+        else if (TagDevice.Name != null)
         {
             //按Name查找指定设备 
-            TagDevice.Name = device.Name?.Split("(").FirstOrDefault();
+            TagDevice.Name = TagDevice.Name?.Split("(").FirstOrDefault();
             OnMessage?.Invoke($"查找指定设备 {TagDevice.Name}");
             TagDevice.DeviceID = Guid.Empty;
-            await StartScanAsync(null, [device.Serviceid]);
+            await StartScanAsync(null, [TagDevice.Serviceid]);
         }
         if (Device == null)
         {
@@ -399,7 +399,7 @@ public partial class BluetoothLEServices
             // <exception cref="设备连接异常">设备连接失败抛出</exception>
             // <exception cref="Argument Null Exception">如果 <paramref name="device"/> 为 null，则抛出。</exception>
             await CurrentAdapter.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
-            OnMessage?.Invoke("连接成功");
+            //OnMessage?.Invoke("连接成功");
         }
         catch (DataException ex)
         {
@@ -412,16 +412,16 @@ public partial class BluetoothLEServices
         {
             OnMessage?.Invoke($"连接成功{TagDevice.Name}");
 
-            if (device.Serviceid == Guid.Empty)
+            if (TagDevice.Serviceid == Guid.Empty)
             {
                 var getServices = await Device.GetServicesAsync();
-                device.Serviceid = getServices.Where(a => a.IsPrimary == true).Select(a => a.Id).FirstOrDefault();
+                TagDevice.Serviceid = getServices.Where(a => a.IsPrimary == true).Select(a => a.Id).FirstOrDefault();
             }
 
-            var genericService = await Device.GetServiceAsync(device.Serviceid);
+            var genericService = await Device.GetServiceAsync(TagDevice.Serviceid);
             if (genericService == null)
             {
-                OnMessage?.Invoke($"获取常规信息服务{device.Serviceid}失败");
+                OnMessage?.Invoke($"获取常规信息服务{TagDevice.Serviceid}失败");
                 return null;
             }
 
@@ -431,24 +431,24 @@ public partial class BluetoothLEServices
             var characteristics = await genericService.GetCharacteristicsAsync();
             if (characteristics == null)
             {
-                OnMessage?.Invoke($"获取特征值集合{device.Serviceid}失败");
+                OnMessage?.Invoke($"获取特征值集合{TagDevice.Serviceid}失败");
                 return null;
             }
-            if (device.Characteristic == Guid.Empty)
+            if (TagDevice.Characteristic == Guid.Empty)
             {
                 var characteristic = characteristics.FirstOrDefault()?.Id;
                 if (characteristic == null)
                 {
-                    OnMessage?.Invoke($"获取特征值{device.Serviceid}失败");
+                    OnMessage?.Invoke($"获取特征值{TagDevice.Serviceid}失败");
                     return null;
                 }
-                device.Characteristic = characteristic.Value;
+                TagDevice.Characteristic = characteristic.Value;
             }
 
-            var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == device.Characteristic);
+            var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == TagDevice.Characteristic);
             if (deviceNameCharacteristic == null)
             {
-                OnMessage?.Invoke($"获取设备名特征值{device.Characteristic}失败");
+                OnMessage?.Invoke($"获取设备名特征值{TagDevice.Characteristic}失败");
                 return null;
             }
 
@@ -458,7 +458,7 @@ public partial class BluetoothLEServices
             if (getNotify)
             {
                 //新增测试代码
-                var notifyCharacteristic = await genericService.GetCharacteristicAsync(device.Characteristic);
+                var notifyCharacteristic = await genericService.GetCharacteristicAsync(TagDevice.Characteristic);
 
                 if (notifyCharacteristic != null)
                 {
@@ -473,7 +473,7 @@ public partial class BluetoothLEServices
             }
             if (sentbytes != null)
             {
-                await SendDataAsync(device.Characteristic, sentbytes);
+                await SendDataAsync(TagDevice.Characteristic, sentbytes);
             }
             return result;
         }

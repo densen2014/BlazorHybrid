@@ -509,14 +509,14 @@ PRINT
         //异步更新UI
         //await InvokeAsync(StateHasChanged);
     }
-    ValueTask IAsyncDisposable.DisposeAsync()
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
     {
+        await OnDisConnectDevice();
         Tools.OnMessage -= Tools_OnMessage;
         Tools.OnDataReceived -= Tools_OnDataReceived;
         Tools.OnStateConnect -= Tools_OnStateConnect;
-        return new ValueTask();
     }
-
 }
 
 

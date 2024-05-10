@@ -126,7 +126,8 @@ public class NullFeatureService : INativeFeatures
 
     public Task<string?> ReadDeviceName(Guid? serviceid, Guid? characteristic)
     {
-        throw new NotImplementedException();
+        string? res = "未实现";
+        return Task.FromResult(res);
     }
 
     public Task<byte[]?> ReadDataAsync(Guid characteristic)
@@ -134,7 +135,7 @@ public class NullFeatureService : INativeFeatures
         throw new NotImplementedException();
     }
 
-    public Task<bool> SendDataAsync(Guid characteristic, byte[] ary)
+    public Task<bool> SendDataAsync(Guid characteristic, byte[]? ary)
     {
         throw new NotImplementedException();
     }
@@ -161,7 +162,7 @@ public class NullFeatureService : INativeFeatures
 
     public Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");;
     }
 
     public Task<string> CheckPermissionsNFC() => Task.FromResult("未实现");
