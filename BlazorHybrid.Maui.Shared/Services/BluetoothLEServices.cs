@@ -905,7 +905,7 @@ public partial class BluetoothLEServices
 
     }
 
-    public async Task<bool> SendDataAsync(Guid characteristicID, byte[]? ary,int chunk=0)
+    public async Task<bool> SendDataAsync(Guid characteristicID, byte[]? ary, int chunk = 0)
     {
         if (ary == null)
         {
@@ -920,9 +920,9 @@ public partial class BluetoothLEServices
             return false;
         }
 
-        if (chunk!=0 && ary.Length > chunk)
+        if (chunk != 0 && ary.Length > chunk)
         {
-            return await SendDataAsyncChunk(characteristic, ary);
+            return await SendDataAsyncChunk(characteristic, ary, chunk);
         }
         else
         {
@@ -986,7 +986,7 @@ public partial class BluetoothLEServices
                 }
                 if (newbytes != null && newbytes.Any())
                 {
-                    await SendDataAsync(characteristic, newbytes, false);
+                    await SendDataAsync(characteristic, newbytes, true);
                 }
             }
             return true;
