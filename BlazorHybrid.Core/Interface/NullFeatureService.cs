@@ -191,4 +191,9 @@ public class NullFeatureService : INativeFeatures
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> ResetBluetooth()
+    {
+        throw new NotImplementedException();
+    }
 }
