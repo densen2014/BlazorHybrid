@@ -5,6 +5,7 @@
 // **********************************
 
 using BootstrapBlazor.Components;
+using OpenXmlPowerTools;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -14,6 +15,8 @@ namespace BlazorHybrid.Core.Device;
 public partial class BluetoothPrinter : IAsyncDisposable
 {
     private bool IsScanning = false;
+
+    private string btnclass = "col-3 col-sm-3 col-md-4 col-lg-auto";
 
     BleTagDevice BleInfo { get; set; } = new BleTagDevice();
 
@@ -45,7 +48,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
     /// </summary>
     private List<BleCharacteristic>? Characteristics;
 
-    private List<SelectedItem> PrinterDemoList { get; set; } = new List<SelectedItem>() { new SelectedItem() { Text = "演示打印机型号列表", Value = "" } };
+    private List<SelectedItem> PrinterDemoList { get; set; } = new List<SelectedItem>() { new SelectedItem() { Text = "型号", Value = "" } };
 
     /// <summary>
     /// 设备下拉列表
@@ -174,7 +177,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
             }
             Tools.OnMessage += async (m) => await Tools_OnMessage(m);
             Tools.OnDataReceived += async (m) => await Tools_OnDataReceived(m);
-            Tools.OnStateConnect += Tools_OnStateConnect;
+            Tools.OnStateConnect += async (o) => await Tools_OnStateConnect(o);
             //初始化蓝牙扫描超时时间
             BleInfo.ScanTimeout = 5;
             Tools.SetTagDeviceName(BleInfo);
@@ -234,7 +237,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
     private async Task OnPrinterSelect(SelectedItem item)
     {
         if (IsAutoConnect || item.Value == "") return;
-        var res = PrinterList.Where(a => a.Name ==  item.Text).FirstOrDefault();
+        var res = PrinterList.Where(a => a.Name == item.Text).FirstOrDefault();
         if (res != null)
         {
             BleInfo = res;
@@ -250,10 +253,10 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
     }
 
-    private void Tools_OnStateConnect(bool obj) 
+    private async Task Tools_OnStateConnect(bool obj)
     {
         IsConnected = obj;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task Tools_OnDataReceived(string message)
@@ -379,7 +382,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
     private async Task OnReset()
     {
         await OnDisConnectDevice();
-        Devices= null;
+        Devices = null;
     }
     private async Task OnDisConnectDevice()
     {
@@ -707,6 +710,14 @@ PRINT
     private async Task SendDataAsyncCPCLBarcode(BleTagDevice device)
     {
         Message = "";
+        if (IsScanning)
+        {
+            Message = "蓝牙正在使用中，请稍后再试";
+            await ToastService.Warning("提示", Message);
+            return;
+        }
+
+        Message = "";
         BleInfo = device;
         await Tools.ConnectDeviceAsync(device, false);
         //await ConnectLastDevice();
@@ -723,9 +734,9 @@ PRINT
             _service = _device!.Services.FirstOrDefault();
         }
         var item = _service?.Characteristics.FirstOrDefault();
-        if (item != null)
+        if (item != null && _service!.Id != Guid.Empty)
         {
-            await SendDataAsyncCPCLBarcode(new BleTagDevice(devicename, deviceId, serviceid, item.Id));
+            await SendDataAsyncCPCLBarcode(new BleTagDevice(devicename, deviceId, _service!.Id, item.Id));
         }
         else
         {
@@ -803,7 +814,7 @@ PRINT
     {
         Tools.OnMessage -= async (m) => await Tools_OnMessage(m);
         Tools.OnDataReceived -= async (m) => await Tools_OnDataReceived(m);
-        Tools.OnStateConnect -= Tools_OnStateConnect;
+        Tools.OnStateConnect -= async (o) => await Tools_OnStateConnect(o);
         return new ValueTask();
     }
 }

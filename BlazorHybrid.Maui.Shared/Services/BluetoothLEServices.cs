@@ -257,39 +257,64 @@ public partial class BluetoothLEServices
     /// </summary>
     private void Adapter_DeviceDiscovered(object? sender, DeviceEventArgs e)
     {
+        var device = e.Device;
+
         //[0:] 扫描到蓝牙设备honor Band 4-7E8, Id=00000000-0000-0000-0000-f4bf805ad7e8, Name=honor Band 4-7E8, Rssi=-50, State=Disconnected, AdvertisementRecords.Count=5
         OnMessage?.Invoke($"扫描到蓝牙设备: " +
-            $"Id={e.Device.Id}, " +
-            $"名称={e.Device.Name}, " +
-            $"Rssi={e.Device.Rssi}, " +
-            $"状态={e.Device.State}, " +
-            $"可连接={e.Device.IsConnectable}, " +
-            $"广播记录总数={e.Device.AdvertisementRecords.Count}");
+            $"Id={device.Id}, " +
+            $"名称={device.Name}, " +
+            $"Rssi={device.Rssi}, " +
+            $"状态={device.State}, " +
+            $"可连接={device.IsConnectable}, " +
+            $"广播记录总数={device.AdvertisementRecords.Count}");
 
-        BLE_beacon_AdvertisementRecords(e.Device);
+        BLE_beacon_AdvertisementRecords(device);
 
         Devices.Add(new BleDevice()
         {
-            Id = e.Device.Id,
-            Name = e.Device.Name,
-            Rssi = e.Device.Rssi,
-            Remark = $"状态={e.Device.State}, " +
-            $"可连接={e.Device.IsConnectable}, " +
-            $"广播={e.Device.AdvertisementRecords.Count}"
+            Id = device.Id,
+            Name = device.Name,
+            Rssi = device.Rssi,
+            Remark = $"状态={device.State}, " +
+            $"可连接={device.IsConnectable}, " +
+            $"广播={device.AdvertisementRecords.Count}"
         });
 
-        if ((TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == e.Device.Id) ||
-            (!string.IsNullOrWhiteSpace(TagDevice.Name) && e.Device.Name.ToLower().StartsWith(TagDevice.Name.ToLower())))
+        if (IsMatchID(device) || NewMethod(device))
         {
-            TagDeviceInfo = $"{e.Device}, Id={e.Device.Id}, 名称={e.Device.Name}, Rssi={e.Device.Rssi}, 状态={e.Device.State}, 广播记录总数={e.Device.AdvertisementRecords.Count}";
+            TagDeviceInfo = $"{device}, Id={device.Id}, 名称={device.Name}, Rssi={device.Rssi}, 状态={device.State}, 广播记录总数={device.AdvertisementRecords.Count}";
 
             OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
 
-            Device = e.Device;
+            Device = device;
 
             //如果找到目标外设，退出扫描
             if (!_scanForAedCts!.IsCancellationRequested)
                 _scanForAedCts.Cancel(false);
+        }
+    }
+
+    private bool NewMethod(IDevice device)
+    {
+        try
+        {
+            return TagDevice.ByName && (!string.IsNullOrWhiteSpace(TagDevice.Name) && device.Name.ToLower().StartsWith(TagDevice.Name.ToLower()));
+        }
+        catch  
+        {
+            return false;
+        }
+    }
+
+    private bool IsMatchID(IDevice device)
+    {
+        try
+        {
+            return !TagDevice.ByName && TagDevice.DeviceID != Guid.Empty && TagDevice.DeviceID == device.Id;
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -509,11 +534,13 @@ public partial class BluetoothLEServices
         if (Device == null)
         {
             OnMessage?.Invoke($"没有找到{deviceName}");
+            OnStateConnect?.Invoke(false);
             return null;
         }
         if (!Device.IsConnectable)
         {
             OnMessage?.Invoke("设备不可连接");
+            OnStateConnect?.Invoke(false);
         }
         else if (Device.State == DeviceState.Connected)
         {
@@ -521,6 +548,7 @@ public partial class BluetoothLEServices
         }
         else
         {
+            OnStateConnect?.Invoke(false);
             OnMessage?.Invoke($"开始连接{deviceName}");
 
             //这个是函数只发起连接，不代表连接成功
@@ -541,9 +569,12 @@ public partial class BluetoothLEServices
                 // <exception cref="Argument Null Exception">如果 <paramref name="device"/> 为 null，则抛出。</exception>
                 await CurrentAdapter.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
                 OnMessage?.Invoke("连接成功");
+                OnStateConnect?.Invoke(true); 
+
             }
             catch (DataException ex)
             {
+                OnStateConnect?.Invoke(false);
                 OnMessage?.Invoke($"Gatt 错误:{ex.Message}");
                 return null;
             }

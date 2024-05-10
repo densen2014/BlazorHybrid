@@ -36,6 +36,22 @@ public abstract partial class AppComponentBase : ComponentBase, IDisposable
     public EventCallback Changed { get; set; }
 
     /// <summary>
+    /// 获得/设置 客户端屏幕宽度
+    /// </summary>
+    public BreakPoint ScreenSize { get; set; }
+
+    /// <summary>
+    /// 获得 渲染模式
+    /// </summary>
+    public bool ShowText => ScreenSize > BreakPoint.Medium;
+    public virtual Task OnBreakPointChanged(BreakPoint size)
+    {
+        ScreenSize = size;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Dispose 方法
     /// </summary>
     /// <param name="disposing"></param>
