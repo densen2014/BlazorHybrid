@@ -10,7 +10,7 @@ namespace BlazorMaui.Platforms.Windows;
 
 internal class SilentPermissionRequestHandler : IPermissionRequestHandler
 {
-    private static readonly Uri BaseUri = new("https://0.0.0.0");
+    private static readonly Uri BaseUri = new("https://0.0.0.0/");
     private static readonly Uri BaseUri2 = new("https://blazor.app1.es/");
 
     public void OnPermissionRequested(CoreWebView2 sender, CoreWebView2PermissionRequestedEventArgs args)
