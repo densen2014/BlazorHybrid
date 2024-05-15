@@ -149,7 +149,7 @@ public static class MauiProgram
         var app = builder.Build();
         Services = app.Services;
 
-        return builder.Build();
+        return app;
     }
 
 }

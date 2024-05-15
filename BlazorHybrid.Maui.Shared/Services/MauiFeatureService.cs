@@ -41,7 +41,7 @@ using System.IO.Ports;
 
 namespace BlazorHybrid.Maui.Shared;
 
-public class MauiFeatureService : Page, INativeFeatures
+public partial class MauiFeatureService : Page, INativeFeatures
 {
     [NotNull]
     BluetoothLEServices? MyBleTester;
@@ -212,7 +212,7 @@ public class MauiFeatureService : Page, INativeFeatures
             var res = await CaptureFileAsync(CameraCaptureUIMode.Photo);
             return res?.Path;
 #else
-            FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
+            FileResult? photo = await MediaPicker.Default.CapturePhotoAsync();
 
             if (photo != null)
             {
@@ -233,11 +233,11 @@ public class MauiFeatureService : Page, INativeFeatures
                     return photo.FullPath;
                 }
             }
-            return null;
+            return string.Empty;
 #endif
         }
 
-        return null;
+        return string.Empty;
     }
 
 #if WINDOWS
@@ -595,7 +595,7 @@ public class MauiFeatureService : Page, INativeFeatures
             return localFilePath;
         }
 
-        return null;
+        return string.Empty;
     }
 
 #if WINDOWS
