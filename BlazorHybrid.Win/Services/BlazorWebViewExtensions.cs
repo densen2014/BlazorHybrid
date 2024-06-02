@@ -30,7 +30,7 @@ public partial class InitBlazorWebView
         _blazorWebView.UrlLoading += BlazorWebViewUrlLoading;
     }
 
-    public virtual void BlazorWebViewUrlLoading(object? sender, UrlLoadingEventArgs e)
+    public virtual void BlazorWebViewUrlLoading(object sender, UrlLoadingEventArgs e)
     {
         if (e.Url.Host != "0.0.0.0")
         {
