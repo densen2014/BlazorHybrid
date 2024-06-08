@@ -45,6 +45,12 @@ public partial class JsBridge//: IAsyncDisposable
         await ToastService.Information("eval bridge.Print object", message);
 
     }
+    async Task GetUserName()
+    {
+        message = await JS!.InvokeAsync<string>("eval", $"bridge.GetUserName()");
+        await ToastService.Information("eval bridge.GetUserName", message);
+
+    }
 
     string[] ItemsPrint = ["Item1", "Item2", "Item3"];
 

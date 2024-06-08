@@ -8,6 +8,7 @@ using WebView2Control = Microsoft.Web.WebView2.Wpf.WebView2;
 
 using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using Microsoft.VisualBasic.ApplicationServices;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using System.Runtime.InteropServices;
@@ -104,12 +105,15 @@ public partial class InitBlazorWebView
     {
         public string Func(string param) => $"Func返回 {param} {obj.MacAdress}";
         public string Print(object param) => $"Print返回 {param}";
+        public void PrintDemo(object param) => MessageBox.Show($"Print {param}");
+        public void Alert(string param) => MessageBox.Show(param);
+        public string GetUserName() => Environment.MachineName + "/" + Environment.UserDomainName + "/" + System.Windows.Forms.SystemInformation.UserName  ;
 
     }
 
     public class BridgeObject
     {
-        public string MacAdress =>$"{DateTime.Now:G}";
+        public string MacAdress => $"{DateTime.Now:G}";
     }
 
     async void InitializeBridgeAsync(WebView2Control webView)

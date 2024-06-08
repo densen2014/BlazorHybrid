@@ -4,9 +4,18 @@
 
 @using BootstrapBlazor.Components
 
-<Button Text="GetMacAdress" OnClick="GetMacAdress" IsDisabled="!BridgeEnabled" />
-<Button Text="Print" OnClick="OnPrint" IsDisabled="!BridgeEnabled" />
+<GroupBox Title="Bridge">
+    <Button Text="GetMacAdress" OnClick="GetMacAdress" IsDisabled="!BridgeEnabled" />
+    <Button Text="Print" OnClick="OnPrint" IsDisabled="!BridgeEnabled" />
+    <Button Text="用户名" OnClick="GetUserName" IsDisabled="!BridgeEnabled" />
+</GroupBox>
 
+<GroupBox Title="拦截JS">
+    <button class="btn btn-primary" role="button" onclick="alert('来自Blazor的alert警告框')">Alert</button>
+    <button class="btn btn-primary" role="button" onclick="console.error('You made a mistake')">console.error</button>
+
+    <button class="btn btn-primary" role="button" onclick="print('来自Blazor的print')">Print</button>
+</GroupBox>
 <pre> 
 @message
 </pre>
