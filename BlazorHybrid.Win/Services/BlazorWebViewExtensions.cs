@@ -103,12 +103,13 @@ public partial class InitBlazorWebView
     public class Bridge
     {
         public string Func(string param) => $"Func返回 {param} {obj.MacAdress}";
+        public string Print(object param) => $"Print返回 {param}";
 
     }
 
     public class BridgeObject
     {
-        public string MacAdress { get; set; } = Guid.NewGuid().ToString();
+        public string MacAdress =>$"{DateTime.Now:G}";
     }
 
     async void InitializeBridgeAsync(WebView2Control webView)

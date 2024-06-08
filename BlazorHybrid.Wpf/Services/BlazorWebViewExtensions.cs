@@ -84,6 +84,7 @@ public partial class InitBlazorWebView
     public class Bridge
     {
         public string Func(string param) => $"Func返回 {param} {obj.MacAdress}";
+        public string Print(object param) => $"Print返回 {param}";
 
     }
 

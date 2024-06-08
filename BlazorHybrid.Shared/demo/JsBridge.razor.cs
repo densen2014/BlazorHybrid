@@ -4,6 +4,7 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
+using AME;
 using BootstrapBlazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -35,6 +36,17 @@ public partial class JsBridge//: IAsyncDisposable
         message = await JS!.InvokeAsync<string>("eval", "bridge.Func('测试')");
         await ToastService.Information("eval bridge.Func", message);
     }
+    async Task OnPrint()
+    {
+        message = await JS!.InvokeAsync<string>("eval", $"bridge.Print('打印文本123456789')");
+        await ToastService.Information("eval bridge.Print", message);
+
+        message = await JS!.InvokeAsync<string>("eval", $"bridge.Print({ItemsPrint.ObjectToJson()})");
+        await ToastService.Information("eval bridge.Print object", message);
+
+    }
+
+    string[] ItemsPrint = ["Item1", "Item2", "Item3"];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
