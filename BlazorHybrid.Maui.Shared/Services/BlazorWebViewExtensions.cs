@@ -299,6 +299,19 @@ public partial class InitBlazorWebView : Page
         //await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync($"localStorage.setItem('macAdress', '{obj.MacAdress}')");
 #elif ANDROID
 #elif MACCATALYST || IOS
+        //注册JSBridge
+        await ExecuteScriptAsync(@"
+            window.bridge = {
+                Func: function(param) {
+                    return window.webkit.messageHandlers.bridge.postMessage({ 'func': 'Func', 'param': param });
+                },
+                Print: function(param) {
+                    return window.webkit.messageHandlers.bridge.postMessage({ 'func': 'Print', 'param': param });
+                }
+            };
+        ");
+        //注册C#对象
+        //WebView.Configuration.UserContentController.AddScriptMessageHandler(new WKScriptMessageHandler(obj, "bridge"));
 #elif TIZEN
 #endif
 
