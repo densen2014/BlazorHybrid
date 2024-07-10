@@ -12,7 +12,7 @@ namespace HybridWebView
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new MainPage();
         }
     }
 }

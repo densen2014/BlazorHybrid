@@ -7,26 +7,35 @@
 
         function openDialog() {
             var promise = window.dialogs.open_file_dialog();
-            promise.then((fileData) => {
-                let text = atob(fileData);
-                var el = document.getElementById('webtext');
-                el.innerHTML = text;
-                console.log(text);
-            });
+            runCommand(promise);
         }
 
         function saveFile() {
             var promise = window.dialogs.save_file("test file", "test.txt");
-            promise.then((fileData) => {
-                let text = atob(fileData);
-                var el = document.getElementById('webtext');
-                el.innerHTML = text;
-                console.log(text);
-            });
+            runCommand(promise);
         }
 
         function printTicket(data) {
             var promise = window.dialogs.printTicket(data);
+            runCommand(promise);
+        }
+
+        function openDrawer() {
+            var promise = window.dialogs.openDrawer();
+            runCommand(promise);
+        }
+
+        function getDrawerStatus() {
+            var promise = window.dialogs.getDrawerStatus();
+            runCommand(promise);
+        }
+
+        function showPriceText(data) {
+            var promise = window.dialogs.showPriceText(data);
+            runCommand(promise);
+        }
+
+        function runCommand(promise) {
             promise.then((fileData) => {
                 let text = atob(fileData);
                 var el = document.getElementById('webtext');
@@ -40,6 +49,7 @@
         <h2 style='font-family: script'><i>Fancy Web Title</i></h2>
         <div id='webtext' style='font-family: script'><b>This web text will change when you push the native button.</b></div>
         <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='openDialog()'>openDialog</button>
-        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='saveFile()'>saveFile</button> 
+        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='saveFile()'>saveFile</button>
     </div>
+</body>
 </html>

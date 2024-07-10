@@ -1,26 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HybridWebView.MainPage">
-
-    <ScrollView>
+             x:Class="HybridWebView.MainPage"
+            xmlns:pages="clr-namespace:HybridWebView">
+    <ContentPage Title="主页">
+        <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <WebView x:Name="webView" Source="wwwroot/index.html" WidthRequest="800" HeightRequest="600" />
- 
-            <Label
-                Text="Hello, World!"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
-
-            <Label
-                Text="Welcome to &#10;.NET Multi-platform App UI"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
- 
+            <WebView x:Name="webView" Source="wwwroot/index.html" WidthRequest="800" HeightRequest="600" />  
+            
         </VerticalStackLayout>
     </ScrollView>
-
-</ContentPage>
+    </ContentPage>
+    <ContentPage Title="打印机">
+        <pages:BtPrinter />
+    </ContentPage>
+</TabbedPage>

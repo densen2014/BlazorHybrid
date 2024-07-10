@@ -9,9 +9,8 @@ using WebViewNativeApi;
 
 namespace HybridWebView
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : TabbedPage
     {
-        private int count = 0;
         private NativeBridge? api;
 
         public MainPage()

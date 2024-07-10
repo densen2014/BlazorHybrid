@@ -91,4 +91,16 @@
 	  <ProjectReference Include="..\BlazorHybrid.Core\BlazorHybrid.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="BtPrinter.xaml.cs">
+	    <DependentUpon>BtPrinter.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="BtPrinter.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
