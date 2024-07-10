@@ -1,8 +1,13 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿// ********************************** 
+// Densen Informatica 中讯科技 
+// 作者：Alex Chow
+// e-mail:zhouchuanglin@gmail.com 
+// **********************************
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Text;
 
 namespace WebViewNativeApi;
 
@@ -67,7 +72,7 @@ public class NativeBridge
         "};";
 
     private readonly WebView? _webView = null;
-    private readonly Dictionary<(string, string), object> _targets = new();
+    private readonly Dictionary<(string, string), object> _targets = [];
     private bool _isInit = false;
     private (string?, string?, string?, object?) _query = ("", "", "", null);
 
@@ -86,10 +91,15 @@ public class NativeBridge
     public void AddTarget(string name, object obj, string sheme = DEFAULT_SCHEME)
     {
         if (obj == null)
+        {
             return;
+        }
+
         _targets.Add((name, sheme), obj);
         if (_isInit)
+        {
             AddTargetToWebView(name, obj, sheme);
+        }
     }
 
     private void OnWebViewInit(object? sender, WebNavigatedEventArgs e)
@@ -98,9 +108,15 @@ public class NativeBridge
         {
             RunJS(INTERFACE_JS);
             if (TargetJS != null)
+            {
                 RunJS(TargetJS);
+            }
+
             foreach (KeyValuePair<(string, string), object> entry in _targets)
+            {
                 AddTargetToWebView(entry.Key.Item1, entry.Value, entry.Key.Item2);
+            }
+
             _isInit = true;
         }
     }
@@ -108,23 +124,30 @@ public class NativeBridge
     private void OnWebViewNavigatin(object? sender, WebNavigatingEventArgs e)
     {
         if (!_isInit)
+        {
             return;
+        }
 
         foreach (KeyValuePair<(string, string), object> entry in _targets)
         {
-            string startStr = entry.Key.Item2 + entry.Key.Item1;
+            var startStr = entry.Key.Item2 + entry.Key.Item1;
             if (!e.Url.StartsWith(startStr))
+            {
                 continue;
+            }
 
-            string request = e.Url[(e.Url.IndexOf(startStr) + startStr.Length)..].ToLower();
+            var request = e.Url[(e.Url.IndexOf(startStr) + startStr.Length)..].ToLower();
             request = request.Trim(['/', '\\']);
-            string[] requestArgs = request.Split('/');
+            var requestArgs = request.Split('/');
             if (requestArgs.Length < 2)
+            {
                 return;
+            }
+
             e.Cancel = true;
 
-            string prop = requestArgs[0];
-            string token = requestArgs[1];
+            var prop = requestArgs[0];
+            var token = requestArgs[1];
 
             Type type = entry.Value.GetType();
             if (type.GetMember(prop) == null)
@@ -145,13 +168,18 @@ public class NativeBridge
 
     private void AddTargetToWebView(string name, object obj, string sheme)
     {
-        Type type = obj.GetType();
-        List<string> methods = new List<string>();
-        List<string> properties = new List<string>();
+        var type = obj.GetType();
+        var methods = new List<string>();
+        var properties = new List<string>();
         foreach (MethodInfo method in type.GetMethods())
+        {
             methods.Add(method.Name);
+        }
+
         foreach (PropertyInfo p in type.GetProperties())
+        {
             properties.Add(p.Name);
+        }
 
         RunJS("window." + name + " = window.createNativeBridgeProxy('" + name + "', " + JsonSerializer.Serialize(methods) + ", " +
             JsonSerializer.Serialize(properties) + ", '" + sheme + "');");
@@ -159,8 +187,8 @@ public class NativeBridge
 
     private static bool IsAsyncMethod(MethodInfo method)
     {
-        Type attType = typeof(AsyncStateMachineAttribute);
-        var attrib = (AsyncStateMachineAttribute?) method.GetCustomAttribute(attType);
+        var attType = typeof(AsyncStateMachineAttribute);
+        var attrib = (AsyncStateMachineAttribute?)method.GetCustomAttribute(attType);
         return (attrib != null);
     }
 
@@ -168,36 +196,43 @@ public class NativeBridge
     {
         try
         {
-            Type type = obj.GetType();
-            string? readArguments = await RunJS("window." + name + ".getArguments('" + token + "');");
-            JsonElement[]? jsonObjects = JsonSerializer.Deserialize<JsonElement[]>(Regex.Unescape(readArguments));
-            MethodInfo? method = type.GetMethod(prop);
+            var type = obj.GetType();
+            var readArguments = await RunJS("window." + name + ".getArguments('" + token + "');");
+            var jsonObjects = JsonSerializer.Deserialize<JsonElement[]>(Regex.Unescape(readArguments ?? ""));
+            var method = type.GetMethod(prop);
             if (method != null)
             {
                 var parameters = method.GetParameters();
                 object[] arguments = new object[parameters.Length];
-                foreach (ParameterInfo arg in parameters)
+                if (jsonObjects != null && jsonObjects.Length > 0)
                 {
-                    if (jsonObjects.Length <= arg.Position)
+                    foreach (var arg in parameters)
                     {
-                        arguments[arg.Position] = arg.DefaultValue;
-                    }
-                    else
-                    {
-                        JsonElement jsonObject = jsonObjects[arg.Position];
-                        arguments[arg.Position] = jsonObject.Deserialize(arg.ParameterType);
+                        if (jsonObjects.Length <= arg.Position && arg.DefaultValue != null)
+                        {
+                            arguments[arg.Position] = arg.DefaultValue;
+                        }
+                        else
+                        {
+                            var jsonObject = jsonObjects[arg.Position];
+                            var jsonObject2 = jsonObject.Deserialize(arg.ParameterType);
+                            if (jsonObject2 != null)
+                            {
+                                arguments[arg.Position] = jsonObject2;
+                            }
+                        }
                     }
                 }
 
-                object? result = method.Invoke(obj, arguments);
-                string serializedRet = "null";
+                var result = method.Invoke(obj, arguments);
+                var serializedRet = "null";
                 if (result != null)
                 {
                     if (IsAsyncMethod(method))
                     {
                         Task task = (Task)result;
                         await task.ConfigureAwait(false);
-                        result = (object)((dynamic)task).Result;
+                        result = ((dynamic)task).Result;
                     }
                     serializedRet = JsonSerializer.Serialize(result);
                 }
@@ -210,8 +245,11 @@ public class NativeBridge
                 if (propety != null)
                 {
                     if (jsonObjects != null && jsonObjects.Length > 0)
+                    {
                         propety.SetValue(obj, jsonObjects[0].Deserialize(propety.PropertyType));
-                    string result = JsonSerializer.Serialize(propety.GetValue(obj, null));
+                    }
+
+                    var result = JsonSerializer.Serialize(propety.GetValue(obj, null));
                     await RunJS("window." + name + ".returnValue('" + token + "', " + result + ");");
                 }
                 else
@@ -222,7 +260,7 @@ public class NativeBridge
         }
         catch (Exception e)
         {
-            string error = e.Message + " (" + e.GetHashCode().ToString() + ")";
+            var error = e.Message + " (" + e.GetHashCode().ToString() + ")";
             error = error.Replace("\\n", " ");
             error = error.Replace("\n", " ");
             error = error.Replace("\"", "&quot;");
@@ -232,17 +270,28 @@ public class NativeBridge
 
     public async Task sendEvent(string type, Dictionary<string, string>? detail = null, bool optBubbles = false, bool optCancelable = false, bool optComposed = false)
     {
-        List<string> opts = new List<string>();
+        List<string> opts = [];
         if (optBubbles)
+        {
             opts.Add("bubbles: true");
-        if (optCancelable)
-            opts.Add("cancelable: true");
-        if (optComposed)
-            opts.Add("composed: true");
-        if (detail != null)
-            opts.Add("detail: " + JsonSerializer.Serialize(detail));
+        }
 
-        string optsStr = (opts.Count > 0 ? ", { " + String.Join(", ", opts) + " }" : "");
+        if (optCancelable)
+        {
+            opts.Add("cancelable: true");
+        }
+
+        if (optComposed)
+        {
+            opts.Add("composed: true");
+        }
+
+        if (detail != null)
+        {
+            opts.Add("detail: " + JsonSerializer.Serialize(detail));
+        }
+
+        var optsStr = (opts.Count > 0 ? ", { " + string.Join(", ", opts) + " }" : "");
         await RunJS("const nativeEvent = new CustomEvent('" + type + "'" + optsStr + "); document.dispatchEvent(nativeEvent);");
     }
 
@@ -254,15 +303,20 @@ public class NativeBridge
         }
         return _webView.Dispatcher.DispatchAsync(() =>
         {
-            string resultCode = code;
+            var resultCode = code;
             if (resultCode.Contains("\\n") || resultCode.Contains('\n'))
+            {
                 resultCode = "console.error('Called js from native api contain new line symbols!')";
+            }
             else
+            {
                 resultCode = "try { " + resultCode + " } catch(e) { console.error(e); }";
+            }
+
             var result = _webView.EvaluateJavaScriptAsync(resultCode);
             return result;
         });
     }
 }
- 
+
 

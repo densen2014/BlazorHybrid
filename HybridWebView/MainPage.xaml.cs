@@ -11,7 +11,7 @@ namespace HybridWebView
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        private int count = 0;
         private NativeBridge? api;
 
         public MainPage()
@@ -25,7 +25,7 @@ namespace HybridWebView
 
     }
 
-    class NativeApi : object
+    internal class NativeApi : object
     {
         public async Task<string> open_file_dialog()
         {
@@ -43,7 +43,6 @@ namespace HybridWebView
                     using var stream = await result.OpenReadAsync();
                     StreamReader reader = new StreamReader(stream);
                     return Convert.ToBase64String(Encoding.UTF8.GetBytes(reader.ReadToEnd()));
-
                 }
                 catch (Exception e)
                 {
