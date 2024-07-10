@@ -7,7 +7,7 @@
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <WebView x:Name="webView" Source="https://densen.es/test/mauijs" WidthRequest="800" HeightRequest="600" />
+            <WebView x:Name="webView" Source="wwwroot/index.html" WidthRequest="800" HeightRequest="600" />
  
             <Label
                 Text="Hello, World!"

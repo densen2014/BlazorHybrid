@@ -6,7 +6,6 @@
 
 using AME;
 using BlazorHybrid.Core.Device;
-using BootstrapBlazor.Components;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
