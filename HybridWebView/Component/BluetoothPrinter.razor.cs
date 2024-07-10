@@ -5,66 +5,35 @@
 // **********************************
 
 using AME;
-using BlazorHybrid.Core.Device;
-using BlazorHybrid.Maui.Shared;
+using BootstrapBlazor.Components;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using static BlazorHybrid.Core.Device.BleUUID;
 
-namespace HybridWebView;
+namespace BlazorHybrid.Core.Device;
 
-public partial class BtPrinter : ContentView, IAsyncDisposable
+public partial class BluetoothPrinter : IAsyncDisposable
 {
-    private string PrinterNameKey = "PrinterName";
-    private string printerName = "Unknown";
-
-    public BtPrinter()
-    {
-        InitializeComponent();
-        PrinterName.Text = printerName = Preferences.Default.Get(PrinterNameKey, printerName);
-        _ = Task.Run(Init);
-    }
-
-    private void OnTestClicked(object sender, EventArgs e)
-    {
-        printerName = $"Printer {DateTime.Now.Microsecond}";
-        Preferences.Default.Set(PrinterNameKey, printerName);
-        PrinterName.Text = printerName;
-    }
-
-    private async void OnFindClicked(object sender, EventArgs e)
-    {
-        await ScanDevice();
-    }
-
-    private void OnSaveClicked(object sender, EventArgs e)
-    {
-
-    }
-
-
-    [NotNull] protected BluetoothLEServices? Tools { get; set; } = new();
-
     private bool IsScanning = false;
 
     private string btnclass = "col-3 col-sm-3 col-md-4 col-lg-auto";
 
-    private BleTagDevice BleInfo { get; set; } = new BleTagDevice();
+    BleTagDevice BleInfo { get; set; } = new BleTagDevice();
 
     private BluetoothPrinterOption Option = new();
 
     private string? ReadResult;
 
-    private string? Message = "";
+    private new string? Message = "";
 
     private bool autoread;
 
     private bool IsConnected { get; set; }
-    private bool IsAutoConnect { get; set; }
-    private bool IsAuto { get; set; }
-    private bool IsInit { get; set; }
+    bool IsAutoConnect { get; set; }
+    bool IsAuto { get; set; }
+    bool IsInit { get; set; }
 
     /// <summary>
     /// 设备列表
@@ -81,29 +50,29 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
     /// </summary>
     private List<BleCharacteristic>? Characteristics;
 
-    private List<SelectedItem> PrinterDemoList { get; set; } = [new SelectedItem() { Text = "型号", Value = "" }];
+    private List<SelectedItem> PrinterDemoList { get; set; } = new List<SelectedItem>() { new SelectedItem() { Text = "型号", Value = "" } };
 
     /// <summary>
     /// 设备下拉列表
     /// </summary>
-    private List<SelectedItem> DeviceList { get; set; } = [];
+    private List<SelectedItem> DeviceList { get; set; } = new List<SelectedItem>();
 
     /// <summary>
     /// 服务下拉列表
     /// </summary>
-    private List<SelectedItem> ServiceidList { get; set; } = [];
+    private List<SelectedItem> ServiceidList { get; set; } = new List<SelectedItem>();
 
     /// <summary>
     /// 特征下拉列表
     /// </summary>
-    private List<SelectedItem> CharacteristicList { get; set; } = [];
+    private List<SelectedItem> CharacteristicList { get; set; } = new List<SelectedItem>();
 
     private Dictionary<string, object>? IsScanningCss => IsScanning ? new() { { "disabled", "" }, } : null;
 
     /// <summary>
     /// 演示设备列表
     /// </summary>
-    private List<BleTagDevice> PrinterList = [
+    List<BleTagDevice> PrinterList = [
         new("BMAU32-2AA8(Cpcl)",
             "bf5453be-dbf8-36b4-892d-dd7d811d5156",
             PrinterServiceUUID,
@@ -118,6 +87,10 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
             PrinterCharacteristicUUID),
         new("BMAU32(Cpcl)",
             "BMAU32",
+            PrinterServiceUUID,
+            PrinterCharacteristicUUID),
+        new("E3PLUS(Cpcl)",
+            "E3PLUS",
             PrinterServiceUUID,
             PrinterCharacteristicUUID),
         new("SUNMI/InnerPrinter/FK-POSP58A+/BlueToothPrinter(ESCPOS)",
@@ -138,6 +111,31 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
 
     #region 表格相关
 
+    [NotNull]
+    Table<BleDevice>? Table { get; set; }
+
+    private Func<BleDevice, Task>? OnDoubleClickRowCallback()
+    {
+        Func<BleDevice, Task>? ret = null;
+        ret = async foo =>
+        {
+            await Table.ExpandDetailRow(foo);
+        };
+        return ret;
+    }
+
+    [NotNull]
+    Table<BleService>? Table2 { get; set; }
+
+    private Func<BleService, Task>? OnDoubleClickRowCallback2()
+    {
+        Func<BleService, Task>? ret = null;
+        ret = async foo =>
+        {
+            await Table2.ExpandDetailRow(foo);
+        };
+        return ret;
+    }
 
     private ConcurrentDictionary<string, List<BleService>> Cache { get; } = new();
     private bool ShowDetailRow(BleService item) => !string.IsNullOrEmpty(item.Remark);
@@ -154,23 +152,32 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         return (_device ??= new BleDevice()).Services;
     }
 
-    #endregion
+    #endregion 
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Init();
+        }
+    }
 
-    private async Task<bool> Init()
+    async Task<bool> Init()
     {
         try
         {
 
-            if (IsInit)
-            {
-                return true;
-            }
-            await Tools.CheckPermissionsBluetooth();
+            if (IsInit) return true;
 
             PrinterList.ForEach(a => PrinterDemoList.Add(new SelectedItem() { Text = a.Name ?? "未知设备", Value = a.DeviceID.ToString() }));
-            var configJson = Preferences.Default.Get("BluetoothPrinterConfig", string.Empty);
+            var configJson = await Storage.GetValue("BluetoothPrinterConfig", string.Empty);
             if (configJson != null)
             {
                 try
@@ -183,21 +190,25 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
                 }
                 catch
                 {
-                    SaveConfig();
+                    await SaveConfig();
                 }
 
             }
             else
             {
-                SaveConfig();
+                await SaveConfig();
             }
 
-            //StateHasChanged();
+            StateHasChanged();
 
-
+            if (!Tools.IsMaui())
+            {
+                await ToastService.Warning("提示", "目前只支持MAUI");
+                return false;
+            }
             if (await Tools.BluetoothIsBusy())
             {
-                await Application.Current!.MainPage!.DisplayAlert("提示", "蓝牙正在使用中，请稍后再试", "OK");
+                await ToastService.Warning("提示", "蓝牙正在使用中，请稍后再试");
                 return false;
             }
             Tools.OnMessage += async (m) => await Tools_OnMessage(m);
@@ -208,22 +219,14 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
             Tools.SetTagDeviceName(BleInfo);
             IsInit = true;
 
-            //StateHasChanged();
+            StateHasChanged();
 
             if (!string.IsNullOrEmpty(Option.DeviceID))
             {
                 BleInfo.Name = Option.DeviceName;
                 BleInfo.DeviceID = Guid.Parse(Option.DeviceID);
-                if (!string.IsNullOrEmpty(Option.ServiceID))
-                {
-                    BleInfo.Serviceid = Guid.Parse(Option.ServiceID);
-                }
-
-                if (!string.IsNullOrEmpty(Option.CharacteristicID))
-                {
-                    BleInfo.Characteristic = Guid.Parse(Option.CharacteristicID);
-                }
-
+                if (!string.IsNullOrEmpty(Option.ServiceID)) BleInfo.Serviceid = Guid.Parse(Option.ServiceID);
+                if (!string.IsNullOrEmpty(Option.CharacteristicID)) BleInfo.Characteristic = Guid.Parse(Option.CharacteristicID);
                 if (Option.AutoConnect)
                 {
                     IsAuto = true;
@@ -241,19 +244,18 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         return false;
     }
 
-    private Task ResetConfig()
+    private async Task ResetConfig()
     {
         Option = new();
-        Preferences.Default.Set("BluetoothPrinterConfig", Option.ObjectToJson());
-        return Task.CompletedTask;
+        await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
     }
 
     private async Task SaveConfigOK()
     {
-        Preferences.Default.Set("BluetoothPrinterConfig", Option.ObjectToJson());
-        await Application.Current!.MainPage!.DisplayAlert("提示", "保存成功", "OK");
+        await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
+        await ToastService.Success("提示", "保存成功");
     }
-    private void SaveConfig() => Preferences.Default.Set("BluetoothPrinterConfig", Option.ObjectToJson());
+    private async Task SaveConfig() => await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
 
     private async Task ConnectLastDevice()
     {
@@ -261,27 +263,22 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         Characteristics = null;
         Message = "";
         ReadResult = "";
-        Devices = [new BleDevice() { Id = BleInfo.DeviceID, Name = BleInfo.Name }];
-        DeviceList = [new SelectedItem() { Text = BleInfo.Name ?? "未知设备", Value = BleInfo.DeviceID.ToString() }];
+        Devices = new List<BleDevice>() { new BleDevice() { Id = BleInfo.DeviceID, Name = BleInfo.Name } };
+        DeviceList = new List<SelectedItem>() { new SelectedItem() { Text = BleInfo.Name ?? "未知设备", Value = BleInfo.DeviceID.ToString() } };
         IsAutoConnect = true;
         await OnDeviceSelect();
         IsAutoConnect = false;
     }
 
-    private Task OnStateChanged(bool value)
+    private async Task OnStateChanged(bool value)
     {
         Option.AutoConnect = value;
-        SaveConfig();
-        return Task.CompletedTask;
+        await SaveConfig();
     }
 
     private async Task OnPrinterSelect(SelectedItem item)
     {
-        if (IsAutoConnect || item.Value == "")
-        {
-            return;
-        }
-
+        if (IsAutoConnect || item.Value == "") return;
         var res = PrinterList.Where(a => a.Name == item.Text).FirstOrDefault();
         if (res != null)
         {
@@ -294,28 +291,28 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         else
         {
             Message = "出错";
-            await Application.Current!.MainPage!.DisplayAlert("提示", Message, "OK");
+            await ToastService.Information("提示", Message);
         }
     }
 
     private async Task Tools_OnStateConnect(bool obj)
     {
         IsConnected = obj;
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task Tools_OnDataReceived(string message)
     {
         ReadResult = message;
         await Tools_OnMessage(message);
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task Tools_OnMessage(string message)
     {
         //if (Message !=null && Message.Length >1500) Message= Message.Substring (0, 1500);
         Message = $"{message}\r\n{Message}";
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task ScanPrinterDevice() => await ScanDevice();
@@ -323,13 +320,10 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
     //扫描外设
     private async Task ScanDevice()
     {
-        if (!await Init() || IsScanning)
-        {
-            return;
-        }
+        if (!await Init() || IsScanning) return;
 
         await OnDisConnectDevice(true);
-        SaveConfig();
+        await SaveConfig();
         //BleInfo.Name = "QR380A-165D";
 
         IsScanning = true;
@@ -338,17 +332,17 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         Characteristics = null;
         Message = "";
         ReadResult = "";
-        DeviceList = [new SelectedItem() { Text = "请选择...", Value = "" }];
+        DeviceList = new List<SelectedItem>() { new SelectedItem() { Text = "请选择...", Value = "" } };
 
         Guid[]? serviceUuids = Option.PrinterOnly ? [Guid.Parse(PrinterServiceUUID), Guid.Parse(PrinterNormalServiceUUID)] : null;
 
         //开始扫描
         Devices = await Tools.StartScanAsync(serviceUuids: serviceUuids);
-        ////StateHasChanged();
+        //StateHasChanged();
 
         if (Devices != null)
         {
-            if (Option.MinRssi != 0)
+            if (Option.MinRssi!=0)
             {
                 Devices = Devices.Where(a => a.Rssi >= -Option.MinRssi).ToList();
             }
@@ -361,27 +355,27 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
                 Devices = Devices.Where(a => a.IsConnectable == true).OrderBy(a => a.Name).ToList();
             }
             Devices.ForEach(a => a.ServicesRemark = "-");
-            //StateHasChanged();
+            StateHasChanged();
 
             foreach (var bleDevice in Devices)
             {
-                ////await InvokeAsync(StateHasChanged);
+                //await InvokeAsync(StateHasChanged);
 
                 //_ = Task.Run(async () =>
                 //{
                 //    await Task.Delay(200);
                 //连接外设
-                var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name);
+                var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name); 
                 if (services != null)
                 {
-                    if (serviceUuids != null)
+                    if (serviceUuids != null )
                     {
-                        var isPrinter = services.Where(a => serviceUuids.Contains(a.Id)).Any();
+                        var isPrinter = services.Where(a => serviceUuids.Contains (a.Id)).Any();
                         if (!isPrinter)
                         {
                             bleDevice.ServicesRemark = "isNotPrinter";
                             await Tools_OnMessage($"排除{bleDevice.Name}");
-                            //await InvokeAsync(StateHasChanged);
+                            await InvokeAsync(StateHasChanged);
                             continue;
                         }
                     }
@@ -399,7 +393,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
                     });
                     bleDevice.Services.AddRange(services);
                     bleDevice.ServicesRemark = $"服务: {services.Count}";
-                    //await InvokeAsync(StateHasChanged);
+                    await InvokeAsync(StateHasChanged);
                     var stop = false;
                     var canWriteCount = 0;
                     foreach (var bleService in services)
@@ -420,7 +414,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
                                         else if (a.Id == Guid.Parse(GattCharacteristicUUID))
                                         {
                                             a.Name = "GATT*";
-                                        }
+                                        }                                        
                                     });
                                     bleService.Characteristics.AddRange(characteristics);
                                     bleService.Remark = $"特征: {characteristics.Count}";
@@ -436,19 +430,19 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
                     if (canWriteCount > 0)
                     {
                         bleDevice.ServicesRemark += $"({canWriteCount}w)";
-                        //await InvokeAsync(StateHasChanged);
+                        await InvokeAsync(StateHasChanged);
                     }
                 }
                 else
                 {
                     bleDevice.ServicesRemark = $"连接超时";
                     Message = $"连接{bleDevice.Name}超时";
-                    await Application.Current!.MainPage!.DisplayAlert("提示", Message, "OK");
+                    await ToastService.Error("提示", Message);
                 }
                 await OnDisConnectDevice(true);
                 Message = $"完成";
-                await Application.Current!.MainPage!.DisplayAlert("提示", Message, "OK");
-                //await InvokeAsync(StateHasChanged);
+                await ToastService.Success("提示", Message);
+                await InvokeAsync(StateHasChanged);
 
                 DeviceList.Add(
                     new SelectedItem()
@@ -461,24 +455,20 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
                 //});
             };
 
-            Devices = Devices.Where(a => a.ServicesRemark != "isNotPrinter").ToList();
+            Devices = Devices.Where(a => a.ServicesRemark != "isNotPrinter").ToList(); 
 
         }
 
         IsScanning = false;
 
         //异步更新UI
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     //连接外设
     private async Task OnDeviceSelect(SelectedItem item)
     {
-        if (IsAutoConnect || item.Value == "")
-        {
-            return;
-        }
-
+        if (IsAutoConnect || item.Value == "") return;
         BleInfo.Name = item.Text;
         BleInfo.DeviceID = Guid.Parse(item.Value);
         await OnDeviceSelect();
@@ -498,18 +488,12 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         if (await Tools.DisConnectDeviceAsync())
         {
             Message = "断开成功";
-            if (!silent)
-            {
-                await Application.Current!.MainPage!.DisplayAlert("提示", Message, "OK");
-            }
+            if (!silent) await ToastService.Success("提示", Message);
         }
         else
         {
             Message = "断开失败";
-            if (!silent)
-            {
-                await Application.Current!.MainPage!.DisplayAlert("提示", Message, "OK");
-            }
+            if (!silent) await ToastService.Error("提示", Message);
         }
         Services = null;
         Characteristics = null;
@@ -528,7 +512,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         Characteristics = null;
         Message = "";
         ReadResult = "";
-        ServiceidList = [new SelectedItem() { Text = "请选择...", Value = "" }];
+        ServiceidList = new List<SelectedItem>() { new SelectedItem() { Text = "请选择...", Value = "" } };
         //连接外设
         Services = await Tools.ConnectToKnownDeviceAsync(BleInfo.DeviceID, BleInfo.Name?.Split("(").FirstOrDefault());
         if (Services != null)
@@ -544,7 +528,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
             );
             Option.DeviceID = BleInfo.DeviceID.ToString();
             Option.DeviceName = BleInfo.Name ?? "上次设备";
-            SaveConfig();
+            await SaveConfig();
             if (BleInfo.Serviceid != Guid.Empty && IsAutoConnect)
             {
                 await OnServiceidSelect();
@@ -553,21 +537,17 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         else
         {
             Message = $"连接{BleInfo.Name}失败";
-            await Application.Current!.MainPage!.DisplayAlert("提示", Message, "OK");
+            await ToastService.Error("提示", Message);
         }
 
         //异步更新UI
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
 
     private async Task OnServiceidSelect(SelectedItem item)
     {
-        if (IsAutoConnect || item.Value == "")
-        {
-            return;
-        }
-
+        if (IsAutoConnect || item.Value == "") return;
         BleInfo.Serviceid = Guid.Parse(item.Value);
         await OnServiceidSelect();
     }
@@ -581,7 +561,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         Characteristics = null;
         Message = "";
         ReadResult = "";
-        CharacteristicList = [new SelectedItem() { Text = "请选择...", Value = "" }];
+        CharacteristicList = new List<SelectedItem>() { new SelectedItem() { Text = "请选择...", Value = "" } };
         Characteristics = await Tools.GetCharacteristicsAsync(BleInfo.Serviceid);
         if (Characteristics != null)
         {
@@ -594,24 +574,20 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
                 })
             );
             Option.ServiceID = BleInfo.Serviceid.ToString();
-            SaveConfig();
+            await SaveConfig();
         }
         else
         {
             var message = $"获取特征失败. {BleInfo.Serviceid}";
-            await Application.Current!.MainPage!.DisplayAlert("提示", message, "OK");
+            await ToastService.Error("提示", message);
         }
 
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnCharacteristSelect(SelectedItem item)
     {
-        if (IsAutoConnect)
-        {
-            return;
-        }
-
+        if (IsAutoConnect) return;
         BleInfo.Characteristic = Guid.Parse(item.Value);
         await ReadDeviceName();
     }
@@ -622,16 +598,13 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         Message = "";
 
         Option.CharacteristicID = BleInfo.Characteristic.ToString();
-        SaveConfig();
+        await SaveConfig();
         //读取数值
         ReadResult = await Tools.ReadDeviceName(BleInfo.Serviceid, BleInfo.Characteristic);
 
-        if (!string.IsNullOrEmpty(ReadResult))
-        {
-            await Application.Current!.MainPage!.DisplayAlert("读取成功", ReadResult, "OK");
-        }
+        if (!string.IsNullOrEmpty(ReadResult)) await ToastService.Information("读取成功", ReadResult);
         //异步更新UI
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task ReadDataAsync()
@@ -639,13 +612,10 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         Message = "";
         //读取数值
         var res = await Tools.ReadDataAsync(BleInfo.Characteristic);
-        if (!string.IsNullOrEmpty(ReadResult))
-        {
-            await Application.Current!.MainPage!.DisplayAlert("读取成功", res?.ToString(), "OK");
-        }
+        if (!string.IsNullOrEmpty(ReadResult)) await ToastService.Information("读取成功", res?.ToString());
 
         //异步更新UI
-        //await InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     //private async Task SendDataAsync()
@@ -653,10 +623,10 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
     //    Message = "";
     //    //读取数值
     //    var res = await Tools.SendDataAsync(BleInfo.Characteristic, null);
-    //    await Application.Current!.MainPage!.DisplayAlert("成功发送", res.ToString());
+    //    await ToastService.Information("成功发送", res.ToString());
 
     //    //异步更新UI
-    //    //await InvokeAsync(StateHasChanged);
+    //    await InvokeAsync(StateHasChanged);
     //}
 
     private async Task SendDataAsyncCPCL()
@@ -819,10 +789,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
 
     public string PrintTicketESCPOS_barcode(string title, string barcode, string price, bool printbarcode = false)
     {
-        if (barcode == "")
-        {
-            return "";
-        }
+        if (barcode == "") return "";
 
         //店名
         string title0 = Option.StoreTitle ?? "";
@@ -889,7 +856,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         if (IsScanning)
         {
             Message = "蓝牙正在使用中，请稍后再试";
-            await Application.Current!.MainPage!.DisplayAlert("提示", Message, "OK");
+            await ToastService.Warning("提示", Message);
             return;
         }
 
@@ -929,7 +896,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         else
         {
             var message = $"参数无效";
-            await Application.Current!.MainPage!.DisplayAlert("提示", message, "OK");
+            await ToastService.Warning("提示", message);
         }
     }
 
@@ -956,7 +923,7 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
         else
         {
             var message = $"参数无效";
-            await Application.Current!.MainPage!.DisplayAlert("提示", message, "OK");
+            await ToastService.Warning("提示", message);
         }
     }
 
@@ -966,12 +933,12 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
 
     private async Task SendDataAsyncPrinter(string commands)
     {
-        if (!await Tools.SendDataAsync(BleInfo.Characteristic, commands, Option.Chunk))
-        {
+        if (!await Tools.SendDataAsync(BleInfo.Characteristic, commands,Option.Chunk))
+        { 
             var message = $"打印数据出错";
-            await Application.Current!.MainPage!.DisplayAlert("提示", message, "OK");
+            await ToastService.Warning("提示", message);
         }
-
+     
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
@@ -984,44 +951,3 @@ public partial class BtPrinter : ContentView, IAsyncDisposable
 }
 
 
-
-/// <summary>
-/// 选项类
-/// </summary>
-public class SelectedItem
-{
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public SelectedItem() { }
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public SelectedItem(string value, string text) => (Value, Text) = (value, text);
-
-    /// <summary>
-    /// 获得/设置 显示名称
-    /// </summary>
-    public virtual string Text { get; set; } = "";
-
-    /// <summary>
-    /// 获得/设置 选项值
-    /// </summary>
-    public string Value { get; set; } = "";
-
-    /// <summary>
-    /// 获得/设置 是否选中
-    /// </summary>
-    public bool Active { get; set; }
-
-    /// <summary>
-    /// 获得/设置 是否禁用
-    /// </summary>
-    public bool IsDisabled { get; set; }
-
-    /// <summary>
-    /// 获得/设置 分组名称
-    /// </summary>
-    public string GroupName { get; set; } = "";
-}

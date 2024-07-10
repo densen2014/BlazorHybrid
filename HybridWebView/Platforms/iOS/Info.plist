@@ -75,17 +75,5 @@
 	<string>此应用程序需要使用语音识别。请根据要求授予权限.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>此应用程序需要使用Face ID。请根据要求授予权限.</string>
-	<key>com.apple.security.assets.movies.read-only</key>
-	<true/>
-	<key>com.apple.security.assets.music.read-only</key>
-	<true/>
-	<key>com.apple.security.assets.pictures.read-only</key>
-	<true/>
-	<key>com.apple.security.files.downloads.read-only</key>
-	<true/>
-	<key>com.apple.security.files.user-selected.read-only</key>
-	<true/>
-	<key>com.apple.security.personal-information.photos-library</key>
-	<true/>
 </dict>
 </plist>

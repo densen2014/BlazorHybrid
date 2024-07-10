@@ -23,7 +23,7 @@ public partial class BluetoothLEServices
 {
     //var opt = new ConnectParameters(true, true);
 
-    public List<BleDevice> Devices { get; set; } = new List<BleDevice>();
+    public List<BleDevice> Devices { get; set; } = [];
 
     /// <summary>
     /// 特定查找的设备名称
@@ -49,7 +49,7 @@ public partial class BluetoothLEServices
     /// <summary>
     /// 通知特征值已更新结果
     /// </summary>
-    public List<string> HbResults { get; } = new List<string>();
+    public List<string> HbResults { get; } = [];
 
     /// <summary>
     /// 消息
@@ -75,6 +75,26 @@ public partial class BluetoothLEServices
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     }
+
+#if ANDROID
+    public async Task<string> CheckPermissionsBluetooth()
+    {
+        var status = await Permissions.CheckStatusAsync<BluetoothPermissions>();
+
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<BluetoothPermissions>();
+        }
+
+        return status.ToString();
+    }
+#else
+    public Task<string> CheckPermissionsBluetooth()
+    {
+        return Task.FromResult("无需授权");
+    }
+#endif
+
     public Task<bool> ResetBluetooth()
     {
         if (CurrentBle != null)
@@ -89,7 +109,7 @@ public partial class BluetoothLEServices
         CurrentBle = null;
         CurrentAdapter = null;
         Device = null;
-        Devices = new List<BleDevice>();
+        Devices = [];
         TagDevice = new BleTagDevice();
 
         return Task.FromResult(Device != null && Device.State == DeviceState.Connected);
@@ -98,7 +118,7 @@ public partial class BluetoothLEServices
     private bool LazyLoad()
     {
         if (CurrentAdapter == null)
-        { 
+        {
             CurrentBle = CrossBluetoothLE.Current;
             CurrentAdapter = CrossBluetoothLE.Current.Adapter;
 
@@ -162,12 +182,14 @@ public partial class BluetoothLEServices
     public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null)
     {
 
-        Devices = new List<BleDevice>();
+        Devices = [];
 
         //检查获取蓝牙权限
         bool isPermissionPass = await CheckAndRequestBluetoothPermission();
         if (!isPermissionPass)
+        {
             return null;
+        }
 
         _scanForAedCts = new CancellationTokenSource();
 
@@ -313,7 +335,9 @@ public partial class BluetoothLEServices
 
             //如果找到目标外设，退出扫描
             if (!_scanForAedCts!.IsCancellationRequested)
+            {
                 _scanForAedCts.Cancel(false);
+            }
         }
     }
 
@@ -373,7 +397,7 @@ public partial class BluetoothLEServices
             return null;
         }
 
-        List<string> result = new List<string>();
+        List<string> result = [];
 
         //订阅连接丢失
         CurrentAdapter.DeviceDisconnected -= CurrentAdapter_DeviceDisconnected;
@@ -544,7 +568,9 @@ public partial class BluetoothLEServices
                 {
                     await Task.Delay(TimeSpan.FromSeconds(10));
                     if (!_scanForAedCts!.IsCancellationRequested)
+                    {
                         _scanForAedCts.Cancel(false);
+                    }
                 });
 
                 // <summary> 
@@ -762,7 +788,7 @@ public partial class BluetoothLEServices
 
     #region 读写数据
 
-    ICharacteristic? Notify;
+    private ICharacteristic? Notify;
 
     //读取设备名
     public async Task<string?> ReadDeviceName(Guid? serviceid, Guid? characteristic)
@@ -819,7 +845,7 @@ public partial class BluetoothLEServices
         return ReadDeviceNameResult;
     }
 
-    double parseHeartRate(byte[] heartRateRecord)
+    private double parseHeartRate(byte[] heartRateRecord)
     {
         var flags = heartRateRecord[0];
         var offset = 1;
@@ -841,7 +867,9 @@ public partial class BluetoothLEServices
         //if so, pull 2 bytes
         bool ee = (flags & (1 << 3)) != 0;
         if (ee)
+        {
             offset += 2;
+        }
 
         //see if RR is present
         //if so, the number of RR values is total bytes left / 2 (size of uint16)
@@ -862,7 +890,7 @@ public partial class BluetoothLEServices
         return hr;
     }
 
-    async Task<ICharacteristic?> GetdeviceNameCharacteristic(Guid? serviceid, Guid? characteristic)
+    private async Task<ICharacteristic?> GetdeviceNameCharacteristic(Guid? serviceid, Guid? characteristic)
     {
         if (Device == null)
         {
@@ -1143,5 +1171,19 @@ public partial class BluetoothLEServices
     }
 
     #endregion
+
+    public void SetTagDeviceName(BleTagDevice ble)
+    {
+        //MyBleTester.TagDevice = ble;
+
+        //if (!isInit)
+        //{
+        //    MyBleTester.OnMessage += OnMessage;
+        //    MyBleTester.OnDataReceived += OnDataReceived;
+        //    MyBleTester.OnStateConnect += OnStateConnect;
+        //    isInit = true;
+        //}
+    }
+
 }
 

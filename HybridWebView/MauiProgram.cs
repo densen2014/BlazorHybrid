@@ -5,11 +5,13 @@
 // **********************************
 
 using Microsoft.Extensions.Logging;
+using BootstrapBlazor.WebAPI.Services;
 
 namespace HybridWebView
 {
     public static class MauiProgram
     {
+        public static IServiceProvider? Services { get; private set; }
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -20,12 +22,28 @@ namespace HybridWebView
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+            builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddMauiFeatureService();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Logging.AddDebug();
+            builder.Services.AddLogging(logging =>
+            {
+#if WINDOWS && NET7_0_OR_GREATER
+				logging.AddDebug();
+#elif NET7_0_OR_GREATER
+                logging.AddConsole();
 #endif
 
-            return builder.Build();
+                // Enable maximum logging for BlazorWebView
+                logging.AddFilter("Microsoft.AspNetCore.Components.WebView", LogLevel.Trace);
+            });
+#endif
+            var app = builder.Build();
+            Services = app.Services;
+
+            return app;
         }
     }
 }

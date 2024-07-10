@@ -1,0 +1,15 @@
+﻿@inherits LayoutComponentBase
+
+<Layout>
+    <Main>
+        @Body
+    </Main>
+</Layout>
+
+
+@code{
+
+    [Parameter]
+    public EventCallback Changed { get; set; }
+
+}

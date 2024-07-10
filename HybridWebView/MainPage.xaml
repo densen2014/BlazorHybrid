@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:HybridWebView.Component"
              x:Class="HybridWebView.MainPage"
             xmlns:pages="clr-namespace:HybridWebView">
     <ContentPage Title="主页">
-        <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <WebView x:Name="webView" Source="wwwroot/index.html" WidthRequest="800" HeightRequest="600" />  
-            
-        </VerticalStackLayout>
-    </ScrollView>
+        <WebView x:Name="webView" Source="wwwroot/demo.html" VerticalOptions="FillAndExpand" />
     </ContentPage>
     <ContentPage Title="打印机">
-        <pages:BtPrinter />
+        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html" VerticalOptions="FillAndExpand">
+            <BlazorWebView.RootComponents>
+                <RootComponent Selector="#app" ComponentType="{x:Type local:App}" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
     </ContentPage>
+      
+    <!--<ContentPage Title="打印机">
+        <pages:BtPrinter />
+    </ContentPage>-->
+
 </TabbedPage>

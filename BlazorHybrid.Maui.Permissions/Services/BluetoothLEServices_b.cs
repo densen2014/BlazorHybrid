@@ -35,7 +35,7 @@ public partial class BluetoothLEServices
         UpdateDevicename?.Invoke($"设备{Device.Name}");
         if (CurrentAdapter == null)
         {
-            return null;
+            return;
         }
 
         await CurrentAdapter.ConnectToDeviceAsync(Device, new ConnectParameters(false, forceBleTransport: true));
