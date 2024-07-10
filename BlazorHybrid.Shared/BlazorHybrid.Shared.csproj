@@ -71,7 +71,7 @@
         <PackageReference Include="BootstrapBlazor.FileViewer" Version="8.*" />
         <PackageReference Include="BootstrapBlazor.MindMap" Version="*" />
 		<PackageReference Include="Densen.Component.Blazor" Version="8.*" />
-		<PackageReference Include="Densen.FreeSql.Extensions.BootstrapBlazor" Version="8.*" />
+		<PackageReference Include="Densen.FreeSql.Extensions.BootstrapBlazor" Version="8.4.0" />
 		<PackageReference Include="FreeSql" Version="*" />
 		<PackageReference Include="FreeSql.Provider.SqliteCore" Version="*" />
 		<PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.*" />

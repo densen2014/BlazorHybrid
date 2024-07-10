@@ -277,12 +277,13 @@ public partial class InitBlazorWebView : Page
     public class Bridge
     {
         public string Func(string param) => $"Func返回 {param} {obj.MacAdress}";
+        public string Print(object param) => $"Print返回 {param}";
 
     }
 
     public class BridgeObject
     {
-        public string MacAdress { get; set; } = Guid.NewGuid().ToString();
+        public string MacAdress { get; set; } = Guid.NewGuid().ToString(); 
     }
 
     public async void InitializeBridgeAsync()
@@ -298,6 +299,19 @@ public partial class InitBlazorWebView : Page
         //await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync($"localStorage.setItem('macAdress', '{obj.MacAdress}')");
 #elif ANDROID
 #elif MACCATALYST || IOS
+        //注册JSBridge
+        await ExecuteScriptAsync(@"
+            window.bridge = {
+                Func: function(param) {
+                    return window.webkit.messageHandlers.bridge.postMessage({ 'func': 'Func', 'param': param });
+                },
+                Print: function(param) {
+                    return window.webkit.messageHandlers.bridge.postMessage({ 'func': 'Print', 'param': param });
+                }
+            };
+        ");
+        //注册C#对象
+        //WebView.Configuration.UserContentController.AddScriptMessageHandler(new WKScriptMessageHandler(obj, "bridge"));
 #elif TIZEN
 #endif
 
