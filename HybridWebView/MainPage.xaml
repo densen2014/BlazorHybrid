@@ -8,12 +8,7 @@
             Padding="30,0"
             Spacing="25">
             <WebView x:Name="webView" Source="https://densen.es/test/mauijs" WidthRequest="800" HeightRequest="600" />
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a race car number eight" />
-
+ 
             <Label
                 Text="Hello, World!"
                 Style="{StaticResource Headline}"
