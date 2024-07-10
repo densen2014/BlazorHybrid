@@ -29,6 +29,15 @@ namespace HybridWebView
     {
         public async Task<string> open_file_dialog()
         {
+            //work in ui thread
+            var res=
+            await MainThread.InvokeOnMainThreadAsync(async() =>
+            {
+                // Code to run on the main thread
+
+
+            try
+            {
             var result = await FilePicker.Default.PickAsync(new PickOptions());
             if (result == null)
             {
@@ -37,6 +46,15 @@ namespace HybridWebView
             using var stream = await result.OpenReadAsync();
             StreamReader reader = new StreamReader(stream);
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(reader.ReadToEnd()));
+
+            }
+            catch (Exception e)
+            {
+                var err=e.Message ;
+                return err;
+                }
+            });
+            return res;
         }
 
         public async void save_file(string data, string fileName)
