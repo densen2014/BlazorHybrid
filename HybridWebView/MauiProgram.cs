@@ -6,11 +6,13 @@
 
 using Microsoft.Extensions.Logging;
 using BootstrapBlazor.WebAPI.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HybridWebView
 {
     public static class MauiProgram
     {
+        [NotNull]
         public static IServiceProvider? Services { get; private set; }
         public static MauiApp CreateMauiApp()
         {

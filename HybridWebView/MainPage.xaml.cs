@@ -4,20 +4,15 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using AME;
 using BlazorHybrid.Core;
-using BootstrapBlazor.Components;
-using Microsoft.Maui.Controls;
-using System.Text;
-using WebViewNativeApi; 
-
-using AME;
 using BlazorHybrid.Core.Device;
+using BootstrapBlazor.WebAPI.Services;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using WebViewNativeApi;
 using static BlazorHybrid.Core.Device.BleUUID;
+using static HybridWebView.MauiProgram;
 
 namespace HybridWebView
 {
@@ -107,31 +102,105 @@ namespace HybridWebView
             catch (Exception e)
             {
                 var err = e.Message;
-                await Application.Current!.MainPage!.DisplayAlert("提示", err, "OK");
+                await Tools.Alert("提示", err, "OK");
                 return err;
             }
             return "ok";
         }
 
-        protected INativeFeatures? Tools { get; set; }
+        [NotNull]
+        INativeFeatures? Tools { get; set; }
+
+        [NotNull]
+        protected IStorage? Storage { get; set; }
+
         BleTagDevice BleInfo { get; set; } = new(
             "E3PLUS(Cpcl)",
             "E3PLUS",
             PrinterServiceUUID,
             PrinterCharacteristicUUID);
+
         private BluetoothPrinterOption Option = new();
+        private bool IsConnected { get; set; }
+        bool IsInit { get; set; }
+
         private async Task SendDataAsyncPrinter(string commands)
         {
-            Tools??= DependencyService.Get<INativeFeatures>();
-            if (!await Tools.SendDataAsync(BleInfo.Characteristic, commands, Option.Chunk))
+            Tools??= Services.GetRequiredService<INativeFeatures>();
+            if (!IsInit) await Init();
+            await GetConfigAsync();
+            await Tools.ConnectDeviceAsync(BleInfo, false);
+            await SendDataAsyncPrinter(commands); 
+        }
+
+        async Task GetConfigAsync()
+        {
+            var configJson = await Storage.GetValue("BluetoothPrinterConfig", string.Empty);
+            if (configJson != null)
             {
-                var message = $"打印数据出错";
-                await Application.Current!.MainPage!.DisplayAlert("提示", message, "OK");
-                //await ToastService.Warning("提示", message);
+                try
+                {
+                    var config = JsonConvert.DeserializeObject<BluetoothPrinterOption>(configJson);
+                    if (config != null)
+                    {
+                        Option = config;
+                        if (!string.IsNullOrEmpty(Option.DeviceID))
+                        {
+                            BleInfo.Name = Option.DeviceName;
+                            BleInfo.DeviceID = Guid.Parse(Option.DeviceID);
+                            if (!string.IsNullOrEmpty(Option.ServiceID)) BleInfo.Serviceid = Guid.Parse(Option.ServiceID);
+                            if (!string.IsNullOrEmpty(Option.CharacteristicID)) BleInfo.Characteristic = Guid.Parse(Option.CharacteristicID);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
+            else
+            {
             }
 
         }
 
+        async Task<bool> Init()
+        {
+            try
+            { 
+                if (IsInit) return true;
+                Storage??= Services.GetRequiredService<IStorage>();
+                if (await Tools.BluetoothIsBusy())
+                {
+                    await Tools.Alert("提示", "蓝牙正在使用中，请稍后再试", "OK"); 
+                    return false;
+                }
+                Tools.OnMessage += async (m) => await Tools_OnMessage(m);
+                Tools.OnDataReceived += async (m) => await Tools_OnMessage(m);
+                Tools.OnStateConnect += async (o) => await Tools_OnStateConnect(o);
+                //初始化蓝牙扫描超时时间
+                BleInfo.ScanTimeout = 5;
+                Tools.SetTagDeviceName(BleInfo);
+                IsInit = true;
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        private Task Tools_OnMessage(string message)
+        {
+            //this.title. = $"{message}\r\n{Message}";
+            return Task.CompletedTask; 
+        }
+        private Task Tools_OnStateConnect(bool obj)
+        {
+            IsConnected = obj;
+            return Task.CompletedTask;
+        }
 
     }
 }
