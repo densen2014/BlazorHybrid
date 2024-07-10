@@ -9,6 +9,7 @@
         <div id='webtext' style='font-family: script'><b>This web text will change when you push the native button.</b></div>
         <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='openDialog()'>openDialog</button>
         <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='saveFile()'>saveFile</button>
+        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='printTicket("123")'>printTicket</button>
     </div>
 
 
@@ -24,17 +25,17 @@
         }
 
         function printTicket(data) {
-            var promise = window.dialogs.printTicket(data);
+            var promise = window.dialogs.print_ticket(data);
             runCommand(promise);
         }
 
         function openDrawer() {
-            var promise = window.dialogs.openDrawer();
+            var promise = window.dialogs.open_drawer();
             runCommand(promise);
         }
 
         function getDrawerStatus() {
-            var promise = window.dialogs.getDrawerStatus();
+            var promise = window.dialogs.get_drawer_status();
             runCommand(promise);
         }
 

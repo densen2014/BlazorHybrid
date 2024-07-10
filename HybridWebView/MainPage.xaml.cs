@@ -4,8 +4,20 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
+using AME;
+using BlazorHybrid.Core;
+using BootstrapBlazor.Components;
+using Microsoft.Maui.Controls;
 using System.Text;
-using WebViewNativeApi;
+using WebViewNativeApi; 
+
+using AME;
+using BlazorHybrid.Core.Device;
+using Newtonsoft.Json;
+using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using static BlazorHybrid.Core.Device.BleUUID;
 
 namespace HybridWebView
 {
@@ -70,5 +82,56 @@ namespace HybridWebView
             }
             return "ok";
         }
+
+        private string CpclCommands =
+          "! 10 200 200 400 1\r\n" +
+          "BEEP 1\r\n" +
+          "PW 380\r\n" +
+          "SETMAG 1 1\r\n" +
+          "CENTER\r\n" +
+          "TEXT 10 2 10 40 Micro Bar\r\n" +
+          "TEXT 12 3 10 75 Blazor\r\n" +
+          "TEXT 10 2 10 350 eMenu\r\n" +
+          "B QR 30 150 M 2 U 7\r\n" +
+          "MA,https://google.com\r\n" +
+          "ENDQR\r\n" +
+          "FORM\r\n" +
+          "PRINT\r\n";
+
+        public async Task<string> print_ticket(string data)
+        {
+            try
+            {
+                await SendDataAsyncPrinter(CpclCommands);
+            }
+            catch (Exception e)
+            {
+                var err = e.Message;
+                await Application.Current!.MainPage!.DisplayAlert("提示", err, "OK");
+                return err;
+            }
+            return "ok";
+        }
+
+        protected INativeFeatures? Tools { get; set; }
+        BleTagDevice BleInfo { get; set; } = new(
+            "E3PLUS(Cpcl)",
+            "E3PLUS",
+            PrinterServiceUUID,
+            PrinterCharacteristicUUID);
+        private BluetoothPrinterOption Option = new();
+        private async Task SendDataAsyncPrinter(string commands)
+        {
+            Tools??= DependencyService.Get<INativeFeatures>();
+            if (!await Tools.SendDataAsync(BleInfo.Characteristic, commands, Option.Chunk))
+            {
+                var message = $"打印数据出错";
+                await Application.Current!.MainPage!.DisplayAlert("提示", message, "OK");
+                //await ToastService.Warning("提示", message);
+            }
+
+        }
+
+
     }
 }
