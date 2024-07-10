@@ -17,7 +17,7 @@ namespace HybridWebView
         public MainPage()
         {
             InitializeComponent();
-            WebView wvBrowser = FindByName("webView") as WebView;
+            WebView? wvBrowser = FindByName("webView") as WebView;
             api = new NativeBridge(wvBrowser);
             api.AddTarget("dialogs", new NativeApi());
 

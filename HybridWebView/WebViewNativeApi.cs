@@ -66,21 +66,24 @@ public class NativeBridge
         "        });" +
         "};";
 
-    private readonly WebView _webView = null;
-    private readonly Dictionary<(string, string), Object> _targets = new();
+    private readonly WebView? _webView = null;
+    private readonly Dictionary<(string, string), object> _targets = new();
     private bool _isInit = false;
-    private (string, string, string, Object) _query = ("", "", "", null);
+    private (string?, string?, string?, object?) _query = ("", "", "", null);
 
     public string? TargetJS;
 
-    public NativeBridge(WebView wv)
+    public NativeBridge(WebView? wv)
     {
-        _webView = wv;
-        _webView.Navigated += OnWebViewInit;
-        _webView.Navigating += OnWebViewNavigatin;
+        if (wv != null)
+        {
+            _webView = wv;
+            _webView.Navigated += OnWebViewInit;
+            _webView.Navigating += OnWebViewNavigatin;
+        }
     }
 
-    public void AddTarget(string name, Object obj, string sheme = DEFAULT_SCHEME)
+    public void AddTarget(string name, object obj, string sheme = DEFAULT_SCHEME)
     {
         if (obj == null)
             return;
@@ -89,25 +92,25 @@ public class NativeBridge
             AddTargetToWebView(name, obj, sheme);
     }
 
-    private void OnWebViewInit(object sender, WebNavigatedEventArgs e)
+    private void OnWebViewInit(object? sender, WebNavigatedEventArgs e)
     {
         if (!_isInit)
         {
             RunJS(INTERFACE_JS);
             if (TargetJS != null)
                 RunJS(TargetJS);
-            foreach (KeyValuePair<(string, string), Object> entry in _targets)
+            foreach (KeyValuePair<(string, string), object> entry in _targets)
                 AddTargetToWebView(entry.Key.Item1, entry.Value, entry.Key.Item2);
             _isInit = true;
         }
     }
 
-    private void OnWebViewNavigatin(object sender, WebNavigatingEventArgs e)
+    private void OnWebViewNavigatin(object? sender, WebNavigatingEventArgs e)
     {
         if (!_isInit)
             return;
 
-        foreach (KeyValuePair<(string, string), Object> entry in _targets)
+        foreach (KeyValuePair<(string, string), object> entry in _targets)
         {
             string startStr = entry.Key.Item2 + entry.Key.Item1;
             if (!e.Url.StartsWith(startStr))
@@ -140,7 +143,7 @@ public class NativeBridge
         }
     }
 
-    private void AddTargetToWebView(string name, Object obj, string sheme)
+    private void AddTargetToWebView(string name, object obj, string sheme)
     {
         Type type = obj.GetType();
         List<string> methods = new List<string>();
@@ -157,22 +160,22 @@ public class NativeBridge
     private static bool IsAsyncMethod(MethodInfo method)
     {
         Type attType = typeof(AsyncStateMachineAttribute);
-        var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(attType);
+        var attrib = (AsyncStateMachineAttribute?) method.GetCustomAttribute(attType);
         return (attrib != null);
     }
 
-    private async void RunCommand(string name, string token, string prop, Object obj)
+    private async void RunCommand(string name, string token, string prop, object obj)
     {
         try
         {
             Type type = obj.GetType();
-            string readArguments = await RunJS("window." + name + ".getArguments('" + token + "');");
-            JsonElement[] jsonObjects = JsonSerializer.Deserialize<JsonElement[]>(Regex.Unescape(readArguments));
-            MethodInfo method = type.GetMethod(prop);
+            string? readArguments = await RunJS("window." + name + ".getArguments('" + token + "');");
+            JsonElement[]? jsonObjects = JsonSerializer.Deserialize<JsonElement[]>(Regex.Unescape(readArguments));
+            MethodInfo? method = type.GetMethod(prop);
             if (method != null)
             {
                 var parameters = method.GetParameters();
-                Object[] arguments = new Object[parameters.Length];
+                object[] arguments = new object[parameters.Length];
                 foreach (ParameterInfo arg in parameters)
                 {
                     if (jsonObjects.Length <= arg.Position)
@@ -186,7 +189,7 @@ public class NativeBridge
                     }
                 }
 
-                Object result = method.Invoke(obj, arguments);
+                object? result = method.Invoke(obj, arguments);
                 string serializedRet = "null";
                 if (result != null)
                 {
@@ -203,7 +206,7 @@ public class NativeBridge
             }
             else
             {
-                PropertyInfo propety = type.GetProperty(prop);
+                PropertyInfo? propety = type.GetProperty(prop);
                 if (propety != null)
                 {
                     if (jsonObjects != null && jsonObjects.Length > 0)
@@ -227,7 +230,7 @@ public class NativeBridge
         }
     }
 
-    public async Task sendEvent(string type, Dictionary<string, string> detail = null, bool optBubbles = false, bool optCancelable = false, bool optComposed = false)
+    public async Task sendEvent(string type, Dictionary<string, string>? detail = null, bool optBubbles = false, bool optCancelable = false, bool optComposed = false)
     {
         List<string> opts = new List<string>();
         if (optBubbles)
@@ -243,8 +246,12 @@ public class NativeBridge
         await RunJS("const nativeEvent = new CustomEvent('" + type + "'" + optsStr + "); document.dispatchEvent(nativeEvent);");
     }
 
-    public Task<string> RunJS(string code)
+    public Task<string?> RunJS(string code)
     {
+        if (_webView == null)
+        {
+            return Task.FromResult<string?>(null);
+        }
         return _webView.Dispatcher.DispatchAsync(() =>
         {
             string resultCode = code;
