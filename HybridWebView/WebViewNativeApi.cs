@@ -203,7 +203,7 @@ public class NativeBridge
             if (method != null)
             {
                 var parameters = method.GetParameters();
-                object[] arguments = new object[parameters.Length];
+                var arguments = new object[parameters.Length];
                 if (jsonObjects != null && jsonObjects.Length > 0)
                 {
                     foreach (var arg in parameters)
@@ -241,7 +241,7 @@ public class NativeBridge
             }
             else
             {
-                PropertyInfo? propety = type.GetProperty(prop);
+                var propety = type.GetProperty(prop);
                 if (propety != null)
                 {
                     if (jsonObjects != null && jsonObjects.Length > 0)
