@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlankMauiBlazor", "BlankMau
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuaweiBarcodeScan", "Samples\HuaweiBarcodeScan\HuaweiBarcodeScan\HuaweiBarcodeScan.csproj", "{001CC2F1-2722-4105-91F2-9EBF9021EE3D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HybridWebView", "HybridWebView\HybridWebView.csproj", "{279BB7B6-630B-4CBE-85C6-B28B000943BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -219,6 +221,15 @@ Global
 		{001CC2F1-2722-4105-91F2-9EBF9021EE3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{001CC2F1-2722-4105-91F2-9EBF9021EE3D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{001CC2F1-2722-4105-91F2-9EBF9021EE3D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.DebugNuget|Any CPU.ActiveCfg = Debug|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.DebugNuget|Any CPU.Build.0 = Debug|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.DebugNuget|Any CPU.Deploy.0 = Debug|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -235,6 +246,7 @@ Global
 		{79A2341B-9239-47AE-A42C-3CD1AB13A1BE} = {453AEEE8-0D89-4224-9F52-9CF1E004A093}
 		{434D820F-1CF4-4586-AA67-752633C7CB7A} = {453AEEE8-0D89-4224-9F52-9CF1E004A093}
 		{001CC2F1-2722-4105-91F2-9EBF9021EE3D} = {453AEEE8-0D89-4224-9F52-9CF1E004A093}
+		{279BB7B6-630B-4CBE-85C6-B28B000943BD} = {453AEEE8-0D89-4224-9F52-9CF1E004A093}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}
