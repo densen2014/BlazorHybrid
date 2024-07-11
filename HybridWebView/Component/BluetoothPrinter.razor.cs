@@ -342,7 +342,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
         if (Devices != null)
         {
-            if (Option.MinRssi!=0)
+            if (Option.MinRssi != 0)
             {
                 Devices = Devices.Where(a => a.Rssi >= -Option.MinRssi).ToList();
             }
@@ -365,12 +365,12 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 //{
                 //    await Task.Delay(200);
                 //连接外设
-                var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name); 
+                var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name);
                 if (services != null)
                 {
-                    if (serviceUuids != null )
+                    if (serviceUuids != null)
                     {
-                        var isPrinter = services.Where(a => serviceUuids.Contains (a.Id)).Any();
+                        var isPrinter = services.Where(a => serviceUuids.Contains(a.Id)).Any();
                         if (!isPrinter)
                         {
                             bleDevice.ServicesRemark = "isNotPrinter";
@@ -414,7 +414,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                                         else if (a.Id == Guid.Parse(GattCharacteristicUUID))
                                         {
                                             a.Name = "GATT*";
-                                        }                                        
+                                        }
                                     });
                                     bleService.Characteristics.AddRange(characteristics);
                                     bleService.Remark = $"特征: {characteristics.Count}";
@@ -455,7 +455,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 //});
             };
 
-            Devices = Devices.Where(a => a.ServicesRemark != "isNotPrinter").ToList(); 
+            Devices = Devices.Where(a => a.ServicesRemark != "isNotPrinter").ToList();
 
         }
 
@@ -933,12 +933,12 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
     private async Task SendDataAsyncPrinter(string commands)
     {
-        if (!await Tools.SendDataAsync(BleInfo.Characteristic, commands,Option.Chunk))
-        { 
+        if (!await Tools.SendDataAsync(BleInfo.Characteristic, commands, Option.Chunk))
+        {
             var message = $"打印数据出错";
             await ToastService.Warning("提示", message);
         }
-     
+
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()

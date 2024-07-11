@@ -4,21 +4,18 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using Microsoft.JSInterop;
-using Newtonsoft.Json;
-
 namespace BootstrapBlazor.WebAPI.Services;
 
- 
+
 
 public class PreferencesService : IStorage
-{ 
- 
-    public PreferencesService( )
-    {
-     }
+{
 
-    public Task<TValue?> GetValue<TValue>(string key, TValue? def)=> Task.FromResult( Preferences.Default.Get(key, def));
+    public PreferencesService()
+    {
+    }
+
+    public Task<TValue?> GetValue<TValue>(string key, TValue? def) => Task.FromResult(Preferences.Default.Get(key, def));
 
     public Task SetValue<TValue>(string key, TValue value)
     {

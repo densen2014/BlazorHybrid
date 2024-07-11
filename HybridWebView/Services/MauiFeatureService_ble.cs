@@ -32,21 +32,17 @@ using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
 using Microsoft.Web.WebView2.Core;
 using WebView2Control = Microsoft.Web.WebView2.Wpf.WebView2;
 #endif
-using BlazorHybrid.Core;
 using BlazorHybrid.Core.Device;
-using Microsoft.Maui.Platform;
-using System.Diagnostics.CodeAnalysis;
-using System.IO.Ports;
 
 namespace BlazorHybrid.Maui.Shared;
 
 /// <summary>
 /// 蓝牙接口实现分部类
 /// </summary>
-public partial  class MauiFeatureService 
+public partial class MauiFeatureService
 {
 
-    public Task<bool> ResetBluetooth() => MyBleTester.ResetBluetooth(); 
+    public Task<bool> ResetBluetooth() => MyBleTester.ResetBluetooth();
     public async Task<List<BleDevice>?> StartScanAsync() => await MyBleTester.StartScanAsync();
 
     public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null) => await MyBleTester.StartScanAsync(deviceGuid, serviceUuids);

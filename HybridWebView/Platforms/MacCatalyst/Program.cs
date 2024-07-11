@@ -4,7 +4,6 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using ObjCRuntime;
 using UIKit;
 
 namespace HybridWebView

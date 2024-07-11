@@ -93,7 +93,7 @@ public partial class MauiFeatureService : Page, INativeFeatures
             return AppInfo.Current.VersionString;
         }
     }
- 
+
 
 
     public async Task<string> CheckPermissionsCamera()

@@ -4,18 +4,9 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using AME;
-using BlazorHybrid.Core.Device;
-using BlazorHybrid.Maui.Shared;
-using Newtonsoft.Json;
-using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using static BlazorHybrid.Core.Device.BleUUID;
-
 namespace HybridWebView;
 
-public partial class BtPrinter : ContentView 
+public partial class BtPrinter : ContentView
 {
     private string PrinterNameKey = "PrinterName";
     private string printerName = "Unknown";
@@ -23,7 +14,7 @@ public partial class BtPrinter : ContentView
     public BtPrinter()
     {
         InitializeComponent();
-        PrinterName.Text = printerName = Preferences.Default.Get(PrinterNameKey, printerName); 
+        PrinterName.Text = printerName = Preferences.Default.Get(PrinterNameKey, printerName);
     }
 
     private void OnTestClicked(object sender, EventArgs e)
@@ -33,5 +24,5 @@ public partial class BtPrinter : ContentView
         PrinterName.Text = printerName;
     }
 
-    
+
 }
