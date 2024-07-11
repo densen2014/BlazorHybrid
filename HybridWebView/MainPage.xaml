@@ -13,10 +13,9 @@
                 <RootComponent Selector="#app" ComponentType="{x:Type local:App}" />
             </BlazorWebView.RootComponents>
         </BlazorWebView>
-    </ContentPage>
-      
-    <!--<ContentPage Title="打印机">
+    </ContentPage>      
+    <ContentPage Title="测试">
         <pages:BtPrinter />
-    </ContentPage>-->
+    </ContentPage>
 
 </TabbedPage>

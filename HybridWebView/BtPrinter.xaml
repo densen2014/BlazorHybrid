@@ -9,8 +9,7 @@
 
             <Label
                 Text="Hello, World!"
-                x:Name="PrinterName"
-                Style="{StaticResource Headline}"
+                x:Name="PrinterName" 
                 SemanticProperties.HeadingLevel="Level1" />
 
             <Button
@@ -18,41 +17,7 @@
                 Clicked="OnTestClicked"
                 HorizontalOptions="Center"
                 SemanticProperties.Hint="Counts the number of times you click"
-                Text="测试" />
-            <Button
-                Clicked="OnFindClicked"
-                HorizontalOptions="Center"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Text="查找" />
-            <Button
-                Clicked="OnSaveClicked"
-                HorizontalOptions="Center"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Text="保存" />
-            <CollectionView ItemsSource="{Binding Devices}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions> 
-                            <Label Grid.Column="1"
-                                   Text="{Binding Name}"
-                                   FontAttributes="Bold" />
-                            <Label Grid.Row="1"
-                                   Grid.Column="1"
-                                   Text="{Binding Remark}"
-                                   FontAttributes="Italic"
-                                   VerticalOptions="End" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                Text="测试" />  
         </VerticalStackLayout>
     </ScrollView>
 </ContentView>

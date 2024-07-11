@@ -27,69 +27,74 @@ namespace HybridWebView
             api = new NativeBridge(wvBrowser);
             api.AddTarget("dialogs", new NativeApi());
 
-            //if IOS || MacOS
-            webView.Source = new HtmlWebViewSource
-            {
-                Html = """
-                <!DOCTYPE html>
-                <html>
-                <head>
-                </head>
-                <body>
+            ////if IOS || MacOS
+            //webView.Source = new HtmlWebViewSource
+            //{
+            //    Html = """
+            //    <!DOCTYPE html>
+            //    <html>
+            //    <head>
+            //    </head>
+            //    <body>
 
-                    <div style='display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%'>
-                        <h2 style='font-family: script'><i>Fancy Web Title</i></h2>
-                        <div id='webtext' style='font-family: script'><b>This web text will change when you push the native button.</b></div>
-                        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='openDialog()'>openDialog</button>
-                        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='saveFile()'>saveFile</button>
-                        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='printTicket("123")'>printTicket</button>
-                    </div>
+            //        <div style='display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%'>
+            //            <h2 style='font-family: script'><i>Fancy Web Title</i></h2>
+            //            <div id='webtext' style='font-family: script'><b>This web text will change when you push the native button.</b></div>
+            //            <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='getConfig()'>getConfig</button>
+            //            <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='openDialog()'>openDialog</button>
+            //            <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='saveFile()'>saveFile</button>
+            //            <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='printTicket("123")'>printTicket</button>
+            //        </div>
 
+            //        <script>
 
-                    <script>
-                        function openDialog() {
-                            var promise = window.dialogs.open_file_dialog();
-                            runCommand(promise);
-                        }
+            //            function getConfig() {
+            //                var promise = window.dialogs.get_config();
+            //                runCommand(promise);
+            //            }
+            //            function openDialog() {
+            //                var promise = window.dialogs.open_file_dialog();
+            //                runCommand(promise);
+            //            }
 
-                        function saveFile() {
-                            var promise = window.dialogs.save_file("test file", "test.txt");
-                            runCommand(promise);
-                        }
+            //            function saveFile() {
+            //                var promise = window.dialogs.save_file("test file", "test.txt");
+            //                runCommand(promise);
+            //            }
 
-                        function printTicket(data) {
-                            var promise = window.dialogs.print_ticket(data);
-                            runCommand(promise);
-                        }
+            //            function printTicket(data) {
+            //                var promise = window.dialogs.print_ticket(data);
+            //                runCommand(promise);
+            //            }
 
-                        function openDrawer() {
-                            var promise = window.dialogs.open_drawer();
-                            runCommand(promise);
-                        }
+            //            function openDrawer() {
+            //                var promise = window.dialogs.open_drawer();
+            //                runCommand(promise);
+            //            }
 
-                        function getDrawerStatus() {
-                            var promise = window.dialogs.get_drawer_status();
-                            runCommand(promise);
-                        }
+            //            function getDrawerStatus() {
+            //                var promise = window.dialogs.get_drawer_status();
+            //                runCommand(promise);
+            //            }
 
-                        function showPriceText(data) {
-                            var promise = window.dialogs.showPriceText(data);
-                            runCommand(promise);
-                        }
+            //            function showPriceText(data) {
+            //                var promise = window.dialogs.showPriceText(data);
+            //                runCommand(promise);
+            //            }
 
-                        function runCommand(promise) {
-                            promise.then((fileData) => {
-                                let text = atob(fileData);
-                                var el = document.getElementById('webtext');
-                                el.innerHTML = text;
-                                console.log(text);
-                            });
-                        }
-                    </script>
-                </body>
-                </html>
-                """
-            };
+            //            function runCommand(promise) {
+            //                promise.then((fileData) => {
+            //                    let text = atob(fileData);
+            //                    var el = document.getElementById('webtext');
+            //                    el.innerHTML = text;
+            //                    console.log(text);
+            //                });
+            //            }
+            //        </script>
+            //    </body>
+            //    </html>
+            //    """
+            //};
 
         }
 
@@ -97,6 +102,15 @@ namespace HybridWebView
 
     internal class NativeApi : object
     {
+        private string PrinterNameKey = "PrinterName";
+        private string printerName = "Unknown";
+
+        public Task<string> get_config()
+        {
+            printerName = Preferences.Default.Get(PrinterNameKey, printerName);
+            return Task.FromResult(printerName);
+        }
+
         public async Task<string> open_file_dialog()
         {
             //work in ui thread
@@ -190,11 +204,11 @@ namespace HybridWebView
 
         private async Task SendDataAsyncPrinter(string commands)
         {
-            Tools??= Services.GetRequiredService<INativeFeatures>();
+            Tools ??= Services.GetRequiredService<INativeFeatures>();
             if (!IsInit) await Init();
             await GetConfigAsync();
             await Tools.ConnectDeviceAsync(BleInfo, false);
-            await SendDataAsyncPrinter(commands); 
+            await SendDataAsyncPrinter(commands);
         }
 
         async Task GetConfigAsync()
@@ -230,12 +244,12 @@ namespace HybridWebView
         async Task<bool> Init()
         {
             try
-            { 
+            {
                 if (IsInit) return true;
-                Storage??= Services.GetRequiredService<IStorage>();
+                Storage ??= Services.GetRequiredService<IStorage>();
                 if (await Tools.BluetoothIsBusy())
                 {
-                    await Tools.Alert("提示", "蓝牙正在使用中，请稍后再试", "OK"); 
+                    await Tools.Alert("提示", "蓝牙正在使用中，请稍后再试", "OK");
                     return false;
                 }
                 Tools.OnMessage += async (m) => await Tools_OnMessage(m);
@@ -258,7 +272,7 @@ namespace HybridWebView
         private Task Tools_OnMessage(string message)
         {
             //this.title. = $"{message}\r\n{Message}";
-            return Task.CompletedTask; 
+            return Task.CompletedTask;
         }
         private Task Tools_OnStateConnect(bool obj)
         {
