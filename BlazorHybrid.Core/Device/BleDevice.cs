@@ -38,33 +38,40 @@ public class BleTagDevice
     /// <summary>
     /// 设备名称
     /// </summary>
+    [DisplayName("设备名称")]
     public string? Name { get; set; }
 
     /// <summary>
     /// 设备ID
     /// </summary>
+    [DisplayName("设备ID")]
     public Guid DeviceID { get; set; }
 
     /// <summary>
     /// 服务ID
     /// </summary>
+    [DisplayName("服务ID")]
     public Guid Serviceid { get; set; }
 
     /// <summary>
     /// 特征ID
     /// </summary>
+    [DisplayName("特征ID")]
     public Guid Characteristic { get; set; }
 
     /// <summary>
     /// 搜索超时时间,默认10秒
     /// </summary>
+    [DisplayName("搜索超时时间,默认10秒")]
     public int ScanTimeout { get; set; } = 10;
 
-    public bool ByName { get; set; }  
+    [DisplayName("按名称查找")]
+    public bool ByName { get; set; }
 
     /// <summary>
     /// 打印机类型
     /// </summary>
+    [DisplayName("打印机类型")]
     public BlePrinterType PrinterType { get; set; }
 
     public BleTagDevice() { }

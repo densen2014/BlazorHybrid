@@ -26,7 +26,7 @@ public static class SharedServiceCollectionExtensions
     public static IServiceCollection AddMauiFeatureService(this IServiceCollection services)
     {
 
-        services.AddSingleton<BluetoothLEServices>();
+        services.AddScoped<BluetoothLEServices>();
         services.AddSingleton<INativeFeatures, MauiFeatureService>();
         services.AddScoped<IStorage, PreferencesService>();
         services.AddDensenExtensions();

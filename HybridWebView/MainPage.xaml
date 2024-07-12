@@ -8,7 +8,7 @@
         <WebView x:Name="webView" Source="https://blazor.app1.es/samples/native_api.html" VerticalOptions="FillAndExpand" /> <!--wwwroot/demo.html-->
     </ContentPage>
     <ContentPage Title="打印机">
-        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html" VerticalOptions="FillAndExpand">
+        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html" VerticalOptions="FillAndExpand" Margin="0,0,0,100">
             <BlazorWebView.RootComponents>
                 <RootComponent Selector="#app" ComponentType="{x:Type local:App}" />
             </BlazorWebView.RootComponents>

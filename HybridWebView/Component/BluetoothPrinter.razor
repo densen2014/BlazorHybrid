@@ -46,6 +46,7 @@
                     <Button Text="清空" OnClick="OnReset" />
                 </BootstrapInputGroup>
                 <BootstrapInputGroup class="m-1">
+                    <Button Text="连接上次设备" OnClick="(async()=>await SendDataAsyncCPCLBarcode(BleInfo))" IsDisabled="@(BleInfo.DeviceID == Guid.Empty)" />
                     <Button Text="打印" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(Characteristics == null)" />
                     <Button Text="写入" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
                     <Button Text="读取" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
@@ -171,9 +172,9 @@
         <div class="g-3">
             历史连接 <br />
             @BleInfo.Name <br />
-            @BleInfo.DeviceID <br />
-            @BleInfo.Serviceid <br />
-            @BleInfo.Characteristic <br />
+            @BleInfo.DeviceID.ToString() <br />
+            @BleInfo.Serviceid.ToString() <br />
+            @BleInfo.Characteristic.ToString() <br />
             @ReadResult <br />
         </div>
 

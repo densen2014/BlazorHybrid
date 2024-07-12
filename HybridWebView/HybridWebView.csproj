@@ -24,7 +24,7 @@
 		<ApplicationTitle>HybridWebView</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.hybridwebview</ApplicationId>
+		<ApplicationId>es.densen.hybridwebview</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -77,7 +77,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
         <PackageReference Include="Plugin.BLE" Version="3.1.0-rc.1" />
         <PackageReference Include="BootstrapBlazor" Version="8.*" />
         <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="8.*" />
@@ -89,5 +88,14 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\BlazorHybrid.Core\BlazorHybrid.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Services\NativeApi_BlePrinter.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Services\NativeApi.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
 	</ItemGroup> 
 </Project>

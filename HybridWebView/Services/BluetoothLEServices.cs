@@ -1174,7 +1174,7 @@ public partial class BluetoothLEServices
 
     public void SetTagDeviceName(BleTagDevice ble)
     {
-        //MyBleTester.TagDevice = ble;
+        TagDevice = ble;
 
         //if (!isInit)
         //{

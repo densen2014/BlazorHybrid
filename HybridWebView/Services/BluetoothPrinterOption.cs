@@ -7,7 +7,7 @@
 using System.ComponentModel;
 namespace BlazorHybrid.Core.Device;
 
-public class BluetoothPrinterOption
+public class BluetoothPrinterOption: BleTagDevice
 {
     // Store name
     public string? StoreTitle { get; set; }
@@ -45,18 +45,19 @@ public class BluetoothPrinterOption
     public string? StoreQRWidth { get; set; } = "450";
 
     // 配置
-    public string? DeviceID { get; set; }
-    public string? DeviceName { get; set; }
-    public string? ServiceID { get; set; }
-    public string? CharacteristicID { get; set; }
+
+    [DisplayName("自动连接")]
     public bool AutoConnect { get; set; }
-    public int Chunk { get; set; } = 20;
+
+    [DisplayName("只搜索打印机")]
     public bool PrinterOnly { get; set; } = true;
 
     [DisplayName("最低RSSI(-db)")]
     public int MinRssi { get; set; } = 80;
 
-    // 测试数据
+      [DisplayName("分包")]
+    public int Chunk { get; set; } = 20;
+  // 测试数据
     public string? TestTitle { get; set; } = "Informatica Co.Ltd.";
     public string? TestBarcode { get; set; } = "1234567890123";
     public string? TestPrice { get; set; } = "15.99";

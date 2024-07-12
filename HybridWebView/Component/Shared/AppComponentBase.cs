@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Diagnostics.CodeAnalysis;
 using Color = BootstrapBlazor.Components.Color;
+using BlazorHybrid.Maui.Shared;
 
 namespace HybridWebView.Component.Shared;
 
@@ -25,7 +26,7 @@ public abstract partial class AppComponentBase : ComponentBase, IDisposable
     [Inject, NotNull] protected MessageService? MessageService { get; set; }
     [Inject, NotNull] protected IJSRuntime? JS { get; set; }
     [Inject, NotNull] protected IStorage? Storage { get; set; }
-    [Inject, NotNull] protected INativeFeatures? Tools { get; set; }
+    [Inject, NotNull] protected BluetoothLEServices? Tools { get; set; }
     [Inject, NotNull] protected NavigationManager? NavigationManager { get; set; }
     protected bool IsBusy { get; set; }
 
