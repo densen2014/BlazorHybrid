@@ -215,7 +215,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
             Tools.OnDataReceived += async (m) => await Tools_OnDataReceived(m);
             Tools.OnStateConnect += async (o) => await Tools_OnStateConnect(o);
             //初始化蓝牙扫描超时时间
-            BleInfo.ScanTimeout = 5;
+            BleInfo.ScanTimeout = 10;
             Tools.SetTagDeviceName(BleInfo);
             IsInit = true;
 
@@ -324,6 +324,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
         await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
         StateHasChanged();
+        await ToastService.Success("提示", $"复位配置{format}成功");
     }
 
     private async Task SaveConfigOK()
