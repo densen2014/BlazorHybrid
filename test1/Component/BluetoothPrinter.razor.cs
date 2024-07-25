@@ -250,7 +250,6 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
     private async Task ResetConfig(int format=0)
     {
-        Option = new();
         switch (format)
         {
             case 1:
@@ -320,9 +319,11 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 Option.LabelWidth = 450;
                 break;
             default:
+                Option = new();
                 break;
         }
         await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
+        StateHasChanged();
     }
 
     private async Task SaveConfigOK()
