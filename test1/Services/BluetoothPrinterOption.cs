@@ -15,6 +15,9 @@ public class BluetoothPrinterOption: BleTagDevice
     [DisplayName("自动连接")]
     public bool AutoConnect { get; set; }
 
+    [DisplayName("搜索名称过滤")]
+    public string? NameFilter { get; set; }
+
     [DisplayName("只搜索打印机")]
     public bool PrinterOnly { get; set; } = true;
 
@@ -76,9 +79,6 @@ public class BluetoothPrinterOption: BleTagDevice
 
     [DisplayName("标签宽度")]
     public int? LabelWidth { get; set; } = 450;
-
-    [DisplayName("名称过滤")]
-    public string? NameFilter { get; set; }
 
     // QR
     [DisplayName("QR标签抬头1")]
