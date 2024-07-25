@@ -39,6 +39,11 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
     </PropertyGroup>
 
+    <!--mac调试-->
+    <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' and '$(Configuration)' == 'Debug'">
+        <CodeSignEntitlements>Platforms/MacCatalyst/Entitlements.Debug.plist</CodeSignEntitlements>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
       <CreatePackage>false</CreatePackage>
     </PropertyGroup>
@@ -47,6 +52,9 @@
       <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
       <CodesignKey>Apple Development: zhou chuanglin (HD2BSX2857)</CodesignKey>
     </PropertyGroup>
+        <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+          <CreatePackage>false</CreatePackage>
+        </PropertyGroup>
     <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -80,16 +88,5 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\BlazorHybrid.Core\BlazorHybrid.Core.csproj" />
-	</ItemGroup> 
-     
-	<ItemGroup>
-	  <None Remove="Components\Shared\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Component\Shared\" />
-	  <Folder Include="wwwroot\css\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Remove="wwwroot\css\" />
-	</ItemGroup>
+	</ItemGroup>  
 </Project>

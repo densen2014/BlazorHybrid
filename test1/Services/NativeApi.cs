@@ -6,7 +6,7 @@
 
 using System.Text;
 
-namespace HybridWebView;
+namespace test1;
 
 internal partial class NativeApi : object
 {

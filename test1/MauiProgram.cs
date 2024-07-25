@@ -24,6 +24,17 @@ public static class MauiProgram
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();
+        builder.Services.AddLogging(logging =>
+        {
+#if WINDOWS && NET7_0_OR_GREATER
+				logging.AddDebug();
+#elif NET7_0_OR_GREATER
+            logging.AddConsole();
+#endif
+
+            // Enable maximum logging for BlazorWebView
+            logging.AddFilter("Microsoft.AspNetCore.Components.WebView", LogLevel.Trace);
+        });
 #endif
 
         var app = builder.Build();
