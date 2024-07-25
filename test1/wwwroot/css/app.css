@@ -1,41 +1,4 @@
-﻿html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-a, .btn-link {
-    color: #006bb7;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-.content {
-    padding-top: 1.1rem;
-}
-
-h1:focus {
-    outline: none;
-}
-
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid #e50000;
-}
-
-.validation-message {
-    color: #e50000;
-}
-
+﻿
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -65,23 +28,264 @@ h1:focus {
         content: "An error has occurred."
     }
 
-.status-bar-safe-area {
-    display: none;
+.totalbar {
+    position: fixed;
+    z-index: 10;
+    bottom: 2.5rem;
+    right: 1rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: lightslategrey;
+    opacity: 0.7;
 }
 
-@supports (-webkit-touch-callout: none) {
-    .status-bar-safe-area {
-        display: flex;
-        position: sticky;
-        top: 0;
-        height: env(safe-area-inset-top);
-        background-color: #f7f7f7;
-        width: 100%;
-        z-index: 1;
+.layout.is-page .layout-header {
+    background-color: white;
+    color: black;
+    justify-content: center !important;
+}
+
+.btn-fade {
+    --bb-button-circle-width: 40px;
+    --bb-button-circle-height: 40px;
+    opacity: 0.7;
+    box-shadow: 0 0 8px #211b50;
+    transition: opacity .3s linear;
+    position: fixed;
+    z-index: 10;
+    --bs-btn-bg: #8759ff;
+    --bs-btn-hover-bg: var(--bs-btn-bg);
+    --bs-btn-active-bg: var(--bs-btn-bg);
+    bottom: 5rem;
+    right: 1rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-fade2 {
+    --bb-button-circle-width: 40px;
+    --bb-button-circle-height: 40px;
+    opacity: 0.7;
+    box-shadow: 0 0 8px #211b50;
+    transition: opacity .3s linear;
+    position: fixed;
+    z-index: 10;
+    --bs-btn-bg: #8759ff;
+    --bs-btn-hover-bg: var(--bs-btn-bg);
+    --bs-btn-active-bg: var(--bs-btn-bg);
+    bottom: 8rem;
+    right: 1rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-fade3 {
+    --bb-button-circle-width: 40px;
+    --bb-button-circle-height: 40px;
+    opacity: 0.7;
+    box-shadow: 0 0 8px #211b50;
+    transition: opacity .3s linear;
+    position: fixed;
+    z-index: 10;
+    --bs-btn-bg: #8759ff;
+    --bs-btn-hover-bg: var(--bs-btn-bg);
+    --bs-btn-active-bg: var(--bs-btn-bg);
+    bottom: 5rem;
+    right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tabcontet {
+    height: 90%;
+}
+
+.deskIcon {
+    width: 120px;
+    height: 120px;
+}
+
+.deskTitle {
+    font-size: 1rem;
+    /*font-weight: 600;*/
+}
+
+.orderIcon {
+    width: 150px;
+    height: 200px
+}
+
+.orderImage {
+    width: 120px;
+    height: 90px
+}
+
+.orderTitle {
+    height: 40px;
+    overflow: hidden;
+}
+
+/* Screens Resolution : 500px
+-------------------------------------------------------------------------- */
+@media only screen and (max-width: 948px) {
+    .tabs .tabs-body {
+        padding: 0px;
     }
 
-    .flex-column, .navbar-brand {
-        padding-left: env(safe-area-inset-left);
+    .deskIcon {
+        width: 98px;
+        height: 98px;
+    }
+
+    .deskTitle {
+        font-size: 1rem;
+    }
+
+    .card-text {
+        font-size: 0.7rem;
+    }
+
+    .orderIcon {
+        width: 120px;
+        height: 175px
+    }
+
+    .orderImage {
+        width: 90px;
+        height: 70px
     }
 }
 
+@media only screen and (max-width: 600px) {
+
+    .deskTitle {
+        font-size: 0.8rem;
+    }
+
+    .card-text {
+        font-size: 0.7rem;
+    }
+
+    .deskIcon {
+        width: 79px;
+        height: 79px;
+    }
+
+    .orderIcon {
+        width: 98px;
+        height: 165px
+    }
+
+    .orderImage {
+        width: 70px;
+        height: 60px
+    }
+}
+
+@media only screen and (max-width: 414px) {
+    /*iphone13pro*/
+
+    .layout.is-page .layout-main {
+        padding: 0;
+    }
+
+    .deskTitle {
+        font-size: 0.8rem;
+    }
+
+    .card-text {
+        font-size: 0.7rem;
+    }
+
+    .deskIcon {
+        width: 82px;
+        height: 82px;
+    }
+
+    .orderIcon {
+        width: 96px;
+        height: 165px
+    }
+
+    .orderImage {
+        width: 66px;
+        height: 60px
+    }
+}
+
+@media only screen and (max-width: 390px) {
+    /*iphone13pro*/
+
+    .layout.is-page .layout-main {
+        padding: 0;
+    }
+
+    .deskTitle {
+        font-size: 0.7rem;
+    }
+
+    .card-text {
+        font-size: 0.6rem;
+    }
+
+    .deskIcon {
+        width: 73px;
+        height: 73px;
+    }
+     
+}
+
+
+.content code.highlight,
+.alert-content code,
+.content p code, .content li code {
+    background-color: #fff5f8 !important;
+}
+
+.layout.is-page .layout-side {
+    color: #3f4254;
+    background-color: #fff;
+    box-shadow: 0 0 28px 0 rgb(82 63 105 / 5%);
+}
+
+.layout.is-page .layout-user .layout-title {
+    color: #3f4254;
+}
+
+.layout.is-page .layout-footer {
+    background-color: #f8f9fa;
+}
+
+.layout-gotop {
+    background: #e9ecef;
+    color: #3f4254;
+}
+
+    .layout-gotop:hover {
+        background-color: #dee2e6;
+    }
+
+.tabs-body {
+    background-color: #fff;
+}
+
+.page-layout-demo-footer-link {
+    color: #3f4254;
+}
+
+.menu .nav .dropdown-menu .nav-link:not(.disabled):hover, .menu .nav .dropdown-menu .nav-link.active, .menu .submenu .nav-link.active, .menu .submenu .nav-link:not(.disabled):hover, .cascade .dropdown-item:not(.disabled):hover, .cascade .dropdown-item.active, .cascade .nav .nav-link:not(.disabled):hover, .cascade .nav .nav-link.active {
+    --bb-bg-violet: #7a5cff;
+    background-color: var(--bb-bg-violet);
+    color: var(--bs-white);
+}
+.is-page .layout-main > .tabs {
+    margin: unset;
+}

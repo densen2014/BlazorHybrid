@@ -1,0 +1,13 @@
+﻿@inherits LayoutComponentBase
+
+         <div style="height:50vh;width:90vw">
+            @Body
+        </div> 
+
+
+@code{
+
+    [Parameter]
+    public EventCallback Changed { get; set; }
+
+}

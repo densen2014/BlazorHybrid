@@ -81,5 +81,15 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\BlazorHybrid.Core\BlazorHybrid.Core.csproj" />
 	</ItemGroup> 
-
+     
+	<ItemGroup>
+	  <None Remove="Components\Shared\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Component\Shared\" />
+	  <Folder Include="wwwroot\css\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Remove="wwwroot\css\" />
+	</ItemGroup>
 </Project>

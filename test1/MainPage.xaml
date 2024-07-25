@@ -1,15 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:test1"
+             xmlns:local="clr-namespace:test1.Component"
              x:Class="test1.MainPage"
-             BackgroundColor="{DynamicResource PageBackgroundColor}">
+            xmlns:pages="clr-namespace:test1">
+    <ContentPage Title="主页">
+        <WebView x:Name="webView" Source="https://blazor.app1.es/samples/native_api.html" VerticalOptions="FillAndExpand" /> <!--wwwroot/demo.html-->
+    </ContentPage>
+    <ContentPage Title="打印机">
+        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html" VerticalOptions="FillAndExpand" Margin="0,0,0,100">
+            <BlazorWebView.RootComponents>
+                <RootComponent Selector="#app" ComponentType="{x:Type local:App}" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
+    </ContentPage>      
+    <ContentPage Title="测试">
+        <pages:BtPrinter />
+    </ContentPage>
 
-    <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
-        <BlazorWebView.RootComponents>
-            <RootComponent Selector="#app" ComponentType="{x:Type local:Components.Routes}" />
-        </BlazorWebView.RootComponents>
-    </BlazorWebView>
-
-</ContentPage>
-
+</TabbedPage>

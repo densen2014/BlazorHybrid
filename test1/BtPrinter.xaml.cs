@@ -4,7 +4,7 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-namespace HybridWebView;
+namespace test1;
 
 public partial class BtPrinter : ContentView
 {
