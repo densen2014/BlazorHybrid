@@ -248,9 +248,80 @@ public partial class BluetoothPrinter : IAsyncDisposable
         return false;
     }
 
-    private async Task ResetConfig()
+    private async Task ResetConfig(int format=0)
     {
         Option = new();
+        switch (format)
+        {
+            case 1:
+                Option.StorePoint = "1 0 0 10";
+                Option.StoreTitleSize = "1 1";
+
+                Option.NamePoint = "2 0 10 50";
+                Option.NameSize = "1 2";
+
+                Option.BarcodePoint = "1 0 50 0 110";
+
+                Option.PricePoint = "4 0 0 205";
+                Option.PriceSize = "2 2";
+
+                Option.PriceTagEuros = "Euros";
+                Option.PriceTagPoint = "4 0 0 230";
+                Option.PriceTagSize = "1 1";
+
+                Option.PriceTagPVP = "PVP";
+                Option.PriceTagPVPPoint = "4 0 10 230";
+
+                Option.LabelPoint = "0 200 200 290";
+                Option.LabelWidth = 450; 
+                break;
+            case 2:
+                Option.StorePoint = "1 0 0 250";
+                Option.StoreTitleSize = "1 1";
+
+                Option.NamePoint = "1 0 10 10";
+                Option.NameSize = "2 2";
+
+                Option.BarcodePoint = "1 0 50 0 70";
+
+                Option.PricePoint = "2 0 0 170";
+                Option.PriceSize = "3 3";
+
+                Option.PriceTagEuros = "Euros";
+                Option.PriceTagPoint = "1 0 0 200";
+                Option.PriceTagSize = "2 2";
+
+                Option.PriceTagPVP = "PVP";
+                Option.PriceTagPVPPoint = "1 0 10 200";
+
+                Option.LabelPoint = "0 200 200 290";
+                Option.LabelWidth = 450;
+                break;
+            case 3:
+                 Option.StorePoint = "1 0 70 5";
+                 Option.StoreTitleSize = "1 1";
+
+                Option.NamePoint = "1 0 70 10";
+                Option.NameSize = "1 2";
+
+                Option.BarcodePoint = "1 0 39 70 65";
+
+                Option.PricePoint = "2 0 70 145";
+                Option.PriceSize = "2 2";
+
+                Option.PriceTagEuros = "Euros";
+                Option.PriceTagPoint = "4 0 0 150";
+                Option.PriceTagSize = "1 1";
+
+                Option.PriceTagPVP = "PVP";
+                Option.PriceTagPVPPoint = "4 11 150 150";
+
+                Option.LabelPoint = "0 200 200 190";
+                Option.LabelWidth = 450;
+                break;
+            default:
+                break;
+        }
         await Storage.SetValue("BluetoothPrinterConfig", Option.ObjectToJson());
     }
 
@@ -719,7 +790,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
         string storeTitleQR3 = Option.StoreTitleQR3 ?? "";
         // 标签
         string storeQRSize = Option.StoreQRSize ?? "10 200 200 400";
-        string storeQRWidth = Option.StoreQRWidth ?? "450";
+        int storeQRWidth = Option.StoreQRWidth ?? 450;
 
         return "! " + storeQRSize + " 1\r\n" +
                "BEEP 1\r\n" +
@@ -752,7 +823,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
         string namePoint = Option.NamePoint ?? "2 0 10 50";
 
         // Barcode
-        string _barcode = Option.Barcode ?? "1 0 50 0 110";
+        string barcodePoint = Option.BarcodePoint ?? "1 0 50 0 110";
 
         // Price
         string pricePoint = Option.PricePoint ?? "4 0 0 205";
@@ -761,11 +832,12 @@ public partial class BluetoothPrinter : IAsyncDisposable
         // Price PVP and Euros
         string priceTagSize = Option.PriceTagSize ?? "1 1";
         string priceTagPoint = Option.PriceTagPoint ?? "4 0 10 230";
-        string priceTagPoint2 = Option.PriceTagPoint2 ?? "4 0 10 230";
+        string priceTagPVPPoint = Option.PriceTagPVPPoint ?? "4 0 10 230";
 
         // Label
         string labelPoint = Option.LabelPoint ?? "0 200 200 290";
-        string labelwidth = Option.Labelwidth ?? "450";
+        int labelwidth = Option.LabelWidth ?? 450;
+        int escPriceSize = Option.StoreQREscSize ?? 51;
 
         return "! " + labelPoint + " 1\r\n" +
                "BEEP 1" + "\r\n" +
@@ -776,14 +848,14 @@ public partial class BluetoothPrinter : IAsyncDisposable
                "SETMAG " + nameSize + "\r\n" +
                "TEXT " + namePoint + " " + title + "\r\n" +
                "BARCODE-TEXT 7 0 5\r\n" +
-               "BARCODE 128 " + _barcode + " " + barcode + "\r\n" +
+               "BARCODE 128 " + barcodePoint + " " + barcode + "\r\n" +
                "BARCODE-TEXT OFF\r\n" +
                "SETBOLD 1\r\n" +
                "SETMAG " + priceSize + "\r\n" +
                "TEXT " + pricePoint + " " + price + "\r\n" +
                "SETMAG " + priceTagSize + "\r\n" +
                "LEFT\r\n" +
-               "TEXT " + priceTagPoint2 + " " + Option.PriceTagPVP + ":\r\n" +
+               "TEXT " + priceTagPVPPoint + " " + Option.PriceTagPVP + ":\r\n" +
                "RIGHT\r\n" +
                "TEXT " + priceTagPoint + " " + Option.PriceTagEuros + "\r\n" +
                "SETBOLD 0\r\n" +

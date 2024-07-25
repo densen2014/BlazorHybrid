@@ -33,7 +33,7 @@ public static class MauiProgram
 #endif
 
             // Enable maximum logging for BlazorWebView
-            logging.AddFilter("Microsoft.AspNetCore.Components.WebView", LogLevel.Trace);
+            logging.AddFilter("Microsoft.AspNetCore.Components.WebView", LogLevel.Debug);
         });
 #endif
 

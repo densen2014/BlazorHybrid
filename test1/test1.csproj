@@ -75,9 +75,9 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-        <PackageReference Include="Plugin.BLE" Version="3.1.0-rc.1" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.70" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.70" />
+        <PackageReference Include="Plugin.BLE" Version="3.1.0" />
         <PackageReference Include="BootstrapBlazor" Version="8.*" />
         <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="8.*" />
         <PackageReference Include="BootstrapBlazor.WebAPI" Version="8.*" />

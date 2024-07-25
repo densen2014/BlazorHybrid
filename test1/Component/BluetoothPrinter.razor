@@ -6,9 +6,9 @@
 <Responsive OnBreakPointChanged="OnBreakPointChanged" />
 
 <div class="row">
-    <div class="col-12 col-m-6 col-sm-6">
+    <div class="col-12 col-m-9 col-sm-8">
 
-        <Tab>
+        <Tab IsLazyLoadTabItem>
             <TabItem Text="打印">
                 @{
                     var isDisabled = !IsConnected && Devices == null;
@@ -144,15 +144,16 @@
                 }
 
             </TabItem>
-            <TabItem Text="设置">
+            <TabItem Text="设置">                
+                <p>{字体编号}{字体大小}{横向起始}{纵向起始}</p><hr />
                 <ValidateForm Model="@Option" style="margin-top: 1.5rem;">
-                    <EditorForm TModel="BluetoothPrinterOption" RowType="RowType.Inline">
+                    <EditorForm TModel="BluetoothPrinterOption" ItemsPerRow="1">
                         <Buttons>
                             <BootstrapInputGroup>
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位设置吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设1吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设2吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnClick="ResetConfig" Color="Color.Warning" Content="确定复位为预设3吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnClick="_=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnClick="_=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnClick="_=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnClick="_=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗？" />
                                 <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
                                 <Button Icon="fa-solid fa-floppy-disk" Text="保存" OnClick="SaveConfigOK" />
                             </BootstrapInputGroup>
@@ -164,23 +165,23 @@
 
     </div>
 
-<div class="col-12 col-m-6 col-sm-6">
+    <div class="col-12 col-m-3 col-sm-4">
+        @ScreenSize
+        @if (BleInfo.Name != null)
+        {
 
-    @if (BleInfo.Name != null)
-    {
+            <div class="g-3">
+                历史连接 <br />
+                @BleInfo.Name <br />
+                @BleInfo.DeviceID.ToString() <br />
+                @BleInfo.Serviceid.ToString() <br />
+                @BleInfo.Characteristic.ToString() <br />
+                @ReadResult <br />
+            </div>
 
-        <div class="g-3">
-            历史连接 <br />
-            @BleInfo.Name <br />
-            @BleInfo.DeviceID.ToString() <br />
-            @BleInfo.Serviceid.ToString() <br />
-            @BleInfo.Characteristic.ToString() <br />
-            @ReadResult <br />
-        </div>
+        }
+        <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
 
-    }
-    <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
-
-    <pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
-</div>
+        <pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
+    </div>
 </div>
