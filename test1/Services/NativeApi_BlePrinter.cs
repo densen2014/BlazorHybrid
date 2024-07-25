@@ -158,7 +158,7 @@ internal partial class NativeApi
     async Task GetConfigAsync()
     {
         var configJson = await Storage.GetValue("BluetoothPrinterConfig", string.Empty);
-        if (configJson != null)
+        if (!string.IsNullOrWhiteSpace(configJson))
         {
             try
             {
