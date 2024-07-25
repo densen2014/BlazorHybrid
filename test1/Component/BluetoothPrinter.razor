@@ -150,10 +150,10 @@
                     <EditorForm TModel="BluetoothPrinterOption" ItemsPerRow="1">
                         <Buttons>
                             <BootstrapInputGroup>
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnClick="_=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnClick="_=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnClick="_=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnClick="_=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnConfirm="=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnConfirm="_=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnConfirm="_=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗？" />
+                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnConfirm="_=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗？" />
                                 <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
                                 <Button Icon="fa-solid fa-floppy-disk" Text="保存" OnClick="SaveConfigOK" />
                             </BootstrapInputGroup>
