@@ -24,7 +24,7 @@
 		<ApplicationTitle>HybridWebView</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>es.densen.hybridwebview</ApplicationId>
+		<ApplicationId>com.companyname.test1</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -43,6 +43,11 @@
         <CodeSignEntitlements>Platforms/MacCatalyst/Entitlements.Debug.plist</CodeSignEntitlements>
     </PropertyGroup> 
  
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+      <CreatePackage>false</CreatePackage>
+      <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
+      <CodesignKey>Apple Development: zhou chuanglin (HD2BSX2857)</CodesignKey>
+    </PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
