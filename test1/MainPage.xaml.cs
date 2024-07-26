@@ -12,6 +12,13 @@ public partial class MainPage : TabbedPage
         api = new NativeBridge(wvBrowser);
         api.AddTarget("dialogs", new NativeApi());
 
+        //if IOS || MacOS
+        //webView.Source = new HtmlWebViewSource
+        //{
+        //    Html = """
+             
+        //    """
+        //};
     }
 }
 

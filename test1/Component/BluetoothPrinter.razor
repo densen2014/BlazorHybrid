@@ -144,29 +144,34 @@
                 }
 
             </TabItem>
-            <TabItem Text="设置">                
-                <p>{字体编号}{字体大小}{横向起始}{纵向起始}</p><hr />
-                <ValidateForm Model="@Option" style="margin-top: 1.5rem;">
-                    <EditorForm TModel="BluetoothPrinterOption" ItemsPerRow="1">
-                        <Buttons>
-                            <BootstrapInputGroup>
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnConfirm="()=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnConfirm="()=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnConfirm="()=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗？" />
-                                <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnConfirm="()=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗？" />
-                                <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
-                                <Button Icon="fa-solid fa-floppy-disk" Text="保存" OnClick="SaveConfigOK" />
-                            </BootstrapInputGroup>
-                        </Buttons>
-                    </EditorForm>
-                </ValidateForm>
+            <TabItem Text="设置">
+                <div class="my-2">
+                    <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
+                    <Button Icon="fa-solid fa-floppy-disk" Text="保存" class="ms-2" OnClick="SaveConfigOK" />
+                </div>
+                <p>位置定义说明: {字体编号} {字体大小} {横向起始} {纵向起始}</p><hr />
+                @*<GroupBox Title="参数">*@
+                    <div style="height:70vh;overflow-y:auto;overflow-x:hidden;">
+                        <ValidateForm Model="@Option" style="margin: 1.5rem;">
+                            <EditorForm TModel="BluetoothPrinterOption">
+                                <Buttons>
+                                    <div class="text-end">
+                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnConfirm="()=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
+                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnConfirm="()=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗？" />
+                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnConfirm="()=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗？" />
+                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnConfirm="()=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗？" />
+                                    </div>
+                                </Buttons>
+                            </EditorForm>
+                        </ValidateForm>
+                    </div>
+                @*</GroupBox>*@
             </TabItem>
         </Tab>
 
     </div>
 
     <div class="col-12 col-m-3 col-sm-4">
-        @ScreenSize
         @Messages
         @if (BleInfo.Name != null)
         {
@@ -179,8 +184,8 @@
                 @BleInfo.Characteristic.ToString() <br />
                 @ReadResult <br />
             </div>
-
         }
+        @ScreenSize
         <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
 
         <pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
