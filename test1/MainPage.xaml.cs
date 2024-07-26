@@ -16,7 +16,7 @@ public partial class MainPage : TabbedPage
         webView.Source = new HtmlWebViewSource
         {
             Html = """
-             <!DOCTYPE html>
+            <!DOCTYPE html>
             <html lang="en" data-bs-theme='light'>
 
             <head>
@@ -37,6 +37,7 @@ public partial class MainPage : TabbedPage
                     <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='connectAndPrint()'>connect and print</button>
                     <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='connectPrinter()'>connectPrinter</button>
                     <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='printTicket("123")'>printTicket</button>
+                    <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='isShell()'>isShell</button>
                 </div>
 
                 <script>
@@ -98,7 +99,13 @@ public partial class MainPage : TabbedPage
                             console.log(text);
                         });
                     }
-
+            
+                    function isShell() {
+                        var isShell = window.dialogs !== undefined;
+                        var el = document.getElementById('webtext');
+                        el.innerHTML = isShell?'BB+':'-';
+                    }
+            
                     var text = uuidv4();
                     console.log(uuidv4());
                     var el = document.getElementById('webtext');
