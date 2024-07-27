@@ -92,12 +92,21 @@ public class BluetoothPrinterOption : BleTagDevice
     public string? PriceTagPVPPoint { get; set; } = "4 0 10 230";
 
 
-    // Label
-    [AutoGenerateColumn(GroupName = "标签", GroupOrder = 7)]
-    [DisplayName("标签尺寸")]
-    public string? LabelPoint { get; set; } = "0 200 200 290";
+    //标签规格设定
 
-    [AutoGenerateColumn(GroupName = "标签", GroupOrder = 7)]
+    /// <summary>
+    /// 标签文件通常以“!”字符作为开头，后接“x”偏置参数、“x”和“y”轴分辨率、标签长度以及要打印的标签数量。包含这些参数的行称为命令起始行。任何情况下，标签文件都是以命令起始行开头，以“PRINT”命令结尾。用于构建具体标签的命令置于这两项命令之间
+    /// 指令语法 ! {offset} 200 200 {height} { qty}
+    /// 标签横向偏移量 横向DPI 纵向DPI 标签高度 打印数量
+    /// </summary>
+    [AutoGenerateColumn(GroupName = "标签规格", GroupOrder = 7)]
+    [DisplayName("标签尺寸: 横向偏移量 横向DPI 纵向DPI 标签高度")]
+    public string? LabelSize { get; set; } = "0 200 200 290";
+
+    /// <summary>
+    /// 打印机假定页面宽度为打印机的完整宽度。打印会话的最大高度由页面宽度和可用打印内存决定。如果页面宽度小于打印机的完整宽度，则用户可以通过指定页面宽度来增加最大页面高度
+    /// </summary>
+    [AutoGenerateColumn(GroupName = "标签规格", GroupOrder = 7)]
     [DisplayName("标签宽度")]
     public int? LabelWidth { get; set; } = 450;
 

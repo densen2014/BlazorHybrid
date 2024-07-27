@@ -1,45 +1,27 @@
 ﻿@inherits AppComponentBase
 @namespace BlazorHybrid.Core.Device
 @page "/"
-
-
-<Responsive OnBreakPointChanged="OnBreakPointChanged" />
+@*<Responsive OnBreakPointChanged="OnBreakPointChanged" />*@
 
 <div class="row">
-    <div class="col-12 col-m-9 col-sm-8">
+    <div class="col-12 col-m-6 col-sm-6">
 
         <Tab IsLazyLoadTabItem>
             <TabItem Text="打印">
                 @{
                     var isDisabled = !IsConnected && Devices == null;
                 }
-                @if (ScreenSize > BreakPoint.Medium)
-                {
-                    <BootstrapInputGroup>
-                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" />
-                        <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
-                        <Button Text="查找" OnClick="ScanPrinterDevice" />
-                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
-                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
-                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
-                    </BootstrapInputGroup>
-                }
-                else
-                {
-                    <BootstrapInputGroup class="m-1">
-                        <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" />
-                        <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" />
-                    </BootstrapInputGroup>
-                    <BootstrapInputGroup class="m-1">
-                        <Button Text="查找" OnClick="ScanPrinterDevice" />
-                        <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
-                        <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
-                        <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
-                    </BootstrapInputGroup>
-                }
+                <BootstrapInputGroup>
+                    <BootstrapInputGroupLabel DisplayText="名称过滤" class="border-primary" />
+                    <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" style="max-width: 80px;" />
+                    <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" style="max-width: 100px; " />
+                    <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
+                    <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
+                    <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
+                </BootstrapInputGroup>
 
                 <BootstrapInputGroup class="m-1">
-                    <Button Text="返回" OnClick="BackToHome" />
+                    @*<Button Text="返回" OnClick="BackToHome" />*@
                     <Button Text="扫描" @attributes=IsScanningCss OnClick="ScanDevice" />
                     <Button Text="连接" OnClick="OnDeviceSelect" IsDisabled="@(Devices == null)" />
                     <Button Text="断开" OnClick="OnDisConnectDevice" IsDisabled="@(Devices == null)" />
@@ -86,11 +68,41 @@
                            TableSize="TableSize.Compact"
                            RenderMode="TableRenderMode.Table">
                         <TableColumns>
-                            <TableColumn @bind-Field="@context.Name" Text="名称" Width="100" />
-                            <TableColumn @bind-Field="@context.Remark" Text="备注" Width="200" />
-                            <TableColumn @bind-Field="@context.ServicesRemark" Text="服务" Width="50" />
-                            <TableColumn @bind-Field="@context.Rssi" Text="信号" Width="50" />
-                            <TableColumn @bind-Field="@context.Id" Text="ID" />
+                            <TableColumn @bind-Field="@context.Name" Text="名称" Width="200">
+                                <Template Context="v">
+                                    <div>
+                                        @{
+                                            var device = (BleDevice)v.Row;
+                                        }
+                                        <div><b>@v.Value</b> <i>(@device.Id.ToString().Replace("00000000-0000-0000-0000-", ""))</i></div>
+                                        <div>@device.Remark</div>
+                                        <div>@device.ServicesRemark</div>
+                                    </div>
+                                </Template>
+                            </TableColumn>
+                            <TableColumn @bind-Field="@context.Rssi" Text="操作" Width="50">
+                                <Template Context="v">
+                                    <div>
+                                        @{
+                                            var device = (BleDevice)v.Row;
+                                        }
+                                        <div>@device.Rssi</div>
+                                        @if (device.ServicesRemark != null && device.ServicesRemark.Contains("打印服务"))
+                                        {
+                                            var serID = device.Services.FirstOrDefault(a => a.Name == "打印服务")?.Id;
+
+                                            if (serID != null)
+                                            {
+                                                <div>
+                                                    <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall"
+                                                            OnClickWithoutRender="()=> SendDataAsyncCPCLBarcode(device.Name,device.Id,serID.Value) " />
+                                                </div>
+                                            }
+
+                                        }
+                                    </div>
+                                </Template>
+                            </TableColumn>
                         </TableColumns>
                         <DetailRowTemplate>
                             <Table TItem="BleService" Items="@context.Services" ShowDetailRow="ShowDetailRow"
@@ -148,31 +160,34 @@
                 <div class="my-2">
                     <Button Text="测试" OnClick="SendDataAsyncCPCLTest" IsDisabled="@(!IsConnected)" />
                     <Button Icon="fa-solid fa-floppy-disk" Text="保存" class="ms-2" OnClick="SaveConfigOK" />
+                    <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Size="Size.Small" Text="复位" class="ms-2" OnConfirm="()=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
+                    <PopConfirmButton Size="Size.Small" Text="细" OnConfirm="()=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗? (细体价格条码,半高条码,290)" />
+                    <PopConfirmButton Size="Size.Small" Text="2" OnConfirm="()=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗? (粗体价格条码,半高条码,290)" />
+                    <PopConfirmButton Size="Size.Small" Text="3" OnConfirm="()=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗? (粗体价格,细体条码,中心偏移往右,半宽标签,190)" />
                 </div>
                 <p>位置定义说明: {字体编号} {字体大小} {横向起始} {纵向起始}</p><hr />
                 @*<GroupBox Title="参数">*@
-                    <div style="height:70vh;overflow-y:auto;overflow-x:hidden;">
-                        <ValidateForm Model="@Option" style="margin: 1.5rem;">
-                            <EditorForm TModel="BluetoothPrinterOption">
-                                <Buttons>
-                                    <div class="text-end">
-                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnConfirm="()=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
-                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnConfirm="()=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗？" />
-                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnConfirm="()=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗？" />
-                                        <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnConfirm="()=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗？" />
-                                    </div>
-                                </Buttons>
-                            </EditorForm>
-                        </ValidateForm>
-                    </div>
+                <div style="height:70vh;overflow-y:auto;overflow-x:hidden;">
+                    <ValidateForm Model="@Option" style="margin: 1.5rem;">
+                        <EditorForm TModel="BluetoothPrinterOption">
+                            <Buttons>
+                                <div class="text-end">
+                                    <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="复位" OnConfirm="()=>ResetConfig()" Color="Color.Warning" Content="确定复位设置吗？" />
+                                    <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设1" OnConfirm="()=>ResetConfig(1)" Color="Color.Warning" Content="确定复位为预设1吗？" />
+                                    <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设2" OnConfirm="()=>ResetConfig(2)" Color="Color.Warning" Content="确定复位为预设2吗？" />
+                                    <PopConfirmButton Icon="fa-solid fas fa-clock-rotate-left" Text="预设3" OnConfirm="()=>ResetConfig(3)" Color="Color.Warning" Content="确定复位为预设3吗？" />
+                                </div>
+                            </Buttons>
+                        </EditorForm>
+                    </ValidateForm>
+                </div>
                 @*</GroupBox>*@
             </TabItem>
         </Tab>
 
     </div>
 
-    <div class="col-12 col-m-3 col-sm-4">
-        @Messages
+    <div class="col-12 col-m-6 col-sm-6">
         @if (BleInfo.Name != null)
         {
 
@@ -185,9 +200,8 @@
                 @ReadResult <br />
             </div>
         }
-        @ScreenSize
         <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
 
-        <pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
+        <pre style="height: 300px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word;">@Messages</pre>
     </div>
 </div>

@@ -10,7 +10,7 @@ namespace test1;
 
 internal partial class NativeApi : object
 {
- 
+
     public async Task<string> open_file_dialog()
     {
         //work in ui thread
@@ -55,6 +55,6 @@ internal partial class NativeApi : object
         }
         return "ok";
     }
-     
+
 
 }

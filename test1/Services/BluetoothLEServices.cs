@@ -175,13 +175,15 @@ public partial class BluetoothLEServices
 
     #region 扫描外设
 
+    BluetoothPrinterOption? Option;
+
     /// <summary>
     /// 开始扫描
     /// </summary>
     /// <returns></returns>
-    public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null)
+    public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null, BluetoothPrinterOption? option=null)
     {
-
+        Option=option;
         Devices = [];
 
         //检查获取蓝牙权限
@@ -209,7 +211,7 @@ public partial class BluetoothLEServices
 
             if (deviceGuid != null && deviceGuid != Guid.Empty)
             {
-                OnMessage?.Invoke($"连接指定设备{deviceGuid.Value}");
+                OnMessage?.Invoke($"连接指定设备{deviceGuid.Value.ToString().Replace("00000000-0000-0000-0000-", "")}");
                 // <summary> 
                 // 如果在范围内，则连接到具有已知 GUID 的设备而无需扫描。不扫描设备。
                 // </summary> 
@@ -304,15 +306,23 @@ public partial class BluetoothLEServices
         var device = e.Device;
 
         //[0:] 扫描到蓝牙设备honor Band 4-7E8, Id=00000000-0000-0000-0000-f4bf805ad7e8, Name=honor Band 4-7E8, Rssi=-50, State=Disconnected, AdvertisementRecords.Count=5
-        OnMessage?.Invoke($"扫描到蓝牙设备: " +
-            $"Id={device.Id}, " +
-            $"名称={device.Name}, " +
-            $"Rssi={device.Rssi}, " +
-            $"状态={device.State}, " +
-            $"可连接={device.IsConnectable}, " +
-            $"广播记录总数={device.AdvertisementRecords.Count}");
+        var info = $"{device.Name} Id:{device.Id.ToString().Replace("00000000-0000-0000-0000-", "")}, Rssi:{device.Rssi}, {(device.AdvertisementRecords.Count > 0 ? $"广播" +
+            $"{device.AdvertisementRecords.Count}" : "")}";
+        OnMessage?.Invoke($"{(Option != null? "扫描到蓝牙设备" : "发现蓝牙设备")}: " + info);
 
         BLE_beacon_AdvertisementRecords(device);
+
+        if (Option!=null)
+        {
+            if (Option.MinRssi != 0 && device.Rssi < - Option.MinRssi)
+            {
+                return;
+            }
+            if (!string.IsNullOrEmpty(Option.NameFilter) && (device.Name == null || !device.Name.Contains(Option.NameFilter)))
+            {
+                return;
+            }
+        }
 
         Devices.Add(new BleDevice()
         {
@@ -320,24 +330,20 @@ public partial class BluetoothLEServices
             Name = device.Name,
             Rssi = device.Rssi,
             IsConnectable = device.IsConnectable,
-            Remark = $"状态={device.State}, " +
-            $"可连接={device.IsConnectable}, " +
-            $"广播={device.AdvertisementRecords.Count}"
+            Remark = $"{(device.IsConnectable ? "可连接" : "")} {(device.AdvertisementRecords.Count > 0 ? $"广播" +
+            $"{device.AdvertisementRecords.Count}" : "")}"
         });
 
         if (IsMatchID(device) || IsStartWithName(device))
         {
-            TagDeviceInfo = $"{device}, Id={device.Id}, 名称={device.Name}, Rssi={device.Rssi}, 状态={device.State}, 广播记录总数={device.AdvertisementRecords.Count}";
-
+            TagDeviceInfo = info; 
             OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
 
             Device = device;
 
             //如果找到目标外设，退出扫描
             if (!_scanForAedCts!.IsCancellationRequested)
-            {
                 _scanForAedCts.Cancel(false);
-            }
         }
     }
 
@@ -561,11 +567,12 @@ public partial class BluetoothLEServices
             try
             {
 
-                OnMessage?.Invoke($"连接指定设备{deviceID}");
+                OnMessage?.Invoke($"连接指定设备{deviceID.ToString().Replace("00000000-0000-0000-0000-", "")}");
                 var _scanForAedCts = new CancellationTokenSource();
 
                 _ = Task.Run(async () =>
                 {
+                    //连接设备超时 默认10秒
                     await Task.Delay(TimeSpan.FromSeconds(10));
                     if (!_scanForAedCts!.IsCancellationRequested)
                     {
@@ -584,7 +591,7 @@ public partial class BluetoothLEServices
             }
             catch (OperationCanceledException)
             {
-                OnMessage?.Invoke($"扫描外设任务取消");
+                OnMessage?.Invoke($"扫描外设超时,任务取消");
             }
             catch (Exception ex)
             {

@@ -299,14 +299,14 @@ public partial class BluetoothLEServices
             Name = device.Name,
             Rssi = device.Rssi,
             IsConnectable = device.IsConnectable,
-            Remark = $"状态={device.State}, " +
-            $"可连接={device.IsConnectable}, " +
-            $"广播={device.AdvertisementRecords.Count}"
+            Remark = $"{(device.IsConnectable? "可连接":"")} {(device.AdvertisementRecords.Count>0?$"广播" +
+            $"{device.AdvertisementRecords.Count}":"")}"
         });
 
         if (IsMatchID(device) || IsStartWithName(device))
         {
-            TagDeviceInfo = $"{device}, Id={device.Id}, 名称={device.Name}, Rssi={device.Rssi}, 状态={device.State}, 广播记录总数={device.AdvertisementRecords.Count}";
+            TagDeviceInfo = $"{device}, Id:{device.Id}, {device.Name}, Rssi:{device.Rssi}, {(device.AdvertisementRecords.Count > 0 ? $"广播" +
+            $"{device.AdvertisementRecords.Count}" : "")}";
 
             OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
 

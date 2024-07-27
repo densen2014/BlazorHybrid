@@ -15,7 +15,7 @@ using static test1.MauiProgram;
 
 namespace test1;
 
-internal partial class NativeApi 
+internal partial class NativeApi
 {
     private string PrinterNameKey = "PrinterName";
     private string printerName = "Unknown";
@@ -34,21 +34,21 @@ internal partial class NativeApi
           "FORM\r\n" +
           "PRINT\r\n";
 
-        private string CpclBarcode =
-        "! 0 200 200 280 1\r\n" +
-        "PW 450\r\n" +
-        "CENTER\r\n" +
-        "SETMAG 1 1\r\n" +
-        "ENCODING GB18030\r\n" +
-        "TEXT 4 11 30 40 Coca-Cola 可口可乐\r\n" +
-        "BARCODE-TEXT 7 0 5\r\n" +
-        "BARCODE 128 1 1 50 10 100 123456789\r\n" +
-        "BARCODE-TEXT OFF\r\n" +
-        "SETMAG 2 2\r\n" +
-        "ENCODING ASCII\r\n" +
-        "TEXT 4 11 30 210 PVP:  123.45\r\n" +
-        "FORM\r\n" +
-        "PRINT\r\n";
+    private string CpclBarcode =
+    "! 0 200 200 280 1\r\n" +
+    "PW 450\r\n" +
+    "CENTER\r\n" +
+    "SETMAG 1 1\r\n" +
+    "ENCODING GB18030\r\n" +
+    "TEXT 4 11 30 40 Coca-Cola 可口可乐\r\n" +
+    "BARCODE-TEXT 7 0 5\r\n" +
+    "BARCODE 128 1 1 50 10 100 123456789\r\n" +
+    "BARCODE-TEXT OFF\r\n" +
+    "SETMAG 2 2\r\n" +
+    "ENCODING ASCII\r\n" +
+    "TEXT 4 11 30 210 PVP:  123.45\r\n" +
+    "FORM\r\n" +
+    "PRINT\r\n";
 
     [NotNull]
     INativeFeatures? Tools { get; set; }
@@ -108,7 +108,7 @@ internal partial class NativeApi
         try
         {
             var res = await connectPrinter();
-            return $"connectPrinter {(res?"ok":"false")}";
+            return $"connectPrinter {(res ? "ok" : "false")}";
         }
         catch (Exception e)
         {
@@ -124,8 +124,8 @@ internal partial class NativeApi
         BleTools ??= Services.GetRequiredService<BluetoothLEServices>();
         if (!IsInit) await Init();
         await GetConfigAsync();
-        var res= await BleTools.ConnectDeviceAsync(BleInfo, false);
-        return res!=null;
+        var res = await BleTools.ConnectDeviceAsync(BleInfo, false);
+        return res != null;
     }
 
     public async Task<string> print_ticket(string data)
