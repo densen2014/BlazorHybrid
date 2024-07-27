@@ -12,12 +12,12 @@
                     var isDisabled = !IsConnected && Devices == null;
                 }
                 <BootstrapInputGroup>
-                    <BootstrapInputGroupLabel DisplayText="名称过滤" class="border-primary" />
+                    <BootstrapInputGroupLabel DisplayText="名称" class="border-primary" />
                     <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" style="max-width: 80px;" />
                     <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" style="max-width: 100px; " />
-                    <Button Text="ESC/POS" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
-                    <Button Text="CPCL" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
-                    <Button Text="CPCL票据" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
+                    <Button Text="Esc" Size="Size.Small" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
+                    <Button Text="Cpcl" Size="Size.Small"  OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
+                    <Button Text="票" Size="Size.Small" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
                 </BootstrapInputGroup>
 
                 <BootstrapInputGroup class="m-1">
@@ -68,7 +68,7 @@
                            TableSize="TableSize.Compact"
                            RenderMode="TableRenderMode.Table">
                         <TableColumns>
-                            <TableColumn @bind-Field="@context.Name" Text="名称" Width="200">
+                            <TableColumn @bind-Field="@context.Name" Text="名称" Width="100">
                                 <Template Context="v">
                                     <div>
                                         @{
