@@ -48,6 +48,7 @@
 
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
       <CreatePackage>false</CreatePackage>
+      <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
     </PropertyGroup>
         <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
       <CreatePackage>false</CreatePackage>
