@@ -1,7 +1,7 @@
-﻿// ********************************** 
-// Densen Informatica 中讯科技 
+﻿// **********************************
+// Densen Informatica 中讯科技
 // 作者：Alex Chow
-// e-mail:zhouchuanglin@gmail.com 
+// e-mail:zhouchuanglin@gmail.com
 // **********************************
 
 namespace test1;
@@ -17,7 +17,13 @@ public partial class MainPage : TabbedPage
         WebView? wvBrowser = FindByName("webView") as WebView;
         api = new NativeBridge(wvBrowser);
         api.AddTarget("dialogs", new NativeApi());
-
+#if MACCATALYST
+        Microsoft.Maui.Handlers.WebViewHandler.Mapper.AppendToMapping("Inspect", (handler, view) =>
+        {
+            if (OperatingSystem.IsMacCatalystVersionAtLeast(16, 6))
+                handler.PlatformView.Inspectable = true;
+        });
+#endif
         #if false
         webView.Source = new HtmlWebViewSource
         {
@@ -105,13 +111,13 @@ public partial class MainPage : TabbedPage
                             console.log(text);
                         });
                     }
-            
+
                     function isShell() {
                         var isShell = window.dialogs !== undefined;
                         var el = document.getElementById('webtext');
                         el.innerHTML = isShell?'BB+':'-';
                     }
-            
+
                     var text = uuidv4();
                     console.log(uuidv4());
                     var el = document.getElementById('webtext');
