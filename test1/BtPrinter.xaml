@@ -4,19 +4,20 @@
              x:Class="test1.BtPrinter">
     <ScrollView>
         <VerticalStackLayout
-            Padding="30,0"
+            Margin="50"
             Spacing="25">
 
             <Label
                 Text="Hello, World!"
-                x:Name="PrinterName" 
-                SemanticProperties.HeadingLevel="Level1" />
+                x:Name="PrinterName" Width="100" Height="200" 
+                HorizontalOptions="Center"
+                BackgroundColor="Honeydew"
+                TextColor="Black"/>
 
             <Button
                 x:Name="CounterBtn"
                 Clicked="OnTestClicked"
                 HorizontalOptions="Center"
-                SemanticProperties.Hint="Counts the number of times you click"
                 Text="测试" />  
         </VerticalStackLayout>
     </ScrollView>

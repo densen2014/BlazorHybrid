@@ -3,20 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:test1.Component"
              x:Class="test1.MainPage"
-            xmlns:pages="clr-namespace:test1">
-    <ContentPage Title="打印机">
-        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html" VerticalOptions="FillAndExpand" Margin="0,0,0,100">
-            <BlazorWebView.RootComponents>
-                <RootComponent Selector="#app" ComponentType="{x:Type local:App}" />
-            </BlazorWebView.RootComponents>
-        </BlazorWebView>
-    </ContentPage>     <ContentPage Title="111主页">
-        <!--<WebView x:Name="webView" Source="wwwroot/demo.html" VerticalOptions="FillAndExpand" /> -->
-        <WebView x:Name="webView" Source="https://blazor.app1.es/samples/native_api.html" VerticalOptions="FillAndExpand" />
+            xmlns:pages="clr-namespace:test1"
+            >
+    <ContentPage Title="主页">
+            <VerticalStackLayout 
+                Spacing="25">
+                <Label Text="Hello, Hybird!"
+                       HorizontalOptions="Center"
+                       BackgroundColor="Honeydew"
+                       TextColor="Black"/>
+                <WebView x:Name="webView" Source="https://w11.app1.es" HeightRequest="600" />
+                <Label Text="Hello, Hybird!"
+                       HorizontalOptions="Center"
+                       BackgroundColor="Honeydew"
+                       TextColor="Black"/>
+            </VerticalStackLayout>
     </ContentPage>
-     
-    <ContentPage Title="222测试">
+    <ContentPage Title="打印机">
+        <pages:Config />
+    </ContentPage>
+    <ContentPage Title="测试">
         <pages:BtPrinter />
     </ContentPage>
-
 </TabbedPage>
