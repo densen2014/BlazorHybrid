@@ -10,7 +10,10 @@ namespace test1;
 
 internal partial class NativeApi : object
 {
-
+    /// <summary>
+    /// 打开文件对话框,返回base64编码的文件内容, 兼容js,需要小写
+    /// </summary>
+    /// <returns></returns>
     public async Task<string> open_file_dialog()
     {
         //work in ui thread
@@ -37,6 +40,12 @@ internal partial class NativeApi : object
         return res;
     }
 
+    /// <summary>
+    /// 保存文件
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
     public async Task<string> save_file(string data, string fileName)
     {
         try

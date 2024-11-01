@@ -67,7 +67,8 @@ internal partial class NativeApi
 
     private BluetoothPrinterOption Option = new();
     private bool IsConnected { get; set; }
-    bool IsInit { get; set; }
+    private string? Log { get; set; }
+    private bool IsInit { get; set; }
 
     async Task<bool> Init()
     {
@@ -97,18 +98,28 @@ internal partial class NativeApi
         return false;
     }
 
+    /// <summary>
+    /// 获取本地打印机名称设置
+    /// </summary>
+    /// <returns></returns>
     public Task<string> get_config()
     {
         printerName = Preferences.Default.Get(PrinterNameKey, printerName);
         return Task.FromResult(printerName);
     }
 
+
+    /// <summary>
+    /// 连接打印机
+    /// </summary>
+    /// <returns></returns>
     public async Task<string> connect_printer()
     {
         try
         {
+            Log = "";
             var res = await connectPrinter();
-            return $"connectPrinter {(res ? "ok" : "false")}";
+            return $"connectPrinter {(res ? "ok" : "false")},{Log}";
         }
         catch (Exception e)
         {
@@ -118,6 +129,10 @@ internal partial class NativeApi
         }
     }
 
+    /// <summary>
+    /// 连接打印机内部方法
+    /// </summary>
+    /// <returns></returns>
     private async Task<bool> connectPrinter()
     {
         Tools ??= Services.GetRequiredService<INativeFeatures>();
@@ -128,10 +143,16 @@ internal partial class NativeApi
         return res != null;
     }
 
+    /// <summary>
+    /// 打印Cpcl条码测试
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public async Task<string> print_ticket(string data)
     {
         try
         {
+            Log = "";
             await SendDataAsyncPrinter(CpclBarcode);
         }
         catch (Exception e)
@@ -140,9 +161,14 @@ internal partial class NativeApi
             await Tools.Alert("提示", err, "OK");
             return err;
         }
-        return "print_ticket ok";
+        return $"print_ticket OK,{Log}";
     }
 
+    /// <summary>
+    /// 发送数据到打印机
+    /// </summary>
+    /// <param name="commands"></param>
+    /// <returns></returns>
     private async Task SendDataAsyncPrinter(string commands)
     {
         if (!IsConnected)
@@ -155,6 +181,10 @@ internal partial class NativeApi
         }
     }
 
+    /// <summary>
+    /// 获取本地打印机配置,json格式存入本地
+    /// </summary>
+    /// <returns></returns>
     async Task GetConfigAsync()
     {
         var configJson = await Storage.GetValue("BluetoothPrinterConfig", string.Empty);
@@ -190,7 +220,7 @@ internal partial class NativeApi
 
     private Task Tools_OnMessage(string message)
     {
-        //this.title. = $"{message}\r\n{Message}";
+        Log = $"{message}\r\n{Log}";
         return Task.CompletedTask;
     }
 
