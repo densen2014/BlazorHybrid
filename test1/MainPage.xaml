@@ -12,7 +12,7 @@
                        HorizontalOptions="Center"
                        BackgroundColor="Honeydew"
                        TextColor="Black"/>
-                <WebView x:Name="webView" Source="https://w11.app1.es" HeightRequest="600" />
+                <WebView x:Name="webView" Source="https://w11.app1.es" HeightRequest="700" />
                 <Label Text="Hello, Hybird!"
                        HorizontalOptions="Center"
                        BackgroundColor="Honeydew"
