@@ -2,7 +2,7 @@
 @page "/PlatformFeatures"
 @using ZXingBlazor.Components
 
-<Title>系统设置</Title>
+<Title Text="系统设置" />
 
 @if (IsBusy)
 {
@@ -27,8 +27,7 @@
     <BarcodeReader ScanResult="OnResult"
                    Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
                    OnError="OnError"
-                   Decodeonce="false"
-                   />
+                   Decodeonce="false" />
 }
 
 

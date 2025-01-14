@@ -42,4 +42,9 @@ public class AppLookupService : ILookupService
     {
         return GetItemsByKey(key);
     }
+
+    public Task<IEnumerable<SelectedItem>?> GetItemsByKeyAsync(string? key, object? data)
+    {
+        return Task.FromResult(GetItemsByKey(key));
+    }
 }

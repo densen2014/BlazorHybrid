@@ -5,6 +5,7 @@
 // **********************************
 
 using bh001_camera_barcode.Data;
+using BootstrapBlazor.WebAPI.Services;
 using Microsoft.Extensions.Logging;
 
 namespace bh001_camera_barcode
@@ -29,6 +30,8 @@ namespace bh001_camera_barcode
 #endif
 
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddScoped<ICookie, CookieService>();
+            builder.Services.AddScoped<IStorage, StorageService>();
 
             return builder.Build();
         }

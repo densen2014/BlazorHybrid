@@ -1,1 +1,1 @@
-sc create API_test binPath="C:\Repos\BlazorHybrid\bh100days\t01_Webapi\bin\Release\net7.0\publish\t01_Webapi.exe"
+sc create API_test binPath="C:\Repos\BlazorHybrid\bh100days\t01_Webapi\bin\Release\net8.0\publish\t01_Webapi.exe"
