@@ -1,4 +1,4 @@
-{
+﻿{
   "profiles": {
     "Win": {
       "commandName": "Project",
@@ -19,10 +19,10 @@
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5556",
+      "launchUrl": "http://localhost:5556",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:5556;http://localhost:5000;http://0.0.0.0:5500;https://0.0.0.0:5501;"
+        "ASPNETCORE_URLS": "http://localhost:5000;http://0.0.0.0:5500;"
       }
     }
   }

@@ -1,20 +1,12 @@
-{
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:23796",
-      "sslPort": 44334
-    }
-  },
+﻿{
   "profiles": {
     "BlazorHybrid.SSR": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5011;http://localhost:5005",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:5011;http://localhost:5005"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -26,11 +18,12 @@
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001",
+      "launchUrl": "http://localhost:5011",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:5001;http://localhost:5000"
-      }
+        "ASPNETCORE_URLS": "http://localhost:5005"
+      },
+      "distributionName": ""
     }
-  }
+  } 
 }

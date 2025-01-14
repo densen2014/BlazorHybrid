@@ -12,14 +12,34 @@ dotnet publish -r linux-x64 -f net8.0 -c Release --self-contained /p:PublishSing
 
 dotnet publish -r linux-arm64 -f net8.0 -c Release --self-contained /p:PublishSingleFile=true /p:PublishTrimmed=true
 
+
+
+---------
+
+## 其他问题
+
 wsl信任证书
 
 sudo apt remove 'dotnet*'
 sudo apt update
 sudo apt install dotnet-sdk-8.0
+dotnet dev-certs https
 dotnet dev-certs https --trust
 
 sudo add-apt-repository ppa:dotnet/backports
 sudo apt-get install -y dotnet-sdk-9.0
 
+安装适用于 Linux 的 Google Chrome：
 
+cd /tmp
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install --fix-missing ./google-chrome-stable_current_amd64.deb
+
+sudo add-apt-repository http://br.archive.ubuntu.com/ubuntu/
+sudo add-apt-repository http://security.ubuntu.com/ubuntu/
+
+
+wsl提示未找到libwebkit2gtk执行下面语句
+
+sudo ln -sf /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.1.so.0 /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37
+sudo ln -sf /usr/lib/x86_64-linux-gnu/libjavascriptcoregtk-4.1.so.0 /usr/lib/x86_64-linux-gnu/libjavascriptcoregtk-4.0.so.18
