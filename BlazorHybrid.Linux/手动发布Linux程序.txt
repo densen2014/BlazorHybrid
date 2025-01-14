@@ -19,3 +19,7 @@ sudo apt update
 sudo apt install dotnet-sdk-8.0
 dotnet dev-certs https --trust
 
+sudo add-apt-repository ppa:dotnet/backports
+sudo apt-get install -y dotnet-sdk-9.0
+
+
