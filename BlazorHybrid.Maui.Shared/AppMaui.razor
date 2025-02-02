@@ -1,5 +1,5 @@
 ﻿<BootstrapBlazorRoot>
-    <Router AppAssembly="@typeof(MainLayout).Assembly" PreferExactMatches="@true" AdditionalAssemblies='new[] { typeof(NfcBase).Assembly }'>
+    <Router AppAssembly="@typeof(MainLayout).Assembly" AdditionalAssemblies='new[] { typeof(NfcBase).Assembly }'>
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

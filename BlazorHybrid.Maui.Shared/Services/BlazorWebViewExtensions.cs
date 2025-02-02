@@ -237,17 +237,27 @@ public partial class InitBlazorWebView : Page
         await DisplayAlert("Alert", msg, "OK");
     }
 
+#if WINDOWS
     public async Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
     {
-#if WINDOWS 
         await WebView.ExecuteScriptAsync(js);
-#elif ANDROID
-        WebView.EvaluateJavaScript(new EvaluateJavaScriptAsyncRequest(js));
-#elif MACCATALYST || IOS
-        await WebView.EvaluateJavaScriptAsync(js);
-#elif TIZEN
-#endif
     }
+#elif ANDROID
+    public Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
+    {
+        WebView.EvaluateJavaScript(new EvaluateJavaScriptAsyncRequest(js));
+        return Task.CompletedTask;
+    }
+#elif MACCATALYST || IOS
+    public async Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
+    {
+        await WebView.EvaluateJavaScriptAsync(js);
+    }
+#elif TIZEN
+    public async Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
+    {
+    }
+#endif
 
     public void LoadUrl(string url)
     {
@@ -283,7 +293,7 @@ public partial class InitBlazorWebView : Page
 
     public class BridgeObject
     {
-        public string MacAdress { get; set; } = Guid.NewGuid().ToString(); 
+        public string MacAdress { get; set; } = Guid.NewGuid().ToString();
     }
 
     public async void InitializeBridgeAsync()

@@ -641,7 +641,7 @@ public class Utility
         {
             extension = "." + extension;
         }
-        string mime;
+        string? mime;
 
         return _mappings.TryGetValue(extension, out mime) ? mime : "application/octet-stream";
     }

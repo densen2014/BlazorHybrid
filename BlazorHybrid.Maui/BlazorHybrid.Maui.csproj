@@ -42,13 +42,13 @@
         <!--<DefineConstants Condition="$(TargetFramework.Contains('-windows'))">HANDLE_WEBVIEW2_PERMISSIONS_SILENTLY</DefineConstants>-->
 
         <DefaultLanguage>zh-cn</DefaultLanguage>
-    
+
     </PropertyGroup>
 
     <!--为发布版本启用解释器-->
-	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
-		<UseInterpreter>true</UseInterpreter> 
-	</PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+        <UseInterpreter>true</UseInterpreter>
+    </PropertyGroup>
 
     <!--mac调试-->
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' and '$(Configuration)' == 'Debug'">
@@ -56,15 +56,15 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
-      <AndroidPackageFormat>apk</AndroidPackageFormat>
+        <AndroidPackageFormat>apk</AndroidPackageFormat>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
-      <CreatePackage>false</CreatePackage>
-      <CodesignProvision>iOS Team Provisioning Profile: es.app1.BlazorHybrid</CodesignProvision>
+        <CreatePackage>false</CreatePackage>
+        <CodesignProvision>iOS Team Provisioning Profile: es.app1.BlazorHybrid</CodesignProvision>
     </PropertyGroup>
     <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-      <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
-      <CodesignProvision>VS: es.app1.BlazorHybrid Development</CodesignProvision>
+        <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
+        <CodesignProvision>VS: es.app1.BlazorHybrid Development</CodesignProvision>
     </PropertyGroup>
     <ItemGroup>
         <!-- App Icon -->
@@ -93,7 +93,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BlazorHybrid.Maui.Shared\BlazorHybrid.Maui.Shared.csproj" />
-    </ItemGroup> 
-     
+        <ProjectReference Include="..\BlazorHybrid.Maui.Shared\BlazorHybrid.Maui.Shared.csproj" />
+    </ItemGroup>
+
 </Project>

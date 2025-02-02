@@ -18,7 +18,7 @@ namespace BlazorHybrid.Shared;
 public class Photos
 {
 
-    [AutoGenerateColumn(Visible = false, Editable = false)]
+    [AutoGenerateColumn(Visible = false, IsReadonlyWhenAdd = true, IsReadonlyWhenEdit = true)]
     [Column(IsIdentity = true, IsPrimary = true)]
     public Guid? PhotoID { get; set; }
 
@@ -32,14 +32,14 @@ public class Photos
     /// <summary>
     /// 自动填写,第一次建立就填写登录的用户名
     /// </summary>
-    [AutoGenerateColumn(Visible = false, Editable = false)]
+    [AutoGenerateColumn(Visible = false, IsReadonlyWhenAdd = true, IsReadonlyWhenEdit = true)]
     [DisplayName("拍摄人")]
     public Guid? Operator { get; set; }
 
     /// <summary>
     /// 自动填写,第一次建立就填写登录的用户名
     /// </summary>
-    [AutoGenerateColumn(Editable = false)]
+    [AutoGenerateColumn(IsReadonlyWhenAdd = true, IsReadonlyWhenEdit = true)]
     [Column(IsIgnore = true)]
     [DisplayName("创建人")]
     public string? OperatorName { get => Userss?.FullName; }

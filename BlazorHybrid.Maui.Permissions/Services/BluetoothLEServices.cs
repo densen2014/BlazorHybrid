@@ -136,7 +136,7 @@ public partial class BluetoothLEServices
             OnMessage?.Invoke("蓝牙适配器未初始化");
             return null;
         }
-        if (CurrentBle==null || !CurrentBle.IsAvailable)
+        if (CurrentBle == null || !CurrentBle.IsAvailable)
         {
             OnMessage?.Invoke("蓝牙不可用");
             return null;
@@ -185,13 +185,13 @@ public partial class BluetoothLEServices
         return Devices;
     }
 
+#if ANDROID
     /// <summary>
     /// 检查获取蓝牙权限
     /// </summary>
     /// <returns></returns>
     public async Task<bool> CheckAndRequestBluetoothPermission()
     {
-#if ANDROID 
         var status = await Microsoft.Maui.ApplicationModel.Permissions.CheckStatusAsync<BluetoothPermissions>();
 
         if (status != PermissionStatus.Granted)
@@ -200,10 +200,20 @@ public partial class BluetoothLEServices
         }
 
         return status == PermissionStatus.Granted;
-#else
-        return true;
-#endif
     }
+
+#else
+
+    /// <summary>
+    /// 检查获取蓝牙权限
+    /// </summary>
+    /// <returns></returns>
+    public Task<bool> CheckAndRequestBluetoothPermission()
+    {
+
+        return Task.FromResult(true);
+    }
+#endif
 
     /// <summary>
     /// 查找到设备处理
@@ -302,7 +312,7 @@ public partial class BluetoothLEServices
             var characteristics = await genericService.GetCharacteristicsAsync();
             if (ble.Characteristic == Guid.Empty)
             {
-                ble.Characteristic = characteristics.FirstOrDefault().Id;
+                ble.Characteristic = characteristics.FirstOrDefault()!.Id;
             }
 
             var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == ble.Characteristic);
@@ -596,7 +606,7 @@ public partial class BluetoothLEServices
         //获取常规信息服务UUID: 
         Guid genericServiceGuid = serviceid ?? Guid.Parse("00001800-0000-1000-8000-00805f9b34fb");
 
-        var genericService = await Device.GetServiceAsync(genericServiceGuid);
+        var genericService = await Device!.GetServiceAsync(genericServiceGuid);
         if (genericService == null)
         {
             OnMessage?.Invoke($"获取常规信息服务{genericServiceGuid}失败");

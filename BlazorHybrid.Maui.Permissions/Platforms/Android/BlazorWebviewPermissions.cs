@@ -184,7 +184,7 @@ internal class BlazorWebviewPermissions : WebChromeClient, IActivityResultCallba
     {
         var callback = _pendingPermissionRequestCallback;
         _pendingPermissionRequestCallback = null;
-        callback?.Invoke((bool)isGranted);
+        callback?.Invoke((bool)(isGranted == null ? false : isGranted));
     }
 
     #region Unremarkable overrides

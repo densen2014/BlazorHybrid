@@ -17,7 +17,7 @@ namespace BlazorHybrid.Shared;
 public class SysInfo
 {
 
-    [AutoGenerateColumn(Visible = false, Editable = false)]
+    [AutoGenerateColumn(Visible = false, IsReadonlyWhenAdd = true, IsReadonlyWhenEdit = true)]
     [Column(IsIdentity = true, IsPrimary = true)]
     [DisplayName("序号")]
     public Guid UserID { get; set; }
