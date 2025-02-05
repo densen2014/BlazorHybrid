@@ -1,0 +1,69 @@
+﻿@inherits AppComponentBase
+@namespace BlazorHybrid.Components
+
+<Logout ImageUrl="https://www.blazor.zone/_content/BootstrapBlazor.Shared/images/avatar2.png" DisplayName="@GetFullName()" UserName="@LoginInfo()" class="bg-primary">
+    <LinkTemplate>
+        <div>
+            <LinkButton OnClick="Personal" style="text-align: left;">
+                <i class="fa-solid fa-user"></i><span>个人中心</span>
+            </LinkButton>
+            <LinkButton OnClick="Features" style="text-align: left;">
+                <i class="fa-solid fa-gear"></i><span>设置 @Tools.GetAppInfo()</span>
+            </LinkButton>
+            <LinkButton OnClick="Logout" style="text-align: left;">
+                <i class="fa-solid fa-key"></i><span>注销</span>
+            </LinkButton>
+        </div>
+    </LinkTemplate>
+</Logout>
+
+<Modal @ref="ExtraLargeModal" OnCloseAsync="OnCloseAsync">
+    <ModalDialog Title="个人中心" IsDraggable="true">
+        <BodyTemplate>
+            @if (IsShow)
+            {
+                if (States.User != null)
+                {
+                    <Tab IsLazyLoadTabItem>
+                        <TabItem Text="修改资料">
+                            <ValidateForm Model="@States.User" OnValidSubmit="@OnValidSubmit">
+                                <div class="mb-3">
+                                    <BootstrapInput @bind-Value="@States.User.Username" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapInput @bind-Value="@States.User.FullName" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapInput @bind-Value="@States.User.Company" />
+                                </div>
+                                <div>
+                                    <Button IsBlock ButtonType="ButtonType.Submit" IsAsync Text=" 保存 "></Button>
+                                </div>
+                            </ValidateForm>
+                        </TabItem>
+                        <TabItem Text="修改密码">
+                            <ValidateForm Model="@passwordModel" OnValidSubmit="@OnValidChangePasswordSubmit">
+                                <div class="mb-3">
+                                    <BootstrapPassword @bind-Value="@passwordModel.Password" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapPassword @bind-Value="@passwordModel.ConfirmPassword" />
+                                </div>
+                                <div>
+                                    <Button IsBlock ButtonType="ButtonType.Submit" IsAsync Text=" 修改密码 "></Button>
+                                </div>
+                            </ValidateForm>
+                        </TabItem>
+                    </Tab>
+                }
+                else
+                {
+                    <h4>请先登录</h4>
+                }
+
+            }
+
+        </BodyTemplate>
+
+    </ModalDialog>
+</Modal>

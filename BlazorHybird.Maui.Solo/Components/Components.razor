@@ -1,0 +1,76 @@
+﻿@inherits AppComponentBase
+@page "/Components"
+@page "/"
+@namespace BlazorHybrid.Components
+
+@using ZXingBlazor.Components
+
+<Title Text="系统设置" />
+
+@if (IsBusy)
+{
+    <Spinner Color="Color.Primary"></Spinner>
+}
+
+@if (ShowImageList && !IsBusy)
+{
+    <h6>图片列表</h6>
+
+    if (PhotoList != null && PhotoList.Any())
+    {
+        <Viewer Images="PhotoList" Width="300px" Height="300px" />
+    }
+}
+@if (IsTakingPhotoH5 && !IsBusy)
+{
+    <UploadToBase64 OnError="OnError" OnChanged="OnChanged" Capture UploadButtonText="拍照" />
+    <UploadToBase64 OnError="OnError" OnChanged="OnChanged" />
+}
+@if (ShowScanBarcode)
+{
+
+    <BarcodeReader ScanResult="OnResult"
+                   Close="(()=>ShowScanBarcode=!ShowScanBarcode)"
+                   OnError="OnError"
+                   Decodeonce="false" />
+}
+
+<Modal @ref="ExtraModal" OnCloseAsync="OnCloseDemoAsync">
+    <ModalDialog Title="Demo" IsDraggable="true">
+        <BodyTemplate>
+            @if (ShowWxQrCode)
+            {
+                <WxQrCode />
+
+            }
+
+        </BodyTemplate>
+
+    </ModalDialog>
+</Modal>
+
+
+<Modal @ref="ExtraLargeModal" OnCloseAsync="OnCloseAsync">
+    <ModalDialog Title="拍照" IsDraggable="true">
+        <BodyTemplate>
+            @if (IsTakingPhoto)
+            {
+                <TakePhoto Capture="OnCapture" />
+            }
+
+        </BodyTemplate>
+
+    </ModalDialog>
+</Modal>
+
+
+<ListView TItem="ResCustomersDto" Items="@DeskList" OnListViewItemClick="OnListViewItemClick">
+    <BodyTemplate>
+        <Card IsCenter="true" IsShadow="true" class="deskIcon">
+            <BodyTemplate>
+                <div class="deskTitle">@context.Name</div>
+                <div class="card-text">@context.Description</div>
+            </BodyTemplate>
+        </Card>
+    </BodyTemplate>
+</ListView>

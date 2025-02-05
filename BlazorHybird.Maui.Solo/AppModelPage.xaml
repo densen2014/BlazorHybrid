@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BlazorHybird.Maui.Solo"
+             xmlns:shared="clr-namespace:BlazorHybrid.Components;assembly=BlazorHybird.Maui.Solo"
+             Title="AppModelPage"
+             x:Class="BlazorHybird.Maui.Solo.AppModelPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <local:MainPage />
+    <local:SensorsPage />
+    <local:NfcPage />
+
+    <NavigationPage Title="Schedule"
+                    IconImageSource="no.png">
+        <x:Arguments>
+            <local:MainPage />
+        </x:Arguments>
+    </NavigationPage>
+
+
+    <!--<StackLayout>
+        <Label Text="This a model/app info page"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+               TextColor="Black"/> 
+    </StackLayout>-->
+
+</TabbedPage> 

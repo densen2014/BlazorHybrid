@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BlazorHybird.Maui.Solo"
+             x:Class="BlazorHybird.Maui.Solo.MainPage"      
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <StackLayout>
+        <StackLayout Orientation="Horizontal" BackgroundColor="White" >
+            <!--<Button Text="Show counter"  Clicked="ButtonShowCounter_Click" Padding ="10"></Button>-->
+            <Button Text="Webview alert" Clicked="ButtonWebviewAlert_Click" Padding ="10"></Button>
+            <Button Text="Home" Clicked="ButtonHome_Click" Padding ="10"></Button>
+            <!--<Button Text="Bing" Clicked="ButtonBing_Click" Padding ="10"></Button>-->
+        </StackLayout>
+
+        <BlazorWebView x:Name="blazorWebView" VerticalOptions="FillAndExpand">
+            <BlazorWebView.RootComponents>
+                <RootComponent Selector="#app" ComponentType="{x:Type local:AppMaui}" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
+    </StackLayout>
+
+</ContentPage>

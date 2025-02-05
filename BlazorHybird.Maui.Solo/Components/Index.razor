@@ -1,0 +1,31 @@
+﻿@inherits AppComponentBase
+@page "/Index"
+@namespace BlazorHybrid.Components
+
+<Title Text="演示 BlazorHybrid" />
+
+@if (!States.IsLoging)
+{
+    <LoginBar Changed="StateHasChanged" />
+
+}
+else if (States.User != null)
+{
+
+    <div class="mb-3">
+        <StatusBar Changed="StateHasChanged" />
+    </div>
+    <div class="px-3">
+
+        @if (States.User.Type == UserType.超级用户 || States.User.Type == UserType.管理员)
+        {
+            <Admins Changed="StateHasChanged" />
+        }
+        else
+        {
+            <UserSteps Changed="StateHasChanged" />
+        }
+
+    </div>
+
+}

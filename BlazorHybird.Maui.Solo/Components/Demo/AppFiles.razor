@@ -1,0 +1,153 @@
+﻿@page "/AppFiles"
+@namespace BlazorHybrid.Components
+@inherits AppComponentBase
+
+@using BootstrapBlazor.Components
+
+<div class="row">
+    @if (!HideTools)
+    {
+        <div class="col-4" style="height: 85vh; overflow: scroll ">
+
+            Files:
+
+            <pre>
+            @{
+                var files = Directory.GetFiles(UploadPath);
+                var dirwww = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "wwwroot");
+                if (System.IO.Directory.Exists(dirwww)) {
+                    files = Directory.GetFiles(dirwww, "*.*", SearchOption.AllDirectories);
+                }
+                else
+                {
+                    dirwww = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "");
+                    if (System.IO.Directory.Exists(dirwww))
+                    {
+                        files = Directory.GetFiles(dirwww, "*.*", SearchOption.AllDirectories);
+                    }
+                }
+                int i = 0;
+                foreach (var item in files)
+                {
+                    i++;
+            <button class="btn btn1 btn-link btn-sm" @onclick="(()=>SelectItem=item)">@($"{i}.{item.Replace (AppDomain.CurrentDomain.BaseDirectory.Replace("/files", ""), "")}")</button><br />
+                }
+            }
+        </pre>
+
+
+
+        </div>
+    }
+
+    <div class="col-8" style="height: 85vh; max-width: 80vw; overflow: scroll ">
+
+        <FilePreviewer FileName="@SelectItem" @key="SelectItem" />
+
+    </div>
+    @if (HideTools)
+    {
+        <a class="btn btn-secondary" @onclick="_=>HideTools=!HideTools">
+            <span class="oi oi-delete" aria-hidden="true"></span> 文件列表
+        </a>
+    }
+    else
+    { <a class="btn btn-secondary" @onclick="_=>HideTools=!HideTools">
+            <span class="oi oi-delete" aria-hidden="true"></span> 隐藏列表
+        </a>
+    }
+</div>
+
+<style>
+    .btn1 {
+        width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        height: auto;
+        overflow: hidden;
+        padding:1px 0 1px 0; 
+    }
+</style>
+
+
+
+@code{
+
+    [NotNull]
+    FilePreviewer? FilePreviewer { get; set; }
+
+    protected string UploadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "uploads");
+
+    Stream? stream { get; set; }
+
+    string? SelectItem { get; set; }
+
+    string? FilePreview { get; set; }
+
+    string? ImagePreview { get; set; }
+
+    new string? Message { get; set; }
+
+    string? Status { get; set; }
+
+    bool HideTools { get; set; }
+
+    private string PopulateImageFromStream(Stream stream)
+    {
+        MemoryStream ms = new MemoryStream();
+        stream.CopyTo(ms);
+        byte[] byteArray = ms.ToArray();
+        var b64String = Convert.ToBase64String(byteArray);
+        return "data:image/png;base64," + b64String;
+    }
+
+
+    async Task DownloadDemoFiles()
+    {
+        FilePreviewer.Reset();
+
+        await ShowBottomMessage("下载演示文件中");
+
+        Status = "下载演示文件中";
+        StateHasChanged();
+
+        string[] url1 = {
+            "sample.jpg", "sample2.jpg", "sample3.jpg",
+            "sample.png",
+            "sample.xlsx", "sample2.xlsx", "sample3.xlsx",
+            "sample.pdf", "sample2.pdf",
+            "sample.docx", "sample2.docx"
+        };
+
+        using (HttpClient client = new HttpClient())
+        {
+            foreach (var item in url1.ToList())
+            {
+                System.Diagnostics.Debug.WriteLine($"下载文件 {item}");
+                HttpResponseMessage response = await client.GetAsync("https://blazor.app1.es/samples/" + item);
+                byte[] content = await response.Content.ReadAsByteArrayAsync();
+                await File.WriteAllBytesAsync(Path.Combine(UploadPath, item), content);
+                await File.WriteAllBytesAsync(Path.Combine(Path.GetTempPath(), item), content);
+            }
+        }
+
+        await File.WriteAllTextAsync(Path.Combine(UploadPath, $"{DateTime.Now:yyMMdd_hhmmss}.txt"), DateTime.Now.ToString());
+        System.Diagnostics.Debug.WriteLine($"写入文件txt完成");
+
+        Status = "下载演示文件完成.";
+        await ShowBottomMessage("下载演示文件完成");
+
+    }
+
+    async Task EmptyFiles()
+    {
+        FilePreviewer.Reset();
+
+        Directory.GetFiles(UploadPath).ToList().ForEach(file => File.Delete(file));
+
+        Status = "已清空文件.";
+        await ShowBottomMessage("已清空文件");
+    }
+
+}

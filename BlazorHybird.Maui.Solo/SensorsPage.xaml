@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BlazorHybird.Maui.Solo"
+             xmlns:shared="clr-namespace:BlazorHybrid.Components;assembly=BlazorHybird.Maui.Solo"
+             Title="SensorsPage"
+             x:Class="BlazorHybird.Maui.Solo.SensorsPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <StackLayout>
+        <Label Text="SensorsPage"
+                VerticalOptions="Center"
+                HorizontalOptions="Center" TextColor="Black"/>
+        <!-- Other views go here -->
+    </StackLayout>
+
+</ContentPage>

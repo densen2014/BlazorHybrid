@@ -1,0 +1,165 @@
+﻿@page "/MindMaps"
+@attribute [TabItemOption(Text = "思维导图")]
+@inherits AppComponentBase
+@using BootstrapBlazor.Components.MindMaps
+@namespace BlazorHybrid.Components
+
+<a href="https://www.nuget.org/packages/BootstrapBlazor.MindMap#readme-body-tab"><h3>思维导图 MindMap</h3></a>
+<hr />
+<a href="https://github.com/densen2014/Densen.Extensions/blob/master/Demo/DemoShared/Pages/MindMaps.razor"><h5>页面源码</h5></a>
+
+<p>Tab:添加新节点</p>
+<p>鼠标可拖动节点排列</p>
+
+<MindMap @ref="MindMap" Data="@Data" OnReceive="@OnReceive" OnError="@OnError" StyleCss="height: 55vh;" />
+
+
+<Button Text="例子1" OnClick="Sample" />
+<Button Text="一周安排" OnClick="Sample2" />
+<Button Text="下载为PNG" OnClick="Export" />
+<Button Text="下载为json" OnClick="ExportJson" />
+@*<Button Text="导出PNG" OnClick="ExportPng" />*@
+<Button Text="导出对象" OnClick="GetFullData" />
+<Button Text="导出json对象" OnClick="GetData" />
+<Button Text="导入数据(json)" OnClick="SetData" />
+<Button Text="复位" OnClick="Reset" />
+
+<Textarea @bind-Value="Message" rows="10" />
+
+<a href="https://github.com/wanglin2/mind-map/blob/main/simple-mind-map/example/exampleData.js?WT.mc_id=DT-MVP-5005078"><h6>数据示例</h6></a>
+
+
+@code{
+
+    [NotNull]
+    MindMap? MindMap { get; set; }
+
+    new string? Message { get; set; } = "";
+
+    /// <summary>
+    /// 初始化数据
+    /// </summary>
+    public MindMapNode Data { get; set; } = new MindMapNode
+    {
+        Data = new NodeData
+        {
+            Text = "根节点",
+            Generalization = new Generalization
+            {
+                Text = "概要的内容"
+            },
+
+        },
+        Children = new List<MindMapNode>()
+    {
+            new MindMapNode
+            {
+                Data = new NodeData
+                {
+                    Text = "二级节点1",
+                },
+                    Children = new List<MindMapNode>()
+                {
+                        new MindMapNode
+                        {
+                            Data = new NodeData
+                            {
+                                Text = "分支主题1",
+                            },
+                        },
+                        new MindMapNode
+                        {
+                            Data = new NodeData
+                            {
+                                Text = "分支主题2",
+                            },
+                        },
+                        new MindMapNode
+                        {
+                            Data = new NodeData
+                            {
+                                Text = "分支主题3",
+                            },
+                        }
+                    }
+            },
+            new MindMapNode
+            {
+                Data = new NodeData
+                {
+                    Text = "二级节点2",
+                },
+            },
+            new MindMapNode
+            {
+                Data = new NodeData
+                {
+                    Text = "二级节点3",
+                },
+            }
+        }
+    };
+
+    private Task OnReceive(string? message)
+    {
+        Message = message;
+        return Task.CompletedTask;
+    }
+
+    private Task OnError(string message)
+    {
+        Message = message;
+        return Task.CompletedTask;
+    }
+
+    async Task Export()
+    {
+        await MindMap.Export();
+        await ShowBottomMessage("下载Png");
+    }
+
+    async Task ExportJson()
+    {
+        await MindMap.Export("json", WithConfig: false);
+        await ShowBottomMessage("下载Json");
+    }
+
+    async Task ExportPng()
+    {
+        await MindMap.Export(IsDownload: false, WithConfig: false);
+        await ShowBottomMessage("已导出Png");
+    }
+
+    async Task GetFullData()
+    {
+        await MindMap.GetData();
+    }
+
+    async Task GetData()
+    {
+        await MindMap.GetData(false);
+    }
+
+    async Task SetData()
+    {
+        if (Message != null) await MindMap.SetData(Message);
+    }
+
+    async Task Reset()
+    {
+        await MindMap.Reset();
+    }
+
+    async Task Sample()
+    {
+        Message = SampleData;
+        await SetData();
+    }
+
+    async Task Sample2()
+    {
+        Message = SampleData2;
+        await SetData();
+    }
+
+}

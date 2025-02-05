@@ -1,0 +1,33 @@
+﻿@inherits AppComponentBase
+@using System.Linq.Expressions
+@namespace BlazorHybrid.Components
+
+<PageTitle>工程列表</PageTitle>
+<h4 class="m-10">工程名称列表</h4>
+
+<TablePollo TItem="SysLog"
+            ItemDetails="NullClass"
+            ItemDetailsII="NullClass"
+            ItemDetailsIII="NullClass"
+            ClickToSelect
+            ShowDefaultButtons="false"
+            ShowExtendButtons="false"
+            ShowExportButton="false"
+            IsMultipleSelect="false"
+            ShowDetailRowS
+            RenderMode="TableRenderMode.Table"
+            OnClickRowCallback="ClickRow"
+            IsAutoCollapsedToolbarButton="false"
+            DoubleClickToEdit="false" />
+@code{
+
+
+    private Task ClickRow(SysLog project)
+    {
+
+        States.Steps = 2;
+        Changed.InvokeAsync();
+
+        return Task.CompletedTask;
+    }
+}

@@ -1,0 +1,100 @@
+﻿@inherits AppComponentBase
+@namespace BlazorHybrid.Components
+@page "/bluetooth"
+
+<h3>蓝牙</h3>
+
+@{ 
+    var btnclass = "col-3 col-sm-3 col-md-4 col-lg-auto";
+}
+
+<Tab IsLazyLoadTabItem>
+    <TabItem Text="工具">
+        <div class="row g-3">
+            <div class="@btnclass">
+                <Button Text="返回" OnClick="BackToHome" />
+            </div>
+            <div class="@btnclass">
+                <Button Text="扫描外设" @attributes=IsScanningCss OnClick="ScanDevice" />
+            </div>
+            @if (Devices != null)
+            {
+                <div class="@btnclass">
+                    <Button Text="连接" OnClick="OnDeviceSelect" />
+                </div>
+                <div class="@btnclass">
+                    <Button Text="断开" OnClick="OnDisConnectDevice" />
+                </div>
+                @if (Characteristics != null)
+                {
+                    <div class="@btnclass">
+                        <Button Text="写入" OnClick="ReadDeviceName" />
+                    </div>
+                    <div class="@btnclass">
+                        <Button Text="读取" OnClick="ReadDeviceName" />
+                    </div>
+                    <div class="@btnclass">
+                        <Button Text="打印CPCL" OnClick="SendDataAsyncCPCLBarcode" />
+                    </div>
+                }
+            }
+        <div class="@btnclass">
+            <Select TValue="string" Color="Color.Primary" Items="DemoList" OnSelectedItemChanged="OnDemoDeviceSelect"  />
+        </div>
+        </div>
+        @if (Devices != null)
+        {
+
+            <div class="row mt-3 g-3">
+                <div class="col-12 col-m-6 col-sm-6">
+                    <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
+                </div>
+                @if (Services != null)
+                {
+                    <div class="col-12 col-m-6 col-sm-6">
+                        <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
+                    </div>
+                    @if (Characteristics != null)
+                    {
+                        <div class="col-12 col-m-6 col-sm-6">
+                            <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
+                        </div>
+                        @if (ReadResult != null)
+                        {
+                            <div class="col-12 col-m-6 col-sm-6">
+                                <Display TValue="string" Value="@ReadResult" />
+                            </div>
+                        }
+                    }
+                }
+            </div>
+
+        }
+
+        @if (BleInfo.Name != null)
+        {
+
+            <div class="g-3">
+                历史连接 <br />
+                @BleInfo.Name <br />
+                @BleInfo.DeviceID <br />
+                @BleInfo.Serviceid <br />
+                @BleInfo.Characteristic <br />
+                @ReadResult <br />
+            </div>
+
+        }
+        <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
+
+<pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>
+
+    </TabItem>
+    <TabItem Text="心率带">
+    </TabItem>
+    <TabItem Text="电量">
+        <BtBatteryLevelPage />
+    </TabItem>
+    <TabItem Text="打印">
+        <BluetoothPrinter />
+    </TabItem>
+</Tab>

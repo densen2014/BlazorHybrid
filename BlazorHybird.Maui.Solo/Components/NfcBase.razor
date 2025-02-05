@@ -1,0 +1,52 @@
+﻿@page "/NfcBase"
+@namespace BlazorHybrid.Components
+
+<h3>NFC</h3>
+
+<div class="row g-3">
+
+    <Button OnClick="BeginListening"
+            IsDisabled="NfcIsDisabled"
+            Text="读取标签" />
+
+    <Button OnClick="StopListening"
+            IsDisabled="NfcIsDisabled"
+            Text="停止侦听器" />
+
+    <GroupBox Title="写入">
+
+        @*<CheckBox TValue="bool" DisplayText="双向绑定" ShowLabel="true" @bind-value="@ChkReadOnly" IsDisabled="NfcIsDisabled" />*@
+
+        <Button OnClick="Button_Clicked_StartWriting"
+                IsDisabled="NfcIsDisabled"
+                Text="标签写入文本" />
+
+        <Button OnClick="Button_Clicked_StartWriting_Uri"
+                IsDisabled="NfcIsDisabled"
+                Text="标签写入网址" />
+
+        <Button OnClick="Button_Clicked_StartWriting_Custom"
+                IsDisabled="NfcIsDisabled"
+                Text="标签写入自定义内容" />
+
+    </GroupBox>
+
+    <Button OnClick="Button_Clicked_FormatTag"
+            IsDisabled="NfcIsDisabled"
+            Text="标签清除" />
+
+    @if (DeviceIsListening)
+    {
+        <p>监听NFC标签...</p>
+
+    }
+
+    @if (NfcIsDisabled)
+    {
+        <p>NFC已禁用</p>
+
+    }
+
+</div>
+
+<pre style="max-height: 500px; overflow-y: scroll; white-space: pre-wrap; word-wrap: break-word;">@Message</pre>

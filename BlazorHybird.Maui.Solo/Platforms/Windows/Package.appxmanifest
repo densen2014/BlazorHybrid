@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:uap6="http://schemas.microsoft.com/appx/manifest/uap/windows10/6"
+  xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10"
+  xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
+  xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
+  IgnorableNamespaces="uap rescap uap6 iot uap2 uap4">
+
+    <Identity Name="maui-package-name-placeholder" Publisher="CN=User Name" Version="0.0.0.0" />
+
+    <mp:PhoneIdentity PhoneProductId="02ACC9D9-9FD7-4242-A284-F0B56352C41C" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
+    <Properties>
+        <DisplayName>$placeholder$</DisplayName>
+        <PublisherDisplayName>User Name</PublisherDisplayName>
+        <Logo>$placeholder$.png</Logo>
+    </Properties>
+
+    <Dependencies>
+        <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+        <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+    </Dependencies>
+
+    <Resources>
+        <Resource Language="x-generate" />
+    </Resources>
+
+    <Applications>
+        <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
+            <uap:VisualElements
+              DisplayName="$placeholder$"
+              Description="$placeholder$"
+              Square150x150Logo="$placeholder$.png"
+              Square44x44Logo="$placeholder$.png"
+              BackgroundColor="transparent">
+                <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png" />
+                <uap:SplashScreen Image="$placeholder$.png" />
+                <uap:InitialRotationPreference>
+                    <uap:Rotation Preference="landscape"/>
+                    <uap:Rotation Preference="landscapeFlipped"/>
+                    <uap:Rotation Preference="portraitFlipped"/>
+                    <uap:Rotation Preference="portrait"/>
+                </uap:InitialRotationPreference>
+            </uap:VisualElements>
+        </Application>
+    </Applications>
+
+    <Capabilities>
+        <rescap:Capability Name="runFullTrust" />
+        <uap:Capability Name="picturesLibrary"/>
+        <uap:Capability Name="videosLibrary"/>
+        <uap6:Capability Name="graphicsCapture"/>
+        <Capability Name="codeGeneration"/>
+        <iot:Capability Name="lowLevelDevices"/>
+        <uap:Capability Name="removableStorage"/>
+        <uap2:Capability Name="spatialPerception"/>
+        <uap4:Capability Name="userDataTasks"/>
+        <uap:Capability Name="userAccountInformation"/>
+        <Capability Name="internetClient"/>
+        <uap:Capability Name="voipCall"/>
+        <DeviceCapability Name="microphone"/>
+        <DeviceCapability Name="bluetooth"/>
+        <DeviceCapability Name="webcam"/>
+        <DeviceCapability Name="location"/>
+        <DeviceCapability Name="lowLevel"/>
+        <DeviceCapability Name="pointOfService"/>
+        <DeviceCapability Name="proximity"/>
+    </Capabilities>
+
+</Package>

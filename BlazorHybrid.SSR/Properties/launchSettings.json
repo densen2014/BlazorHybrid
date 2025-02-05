@@ -1,4 +1,4 @@
-﻿{
+{
   "profiles": {
     "BlazorHybrid.SSR": {
       "commandName": "Project",
@@ -25,5 +25,13 @@
       },
       "distributionName": ""
     }
-  } 
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:60327/",
+      "sslPort": 44391
+    }
+  }
 }

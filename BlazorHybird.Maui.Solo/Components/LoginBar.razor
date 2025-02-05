@@ -1,0 +1,108 @@
+﻿@inherits AppComponentBase
+@namespace BlazorHybrid.Components
+
+<div class="container">
+    <main role="main">
+        @*<div class="d-flex justify-content-center align-items-center">
+                <h4>BlazorHybrid</h4>
+            </div>
+            <br />*@
+        <div class="d-flex justify-content-center align-items-center">
+            <section style="min-width:70%">
+                <Tab IsLazyLoadTabItem="true">
+                    @*<TabItem Text="功能">
+                            <PlatformFeatures />
+                        </TabItem>*@
+                    <TabItem Text="登录">
+                        <div class="pb-1 m-5">
+                            <ValidateForm Model="@States" OnValidSubmit="@OnValidSubmit">
+
+                                <h2>使用账号和密码登录</h2>
+                                <hr />
+                                <div class="mb-3">
+                                    <BootstrapInput @bind-Value="@States.Username" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapPassword @bind-Value="@States.Password" />
+                                </div>
+                                <div>
+                                    <Button IsBlock ButtonType="ButtonType.Submit" IsAsync Text=" 登 录 "></Button>
+                                </div>
+                                <div class="mb-3">
+                                    <Switch @bind-Value="@States.Remember" />
+                                </div>
+                                <div class="mb-3">
+                                    @if (States.Remember)
+                                    {
+                                        <Switch @bind-Value="@States.RememberPassword" />
+                                    }
+                                </div>
+                                <div class="mb-3">
+                                    <i>*测试管理员账号 root 用户账号 user guest 密码 121121</i>
+                                </div>
+                            </ValidateForm>
+                        </div>
+                    </TabItem>
+                    <TabItem Text="注册">
+                        <div class="pb-1 m-5">
+                            <ValidateForm Model="@NewUser" OnValidSubmit="@OnValidRegister">
+
+                                <h2>注册新账号,注册后请联系管理员激活</h2>
+                                <hr />
+                                <div class="mb-3">
+                                    <BootstrapInput @bind-Value="@NewUser.FullName" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapInput @bind-Value="@NewUser.Company" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapInput @bind-Value="@NewUser.Username" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapPassword @bind-Value="@NewUser.Password" />
+                                </div>
+                                <div class="mb-3">
+                                    <BootstrapPassword @bind-Value="@NewUser.ConfirmPassword" />
+                                </div>
+                                <div>
+                                    <Button IsBlock ButtonType="ButtonType.Submit" IsAsync Text=" 注册账号 "></Button>
+                                </div>
+                                <div class="mb-3">
+                                    <Switch @bind-Value="@States.Remember" />
+                                </div>
+                                <div class="mb-3">
+                                    @if (States.Remember)
+                                    {
+                                        <Switch @bind-Value="@States.RememberPassword" />
+                                    }
+                                </div>
+                            </ValidateForm>
+                        </div>
+                    </TabItem>
+                    @*<TabItem Text="测试">
+                            <div class="pb-1 m-5">
+                                <Button Text="异步请求" IsAsync="true" Icon="fa-solid fa-fw fa-font-awesome" OnClick="@ClickAsyncButton" />
+
+                                <div>Count:@Count</div>
+
+                                @code{
+                                    private int Count = 0;
+
+                                    private async Task ClickAsyncButton()
+                                    {
+                                        await Task.Delay(5000);
+                                        Count++;
+                                        //StateHasChanged();
+                                    }
+                                }
+                            </div>
+                        </TabItem>*@
+                </Tab>
+            </section>
+        </div>
+
+        <br />
+        <br />
+        <br />
+    </main>
+</div>

@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BlazorHybird.Maui.Solo"
+             xmlns:shared="clr-namespace:BlazorHybrid.Components;assembly=BlazorHybird.Maui.Solo"
+             Title="NFC"
+             x:Class="BlazorHybird.Maui.Solo.NfcPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="BorderColor" Value="Gray" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="BackgroundColor" Value="WhiteSmoke" />
+                <Setter Property="TextTransform" Value="Uppercase" />
+                <Setter Property="TextColor" Value="Gray" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView x:Name="nfcView">
+        <StackLayout VerticalOptions="CenterAndExpand" Spacing="10" Margin="50,0">
+            <Label FontSize="Title"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Text="NFC" />
+
+            <Button Clicked="Button_Clicked_StartListening"
+                    IsEnabled="{Binding NfcIsEnabled}"
+                    Text="读取标签" />
+
+            <Button Clicked="Button_Clicked_StopListening"
+                    IsEnabled="{Binding NfcIsEnabled}"
+                    Text="停止侦听器" />
+
+            <Frame BorderColor="Gray" HasShadow="False">
+                <StackLayout Spacing="5">
+
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                        <CheckBox x:Name="ChkReadOnly"
+                                  IsChecked="False"
+                                  IsEnabled="{Binding NfcIsEnabled}"
+                                  VerticalOptions="Center"
+                                  Color="Red" />
+
+                        <Label FontAttributes="Bold"
+                               Text="使标签为只读"
+                               TextColor="Red"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+
+                    <Button Clicked="Button_Clicked_StartWriting"
+                            IsEnabled="{Binding NfcIsEnabled}"
+                            Text="标签写入文本" />
+
+                    <Button Clicked="Button_Clicked_StartWriting_Uri"
+                            IsEnabled="{Binding NfcIsEnabled}"
+                            Text="标签写入网址" />
+
+                    <Button Clicked="Button_Clicked_StartWriting_Custom"
+                            IsEnabled="{Binding NfcIsEnabled}"
+                            Text="标签写入自定义内容" />
+
+                </StackLayout>
+            </Frame>
+
+            <Button Clicked="Button_Clicked_FormatTag"
+                    IsEnabled="{Binding NfcIsEnabled}"
+                    Text="标签清除" />
+
+            <Label Margin="0,6,0,0"
+                   Padding="12,6"
+                   BackgroundColor="Blue"
+                   HorizontalOptions="CenterAndExpand"
+                   IsVisible="{Binding DeviceIsListening}"
+                   Text="监听NFC标签..."
+                   TextColor="White" />
+
+            <Label Margin="0,6,0,0"
+                   Padding="12,6"
+                   BackgroundColor="Red"
+                   HorizontalOptions="CenterAndExpand"
+                   IsVisible="{Binding NfcIsDisabled}"
+                   Text="NFC已禁用"
+                   TextColor="White" />
+
+            <Button Clicked="Button_Clicked_Close" 
+                            Text="关闭" />
+
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

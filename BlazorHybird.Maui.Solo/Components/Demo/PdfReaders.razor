@@ -1,0 +1,14 @@
+﻿@page "/pdfReaders"
+@attribute [TabItemOption(Text = "PDF阅读器")]
+@using System.ComponentModel
+@namespace BlazorHybrid.Components
+
+<div class="row g-3">
+    <div class="col-12">
+        <BootstrapInputGroup>
+            <BootstrapInput @bind-Value="@FileNameStream" />
+            <Button Color="Color.Primary" OnClick="Apply">加载</Button>
+        </BootstrapInputGroup>
+    </div>
+</div>
+<PdfReader @ref="pdfReader" FileName="@FileNameStream" StreamMode />
