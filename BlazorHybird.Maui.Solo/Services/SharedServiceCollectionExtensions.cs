@@ -8,6 +8,7 @@ using BlazorHybrid.Components;
 using BootstrapBlazor.Components;
 using BootstrapBlazor.WebAPI.Services;
 using Densen.DataAcces.FreeSql;
+using Densen.DataAcces.MemoryData;
 using System.Globalization;
 #if WINDOWS
 using Windows.Storage;
@@ -64,9 +65,6 @@ public static class SharedServiceCollectionExtensions
         string dbpath = "hybrid.db";
 #endif
 
-        //string connstr = $"data source=1.2.3.4;port=3306;user id=root;password=root; initial catalog=hybrid;charset=utf8; sslmode=none;min pool size=1";
-
-
         services.AddFreeSql(option =>
         {
             option
@@ -75,15 +73,10 @@ public static class SharedServiceCollectionExtensions
                  .UseAutoSyncStructure(true)
                  //调试sql语句输出
                  .UseMonitorCommand(cmd => System.Console.WriteLine(cmd.CommandText + Environment.NewLine))
-                 //#else
-                 //                 .UseConnectionString(FreeSql.DataType.MySql, connstr, typeof(FreeSql.MySql.MySqlProvider<>))
-                 //#endif
                  .UseNoneCommandParameter(true);
 
         }, configEntityPropertyImage: true);
 
-        //全功能版
-        services.AddScoped(typeof(FreeSqlDataService<>));
         services.AddDensenExtensions();
         services.ConfigureJsonLocalizationOptions(op =>
         {
@@ -91,6 +84,8 @@ public static class SharedServiceCollectionExtensions
             op.IgnoreLocalizerMissing = true;
 
         });
+        //附加查询条件数据库操作服务
+        services.AddTransient(typeof(FreeSqlDataService<>));
         services.AddTransient<INativeFeatures, NullFeatureService>();
         services.AddScoped<ILookupService, AppLookupService>();
         services.AddScoped<ICookie, CookieService>();

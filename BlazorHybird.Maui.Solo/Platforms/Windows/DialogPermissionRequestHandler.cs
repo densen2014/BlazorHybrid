@@ -62,7 +62,7 @@ internal class DialogPermissionRequestHandler : IPermissionRequestHandler
             CoreWebView2PermissionKind.OtherSensors => "此应用程序需要访问您设备的通用传感器。请根据要求授予权限.",
             CoreWebView2PermissionKind.ClipboardRead => "此应用程序需要访问您的剪贴板。请根据要求授予权限.",
             //CoreWebView2PermissionKind.MultipleAutomaticDownloads => "此应用程序需要自动下载多个文件。请根据要求授予权限.",
-            //CoreWebView2PermissionKind.FileReadWrite => "此应用程序需要读取和写入设备上的文件或文件夹。请根据要求授予权限.",
+            CoreWebView2PermissionKind.FileReadWrite => "此应用程序需要读取和写入设备上的文件或文件夹。请根据要求授予权限.",
             //CoreWebView2PermissionKind.Autoplay => "此应用程序需要站点上自动播放音频和视频。请根据要求授予权限.",
             //CoreWebView2PermissionKind.LocalFonts => "此应用程序需要使用Web字体。请根据要求授予权限.",
             //CoreWebView2PermissionKind.MidiSystemExclusiveMessages => "此应用程序需要向/从 MIDI（乐器数字接口）设备发送和接收系统独占消息。请根据要求授予权限.",

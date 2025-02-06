@@ -207,11 +207,12 @@ public partial class MauiFeatureService : Page, INativeFeatures
 
         if (MediaPicker.Default.IsCaptureSupported)
         {
-#if WINDOWS
-            CameraCaptureUI(new MediaPickerOptions() { Title = "拍照" });
-            var res = await CaptureFileAsync(CameraCaptureUIMode.Photo);
-            return res?.Path;
-#else
+//#if WINDOWS
+//            CameraCaptureUI(new MediaPickerOptions() { Title = "拍照" });
+//            var res = await CaptureFileAsync(CameraCaptureUIMode.Photo);
+//            return res?.Path;
+//#else
+//#endif
             FileResult? photo = await MediaPicker.Default.CapturePhotoAsync();
 
             if (photo != null)
@@ -234,7 +235,6 @@ public partial class MauiFeatureService : Page, INativeFeatures
                 }
             }
             return string.Empty;
-#endif
         }
 
         return string.Empty;

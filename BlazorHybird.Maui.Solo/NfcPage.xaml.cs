@@ -224,7 +224,7 @@ public partial class NfcPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void Current_OniOSReadingSessionCancelled(object sender, EventArgs e) => Debug("iOS NFC Session has been cancelled");
+    void Current_OniOSReadingSessionCancelled(object? sender, EventArgs? e) => Debug("iOS NFC Session has been cancelled");
 
     /// <summary>
     /// 在标记上发布数据时引发的事件
@@ -262,7 +262,7 @@ public partial class NfcPage : ContentPage
 
         try
         {
-            NFCNdefRecord record = null;
+            NFCNdefRecord? record = null;
             switch (_type)
             {
                 case NFCNdefTypeFormat.WellKnown:
@@ -419,7 +419,7 @@ public partial class NfcPage : ContentPage
     /// <param name="message">要显示的消息</param>
     /// <param name="title">消息标题</param>
     /// <returns>要执行的任务</returns>
-    Task ShowAlert(string message, string title = null) => DisplayAlert(string.IsNullOrWhiteSpace(title) ? ALERT_TITLE : title, message, "OK");
+    Task ShowAlert(string message, string? title = null) => DisplayAlert(string.IsNullOrWhiteSpace(title) ? ALERT_TITLE : title, message, "OK");
 
     /// <summary>
     /// 如果用户的设备平台不是iOS，则开始监听NFC标签的任务

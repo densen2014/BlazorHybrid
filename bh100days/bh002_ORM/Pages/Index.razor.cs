@@ -56,7 +56,7 @@ public partial class Index
     async Task OrmTestAsync()
     {
 #if WINDOWS
-        string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "hybrid.db");
+        string dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "hybrid.db");
 #elif ANDROID || IOS || MACCATALYST
         string dbpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "hybrid.db");
 #else
