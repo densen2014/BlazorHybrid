@@ -144,7 +144,7 @@ public class BleService
 
     /// <summary>
     /// 服务名称。
-    /// 如果 <see cref="Id"/> 是标准 Id，则返回名称。请参阅<see cref="KnownServices"/>
+    /// 如果 <see cref="Id"/> 是标准 Id，则返回名称
     /// </summary>
     [DisplayName("服务名称")]
     public string? Name { get; set; }
@@ -189,7 +189,7 @@ public class BleCharacteristic
     public string? Name { get; set; }
 
     /// <summary>
-    /// 获取 <see cref="Value"/> 作为 UTF8 编码字符串表示形式
+    /// 获取 Value 作为 UTF8 编码字符串表示形式
     /// </summary>
     public string? StringValue { get; set; }
 

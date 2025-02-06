@@ -14,7 +14,7 @@ namespace BlazorHybrid.Components;
 public class NfcServices
 {
 
-    public async Task GetBatteryLevel()
+    public Task GetBatteryLevel()
     {
         // Event raised when a ndef message is received.
         CrossNFC.Current.OnMessageReceived += Current_OnMessageReceived;
@@ -44,6 +44,7 @@ public class NfcServices
             MimeType = "application/com.companyname.yourapp",
             //Payload = NFCUtils.EncodeToByteArray(_writePayload)
         };
+        return Task.CompletedTask;
     }
 
     private void Current_OniOSReadingSessionCancelled(object? sender, EventArgs e)

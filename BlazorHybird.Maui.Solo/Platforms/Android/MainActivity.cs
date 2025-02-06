@@ -23,7 +23,7 @@ public class MainActivity : MauiAppCompatActivity
 {
     DateTime? lastBackKeyDownTime;
 
-    protected override void OnCreate(Bundle savedInstanceState)
+    protected override void OnCreate(Bundle? savedInstanceState)
     {
         // 初始化
         CrossNFC.Init(this);
@@ -43,7 +43,7 @@ public class MainActivity : MauiAppCompatActivity
         CrossNFC.OnResume();
     }
 
-    protected override void OnNewIntent(Intent intent)
+    protected override void OnNewIntent(Intent? intent)
     {
         base.OnNewIntent(intent);
 
@@ -54,9 +54,9 @@ public class MainActivity : MauiAppCompatActivity
         Platform.OnNewIntent(intent);
     }
 
-    public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)
+    public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent? e)
     {
-        if (keyCode == Keycode.Back && e.Action == KeyEventActions.Down)
+        if (keyCode == Keycode.Back && e != null && e.Action == KeyEventActions.Down)
         {
             if (!lastBackKeyDownTime.HasValue || DateTime.Now - lastBackKeyDownTime.Value > new TimeSpan(0, 0, 2))
             {
