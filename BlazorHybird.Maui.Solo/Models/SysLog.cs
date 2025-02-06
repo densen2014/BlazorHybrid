@@ -17,7 +17,7 @@ namespace BlazorHybrid.Components;
 public class SysLog
 {
 
-    [AutoGenerateColumn(Editable = false, DefaultSort = true, DefaultSortOrder = SortOrder.Desc)]
+    [AutoGenerateColumn(IsReadonlyWhenEdit = true,IsReadonlyWhenAdd = true, DefaultSort = true, DefaultSortOrder = SortOrder.Desc)]
     [Column(IsIdentity = true, IsPrimary = true)]
     [DisplayName("序号")]
     public int ID { get; set; }
@@ -35,7 +35,7 @@ public class SysLog
     /// <summary>
     /// 自动填写,第一次建立就填写登录的用户名
     /// </summary>
-    [AutoGenerateColumn(Visible = false, Editable = false)]
+    [AutoGenerateColumn(Visible = false, IsReadonlyWhenEdit = true,IsReadonlyWhenAdd = true)]
     [DisplayName("经手人")]
     public Guid? Operator { get; set; }
 

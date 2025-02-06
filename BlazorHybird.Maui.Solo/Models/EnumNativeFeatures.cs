@@ -8,9 +8,8 @@ using System.ComponentModel;
 
 namespace BlazorHybrid.Components;
 
-/// <summary>
-/// https://learn.microsoft.com/zh-cn/dotnet/maui/platform-integration/device/sensors?view=net-maui-8.0&WT.mc_id=DT-MVP-5005078&tabs=windows
-/// </summary>
+//参考 https://learn.microsoft.com/zh-cn/dotnet/maui/platform-integration/device/sensors?view=net-maui-8.0&WT.mc_id=DT-MVP-5005078&tabs=windows
+
 public enum EnumNativeFeatures
 {
     None,

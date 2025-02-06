@@ -5,7 +5,7 @@
 // **********************************
 
 using BlazorHybrid.Components;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging; 
 using Microsoft.Maui.LifecycleEvents;
 using System.Diagnostics;
 
