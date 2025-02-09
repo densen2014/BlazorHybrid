@@ -749,7 +749,7 @@ public partial class BluetoothLEServices
             var ary = await ReadDataAsync(deviceNameCharacteristic);
             //var ary = await StartNotifyDataAsync(deviceNameCharacteristic);
 
-            if (ary != null)
+            if (ary != null && ary.Length != 0)
             {
                 //getUint8：读取1个字节，返回一个无符号的8位整数。
                 //  logII('> Battery Level is ' + value.getUint8(0) + '%');
