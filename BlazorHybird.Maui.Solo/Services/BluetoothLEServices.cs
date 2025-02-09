@@ -770,7 +770,7 @@ public partial class BluetoothLEServices
                 OnMessage?.Invoke("数据为空");
             }
         }
-        else
+        else if (deviceNameCharacteristic.CanUpdate)
         {
             OnMessage?.Invoke("不可读, 接收消息通知.");
             #region notify类型特征值接收消息通知
