@@ -265,8 +265,21 @@ public partial class Index : IAsyncDisposable
     private async Task OnCharacteristSelect(SelectedItem item)
     {
         if (IsAutoConnect) return;
-        BleInfo.Characteristic = Guid.Parse(item.Value);
-        await ReadDeviceName();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(item.Value))
+            {
+                return;
+            }
+            BleInfo.Characteristic = Guid.Parse(item.Value);
+            await ReadDeviceName();
+        }
+        catch (Exception)
+        {
+
+            Message = $"特征码无效";
+            await ToastService.Error("提示", Message);
+        }
     }
 
     //读取数值
