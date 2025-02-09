@@ -632,21 +632,29 @@ public partial class BluetoothLEServices
 
             var characteristics = await genericService.GetCharacteristicsAsync();
             var list = new List<BleCharacteristic>();
-            characteristics.ToList().ForEach(a =>
+            if (characteristics == null)
             {
-                OnMessage?.Invoke($"获取特征, Id={a.Id}, Name={a.Name}, Uuid={a.Uuid}, CanRead={a.CanRead}, CanUpdate={a.CanUpdate}, CanWrite={a.CanWrite}, StringValue={a.StringValue},");
-                list.Add(new BleCharacteristic()
+                OnMessage?.Invoke($"获取特征值失败.");
+                return null;
+            }
+            else
+            { 
+                characteristics.ToList().ForEach(a =>
                 {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Uuid = a.Uuid,
-                    CanRead = a.CanRead,
-                    CanUpdate = a.CanUpdate,
-                    CanWrite = a.CanWrite,
-                    StringValue = a.StringValue
+                    OnMessage?.Invoke($"获取特征, Id={a.Id}, Name={a.Name}, Uuid={a.Uuid}, CanRead={a.CanRead}, CanUpdate={a.CanUpdate}, CanWrite={a.CanWrite}, StringValue={a.StringValue},");
+                    list.Add(new BleCharacteristic()
+                    {
+                        Id = a.Id,
+                        Name = a.Name,
+                        Uuid = a.Uuid,
+                        CanRead = a.CanRead,
+                        CanUpdate = a.CanUpdate,
+                        CanWrite = a.CanWrite,
+                        StringValue = a.StringValue
+                    });
                 });
-            });
-            return list;
+                return list;
+            }
         }
         catch (Exception e)
         {
