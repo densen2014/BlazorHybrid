@@ -14,6 +14,8 @@ public partial class MainPage : TabbedPage
     public MainPage()
     {
         InitializeComponent();
+
+        //附加本机功能处理
         WebView? wvBrowser = FindByName("webView") as WebView;
         api = new NativeBridge(wvBrowser);
         api.AddTarget("dialogs", new NativeApi());
