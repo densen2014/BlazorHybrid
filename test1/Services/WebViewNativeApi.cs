@@ -107,7 +107,7 @@ public class NativeBridge
         }
     }
 
-    private void OnWebViewInit(object? sender, WebNavigatedEventArgs e)
+    private async void OnWebViewInit(object? sender, WebNavigatedEventArgs e)
     {
 
         var currentDomain = new Uri(e.Url).Host;
@@ -117,13 +117,21 @@ public class NativeBridge
 
             lastDomain = currentDomain;
         }
+        else
+        {
+            var isInjected = await RunJS("window.dialogs !== undefined");
+            if (isInjected == "false")
+            {
+                _isInit = false;
+            }
+        }
 
         if (!_isInit)
         {
-            RunJS(INTERFACE_JS);
+            _ = await RunJS(INTERFACE_JS);
             if (TargetJS != null)
             {
-                RunJS(TargetJS);
+                _ = await RunJS(TargetJS);
             }
 
             foreach (KeyValuePair<(string, string), object> entry in _targets)
