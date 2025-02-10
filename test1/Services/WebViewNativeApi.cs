@@ -80,7 +80,7 @@ public class NativeBridge
     private readonly Dictionary<(string, string), object> _targets = [];
     private bool _isInit = false;
     private (string?, string?, string?, object?) _query = ("", "", "", null);
-
+    private string? lastDomain;
     public string? TargetJS;
 
     public NativeBridge(WebView? wv)
@@ -109,6 +109,15 @@ public class NativeBridge
 
     private void OnWebViewInit(object? sender, WebNavigatedEventArgs e)
     {
+
+        var currentDomain = new Uri(e.Url).Host;
+        if (lastDomain != currentDomain)
+        {
+            _isInit = false;
+
+            lastDomain = currentDomain;
+        }
+
         if (!_isInit)
         {
             RunJS(INTERFACE_JS);
