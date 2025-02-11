@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme='light'>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Native API</title>
+</head>
+<body>
+
+    <div style='display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%'>
+        <h2 style='font-family: script'><i>Hybrid WebView</i></h2>
+        <div id='webtext' style='font-family: script'><b>Native API</b></div><br />
+        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='setConfig()'>setConfig</button>
+        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='getConfig()'>getConfig</button>
+        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='openDialog()'>openDialog</button>
+        <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' onclick='saveFile()'>saveFile</button> 
+    </div>
+
+    <script> 
+
+        function setConfig() {
+            var name = Math.ceil(Math.random() * 10).toString();
+            var promise = window.dialogs.set_config(name);
+            runCommand(promise);
+        }
+
+        function getConfig() {
+            var promise = window.dialogs.get_config();
+            runCommand(promise);
+        }
+
+        function openDialog() {
+            var promise = window.dialogs.open_file_dialog();
+            runCommand(promise, true);
+        }
+
+        function saveFile() {
+            var promise = window.dialogs.save_file("test file", "test.txt");
+            runCommand(promise);
+        } 
+
+        function runCommand(promise, isEncode = false) {
+            promise.then((fileData) => {
+                let text = isEncode ? atob(fileData) : (fileData.Result !== undefined ? fileData.Result : fileData);
+                var el = document.getElementById('webtext');
+                el.innerHTML = text;
+                console.log(text);
+            });
+        }
+         
+    </script>
+</body>
+</html>

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiBridge", "MauiBridge\Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiPlus", "MauiPlus\MauiPlus.csproj", "{824DA34A-064E-465C-B5BB-06C79B10EA7A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiPlusDemo", "MauiPlusDemo\MauiPlusDemo.csproj", "{C0AD715A-D127-492C-9F60-D8F375FFC398}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,15 @@ Global
 		{824DA34A-064E-465C-B5BB-06C79B10EA7A}.DebugNuget|Any CPU.Build.0 = Debug|Any CPU
 		{824DA34A-064E-465C-B5BB-06C79B10EA7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{824DA34A-064E-465C-B5BB-06C79B10EA7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.DebugNuget|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.DebugNuget|Any CPU.Build.0 = Debug|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.DebugNuget|Any CPU.Deploy.0 = Debug|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0AD715A-D127-492C-9F60-D8F375FFC398}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
