@@ -16,7 +16,7 @@
         <SignAssembly>True</SignAssembly>
         <Authors>Alex Chow</Authors>
         <OutputPath>..\..\Bin</OutputPath>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
     </PropertyGroup>
 
     <PropertyGroup>
