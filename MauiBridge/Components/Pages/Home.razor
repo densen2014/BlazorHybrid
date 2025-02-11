@@ -1,0 +1,48 @@
+﻿@page "/"
+@inject IJSRuntime JS
+@using System.Diagnostics.CodeAnalysis
+
+<PageTitle>MauiBridge</PageTitle>
+
+<h1>Hello, MauiBridge!</h1>
+
+<br />
+<br />
+<div style='display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%'>
+    <h2 style='font-family: script'><i>Hybrid WebView @(isShell? "(MauiBridge 启用)" : "")</i></h2>
+
+    <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' @onclick='_=>HybirdCommand("getConfig")'>getConfig</button>
+    <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' @onclick='_=>HybirdCommand("openDialog")'>openDialog</button>
+    <button style='height:48px; margin-left: 15px; margin-right: 15px; width: 128px; background: lightblue' id='hereBtn' @onclick='_=>HybirdCommand("saveFile")'>saveFile</button>
+</div>
+
+<div style='font-family: script'><b>Native API @message</b></div>
+<br />
+
+@code {
+    private string? message;
+    private bool isShell;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isShell = await JS.InvokeAsync<bool>("eval", "window.dialogs !== undefined"); 
+            StateHasChanged();
+        }
+    }
+
+    private async Task HybirdCommand(string command)
+    {
+        try
+        {
+            message = await JS.InvokeAsync<string>("eval", $"(await window.dialogs.{command}()).Result");
+        }
+        catch (JSException ex)
+        {
+            message = ex.Message;
+        }
+
+    }
+
+}
