@@ -13,12 +13,10 @@ using System.Diagnostics.CodeAnalysis;
 using static BlazorHybrid.Core.Device.BleUUID;
 using static test1.MauiProgram;
 
-namespace test1;
+namespace MauiBridge;
 
 internal partial class NativeApi
 {
-    private string PrinterNameKey = "PrinterName";
-    private string printerName = "Unknown";
     private string CpclCommands =
           "! 10 200 200 400 1\r\n" +
           "BEEP 1\r\n" +
@@ -95,12 +93,6 @@ internal partial class NativeApi
             System.Console.WriteLine(ex.Message);
         }
         return false;
-    }
-
-    public Task<string> get_config()
-    {
-        printerName = Preferences.Default.Get(PrinterNameKey, printerName);
-        return Task.FromResult(printerName);
     }
 
     public async Task<string> connect_printer()

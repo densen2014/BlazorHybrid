@@ -5,6 +5,8 @@
 // **********************************
 
 namespace test1;
+
+using MauiBridge;
 using WebViewNativeApi;
 
 public partial class MainPage : TabbedPage

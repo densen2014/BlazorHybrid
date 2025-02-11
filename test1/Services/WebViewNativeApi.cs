@@ -11,9 +11,19 @@ using System.Text.RegularExpressions;
 
 namespace WebViewNativeApi;
 
+/// <summary>
+/// NativeBridge 类, 用于在 .NET MAUI 应用程序中的 WebView 和本地代码之间进行通信, 主要负责在 WebView 和本地代码之间建立桥梁
+/// </summary>
 public class NativeBridge
 {
+    /// <summary>
+    /// 默认的 URL scheme，用于识别本地调用
+    /// </summary>
     private const string DEFAULT_SCHEME = "native://";
+
+    /// <summary>
+    /// JavaScript 代码，用于在 WebView 中创建一个代理对象，通过该对象可以调用本地方法
+    /// </summary>
     private const string INTERFACE_JS = "window['createNativeBridgeProxy'] = " +
         "(name, methods, properties, scheme = '" + DEFAULT_SCHEME + "') =>" +
         "{" +
@@ -76,13 +86,40 @@ public class NativeBridge
         "        });" +
         "};";
 
+    /// <summary>
+    /// WebView 控件的引用
+    /// </summary>
     private readonly WebView? _webView = null;
+
+    /// <summary>
+    /// 用于存储本地对象的字典,存储目标对象及其名称和 scheme
+    /// </summary>
     private readonly Dictionary<(string, string), object> _targets = [];
+
+    /// <summary>
+    /// 是否已经初始化
+    /// </summary>
     private bool _isInit = false;
+
+    /// <summary>
+    /// 存储当前的查询信息
+    /// </summary>
     private (string?, string?, string?, object?) _query = ("", "", "", null);
+
+    /// <summary>
+    /// 存储上一次导航的域名
+    /// </summary>
     private string? lastDomain;
+
+    /// <summary>
+    /// 存储要注入的目标 JavaScript 代码
+    /// </summary>
     public string? TargetJS;
 
+    /// <summary>
+    /// 构造函数，初始化 WebView 并注册导航事件
+    /// </summary>
+    /// <param name="wv"></param>
     public NativeBridge(WebView? wv)
     {
         if (wv != null)
@@ -93,6 +130,12 @@ public class NativeBridge
         }
     }
 
+    /// <summary>
+    /// 添加目标对象及其名称和 scheme
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="obj"></param>
+    /// <param name="sheme"></param>
     public void AddTarget(string name, object obj, string sheme = DEFAULT_SCHEME)
     {
         if (obj == null)
@@ -107,6 +150,11 @@ public class NativeBridge
         }
     }
 
+    /// <summary>
+    /// WebView 初始化事件处理程序,在 WebView 导航完成后调用，注入 JavaScript 代码并初始化目标对象。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private async void OnWebViewInit(object? sender, WebNavigatedEventArgs e)
     {
 
@@ -143,6 +191,11 @@ public class NativeBridge
         }
     }
 
+    /// <summary>
+    /// WebView 导航事件处理程序,在 WebView 导航时调用，根据 URL 判断是否调用本地方法。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void OnWebViewNavigatin(object? sender, WebNavigatingEventArgs e)
     {
         if (!_isInit)
@@ -188,6 +241,13 @@ public class NativeBridge
         }
     }
 
+
+    /// <summary>
+    /// 将目标对象的方法和属性注入到 WebView 中。
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="obj"></param>
+    /// <param name="sheme"></param>
     private void AddTargetToWebView(string name, object obj, string sheme)
     {
         var type = obj.GetType();
@@ -207,6 +267,11 @@ public class NativeBridge
             JsonSerializer.Serialize(properties) + ", '" + sheme + "');");
     }
 
+    /// <summary>
+    /// 判断方法是否为异步方法
+    /// </summary>
+    /// <param name="method"></param>
+    /// <returns></returns>
     private static bool IsAsyncMethod(MethodInfo method)
     {
         var attType = typeof(AsyncStateMachineAttribute);
@@ -214,6 +279,13 @@ public class NativeBridge
         return (attrib != null);
     }
 
+    /// <summary>
+    /// 调用本地方法,执行本地方法或属性访问，并将结果返回给 WebView
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="token"></param>
+    /// <param name="prop"></param>
+    /// <param name="obj"></param>
     private async void RunCommand(string name, string token, string prop, object obj)
     {
         try
@@ -290,6 +362,15 @@ public class NativeBridge
         }
     }
 
+    /// <summary>
+    /// 发送自定义事件到 WebView
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="detail"></param>
+    /// <param name="optBubbles"></param>
+    /// <param name="optCancelable"></param>
+    /// <param name="optComposed"></param>
+    /// <returns></returns>
     public async Task sendEvent(string type, Dictionary<string, string>? detail = null, bool optBubbles = false, bool optCancelable = false, bool optComposed = false)
     {
         List<string> opts = [];
@@ -317,6 +398,11 @@ public class NativeBridge
         await RunJS("const nativeEvent = new CustomEvent('" + type + "'" + optsStr + "); document.dispatchEvent(nativeEvent);");
     }
 
+    /// <summary>
+    /// 在 WebView 中执行 JavaScript 代码
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
     public Task<string?> RunJS(string code)
     {
         if (_webView == null)
