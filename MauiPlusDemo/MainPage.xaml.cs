@@ -23,7 +23,7 @@ namespace MauiPlusDemo
             if (wvBrowser != null)
             {
                 LoadHtmlToWebView(wvBrowser);
-                var nativeApiInstance = CreateNativeApiInstance().Result;
+                var nativeApiInstance = CreateNativeApiInstance();
                 TestCreateNativeApiInstance(nativeApiInstance);
                 api = new NativeBridge(wvBrowser);
                 //api.AddTarget("dialogs", new NativeApi());
@@ -91,7 +91,7 @@ namespace MauiPlusDemo
             }
         }
 
-        private async Task<object?> CreateNativeApiInstance()
+        private object? CreateNativeApiInstance()
         {
             string code = """
 using System;
@@ -123,7 +123,7 @@ public class NativeApi
 }
 """;
 
-            return await DynamicCompiler.CompileAndLoad(code, "NativeApi");
+            return DynamicCompiler.CompileAndLoad(code, "NativeApi");
         }
     }
 

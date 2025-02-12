@@ -1,13 +1,20 @@
-﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
+using System.Reflection;
 
+/// <summary>
+/// 代码来动态编译和加载 C# 源代码
+/// </summary>
 public class DynamicCompiler
 {
-    public static async Task<object?> CompileAndLoad(string code, string typeName)
+    /// <summary>
+    /// 编译并加载代码
+    /// </summary>
+    /// <param name="code"></param>
+    /// <param name="typeName"></param>
+    /// <returns></returns>
+    public static object? CompileAndLoad(string code, string typeName)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
 
@@ -42,7 +49,7 @@ public class DynamicCompiler
             ms.Seek(0, SeekOrigin.Begin);
             var assembly = Assembly.Load(ms.ToArray());
             var type = assembly.GetType(typeName);
-            return Activator.CreateInstance(type);
+            return Activator.CreateInstance(type!);
         }
     }
 }
