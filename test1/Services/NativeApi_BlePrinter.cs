@@ -130,7 +130,113 @@ internal partial class NativeApi
 
         try
         {
-            data.ToList().ForEach(a => ticekt += a + "\r\n");
+            data ??= [
+                "Big Home",
+                "NIF B12345678",
+                "Calle Estrella, 25",
+                "28006, Madrid",
+                "<br>",
+                "Producto$Precio",
+                "<newline>",
+                "COLA$1.99",
+                "COLA x 2$1.99",
+                "COLA Zero$1.99",
+                "<newline>",
+                "Total$10.00",
+                "Entregado$5.00",
+                "Cambio$5.00",
+                "<br>",
+                "Base$IVA",
+                "21%$5.00",
+                "4%$5.00",
+                "--- Gracias por su visita ---",
+                "<qr>https://app1.es/1121"
+               ];
+
+            var tatils = "";
+            var qrcode = "";
+            var left = 0;
+            var width = 400;
+            //标签高度,使用计算后数值
+            var startPos = 190;
+            foreach (var item in data.Skip(4))
+            {
+                var list = item.Split('$');
+                if (list.Length > 1 && item.StartsWith("Total"))
+                {
+                    //合计行放大字体,并分割左右对齐
+                    tatils += $"SETMAG 2 1\r\nT 2 0 0 {startPos} {list[0]}\r\nRIGHT\r\nT 2 0 0 {startPos} {list[1]}\r\nSETMAG 1 1\r\nLEFT\r\n";
+                }
+                else if (list.Length > 1)
+                {
+                    //普通分割左右对齐
+                    tatils += $"T 2 0 0 {startPos} {list[0]}\r\nRIGHT\r\nT 2 0 0 {startPos} {list[1]}\r\nLEFT\r\n";
+                }
+                else if (item == "<newline>")
+                {
+                    //画一条分割线
+                    tatils += $"LINE 2 {startPos} {width} {startPos} 1\r\n";
+                }
+                else if (item == "<br>")
+                {
+                    //换行
+                    tatils += $"T 2 0 0 {startPos} \r\n";
+                }
+                else if (item.StartsWith("---"))
+                {
+                    //居中
+                    startPos += 20;
+                    var _item = item.Replace("---", "");
+                    tatils += $"CENTER\r\nT 2 0 0 {startPos} {_item}\r\nLEFT\r\n";
+                }
+                else if (item.StartsWith("<qr>"))
+                {
+                    qrcode = item.Replace("<qr>", "");
+                    continue;
+                }
+                else
+                {
+                    tatils += $"T 2 0 0 {startPos} {item}\r\n";
+                }
+
+                //特别设置 <br> 高度只加10
+                startPos += (item == "<br>" ? 10 : 30);
+            }
+
+            if (qrcode != "")
+            {
+                startPos += 20;
+                qrcode = $"""
+CENTER
+B QR 0 {startPos} M 2 U 7
+MA,{qrcode}
+ENDQR
+LEFT
+""";
+                startPos += 200;
+            }
+
+            //! 0 200 200 290 1 => x方向偏移为0, x和y方向的打印分表率为200DPI, 标签高度为290点，打印数量为1
+            //TEXT 4 0 30 40 Hello World => 使用4号字， 在（30,40）坐标处打印 Hello World
+            var codes = $"""
+! {left} 200 200 {startPos} 1
+BEEP 1
+PW {width}
+CENTER
+SETMAG 2 1
+T 2 0 0 40 {data[0]} 
+SETMAG 1 1
+T 2 0 0 80 {data[1]}
+T 2 0 0 115 {data[2]} 
+T 2 0 0 150 {data[3]}
+LEFT
+SETMAG 1 1
+{tatils}
+{qrcode}
+FORM
+PRINT
+""";
+
             await SendDataAsyncPrinter(ticekt);
         }
         catch (Exception e)
@@ -144,14 +250,14 @@ internal partial class NativeApi
 
     public async Task<string> print_barcode(string[] data)
     {
-        if (data==null || data.Length < 3)
+        if (data == null || data.Length < 3)
         {
             return "fail";
         }
 
         try
         {
-            CpclBarcode= "! 0 200 200 280 1\r\n" +
+            CpclBarcode = "! 0 200 200 280 1\r\n" +
     "PW 450\r\n" +
     "CENTER\r\n" +
     "SETMAG 1 1\r\n" +
