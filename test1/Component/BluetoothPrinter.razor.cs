@@ -672,8 +672,20 @@ public partial class BluetoothPrinter : IAsyncDisposable
     private async Task OnCharacteristSelect(SelectedItem item)
     {
         if (IsAutoConnect) return;
-        BleInfo.Characteristic = Guid.Parse(item.Value);
-        await ReadDeviceName();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(item.Value))
+            {
+                return;
+            }
+            BleInfo.Characteristic = Guid.Parse(item.Value);
+            await ReadDeviceName();
+        }
+        catch (Exception)
+        {
+            var message = $"特征码无效";
+            await ToastService.Error("提示", message);
+        }
     }
 
     //读取数值

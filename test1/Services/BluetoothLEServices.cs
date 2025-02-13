@@ -181,9 +181,9 @@ public partial class BluetoothLEServices
     /// 开始扫描
     /// </summary>
     /// <returns></returns>
-    public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null, BluetoothPrinterOption? option=null)
+    public async Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null, ScanFilterOptions? scanFilterOptions = null, BluetoothPrinterOption? option = null)
     {
-        Option=option;
+        Option = option;
         Devices = [];
 
         //检查获取蓝牙权限
@@ -308,13 +308,13 @@ public partial class BluetoothLEServices
         //[0:] 扫描到蓝牙设备honor Band 4-7E8, Id=00000000-0000-0000-0000-f4bf805ad7e8, Name=honor Band 4-7E8, Rssi=-50, State=Disconnected, AdvertisementRecords.Count=5
         var info = $"{device.Name} Id:{device.Id.ToString().Replace("00000000-0000-0000-0000-", "")}, Rssi:{device.Rssi}, {(device.AdvertisementRecords.Count > 0 ? $"广播" +
             $"{device.AdvertisementRecords.Count}" : "")}";
-        OnMessage?.Invoke($"{(Option != null? "扫描到蓝牙设备" : "发现蓝牙设备")}: " + info);
+        OnMessage?.Invoke($"{(Option != null ? "扫描到蓝牙设备" : "发现蓝牙设备")}: " + info);
 
         BLE_beacon_AdvertisementRecords(device);
 
-        if (Option!=null)
+        if (Option != null)
         {
-            if (Option.MinRssi != 0 && device.Rssi < - Option.MinRssi)
+            if (Option.MinRssi != 0 && device.Rssi < -Option.MinRssi)
             {
                 return;
             }
@@ -336,7 +336,7 @@ public partial class BluetoothLEServices
 
         if (IsMatchID(device) || IsStartWithName(device))
         {
-            TagDeviceInfo = info; 
+            TagDeviceInfo = info;
             OnMessage?.Invoke($"*找到指定设备* {TagDeviceInfo}");
 
             Device = device;
@@ -706,20 +706,28 @@ public partial class BluetoothLEServices
 
             var characteristics = await genericService.GetCharacteristicsAsync();
             var list = new List<BleCharacteristic>();
-            characteristics.ToList().ForEach(a =>
+            if (characteristics == null)
             {
-                OnMessage?.Invoke($"获取特征, Id={a.Id}, Name={a.Name}, Uuid={a.Uuid}, CanRead={a.CanRead}, CanUpdate={a.CanUpdate}, CanWrite={a.CanWrite}, StringValue={a.StringValue},");
-                list.Add(new BleCharacteristic()
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Uuid = a.Uuid,
-                    CanRead = a.CanRead,
-                    CanUpdate = a.CanUpdate,
-                    CanWrite = a.CanWrite,
-                    StringValue = a.StringValue
-                });
-            });
+                OnMessage?.Invoke($"获取特征值失败.");
+                return null;
+            }
+            else
+            {
+                characteristics.ToList().ForEach(a =>
+                    {
+                        OnMessage?.Invoke($"获取特征, Id={a.Id}, Name={a.Name}, Uuid={a.Uuid}, CanRead={a.CanRead}, CanUpdate={a.CanUpdate}, CanWrite={a.CanWrite}, StringValue={a.StringValue},");
+                        list.Add(new BleCharacteristic()
+                        {
+                            Id = a.Id,
+                            Name = a.Name,
+                            Uuid = a.Uuid,
+                            CanRead = a.CanRead,
+                            CanUpdate = a.CanUpdate,
+                            CanWrite = a.CanWrite,
+                            StringValue = a.StringValue
+                        });
+                    });
+            }
             return list;
         }
         catch (Exception e)
@@ -823,7 +831,7 @@ public partial class BluetoothLEServices
             var ary = await ReadDataAsync(deviceNameCharacteristic);
             //var ary = await StartNotifyDataAsync(deviceNameCharacteristic);
 
-            if (ary != null)
+            if (ary != null && ary.Length != 0)
             {
                 //getUint8：读取1个字节，返回一个无符号的8位整数。
                 //  logII('> Battery Level is ' + value.getUint8(0) + '%');
@@ -836,7 +844,7 @@ public partial class BluetoothLEServices
                 OnMessage?.Invoke("数据为空");
             }
         }
-        else
+        else if (deviceNameCharacteristic.CanUpdate)
         {
             OnMessage?.Invoke("不可读, 接收消息通知.");
             #region notify类型特征值接收消息通知
