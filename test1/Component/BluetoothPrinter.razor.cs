@@ -5,6 +5,7 @@
 // **********************************
 
 using AME;
+using BlazorHybrid.Maui.Shared;
 using BootstrapBlazor.Components;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
@@ -390,9 +391,9 @@ public partial class BluetoothPrinter : IAsyncDisposable
         //if (Messages !=null && Message.Length >1500) Message= Message.Substring (0, 1500);
         Messages = $"{message}\r\n{Messages}";
         if (message.StartsWith("扫描到蓝牙设备: "))
-        { 
-            Devices??= new List<BleDevice>();
-            Devices!.Add(new BleDevice() { Name = message.TrimStart("扫描到蓝牙设备: ") }); 
+        {
+            Devices ??= new List<BleDevice>();
+            Devices!.Add(new BleDevice() { Name = message.TrimStart("扫描到蓝牙设备: ") });
         }
         await InvokeAsync(StateHasChanged);
     }
@@ -420,7 +421,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
         Guid[]? serviceUuids = Option.PrinterOnly ? [Guid.Parse(PrinterServiceUUID), Guid.Parse(PrinterNormalServiceUUID)] : null;
 
         //开始扫描
-        Devices = await Tools.StartScanAsync(serviceUuids: serviceUuids,option: Option);
+        Devices = await Tools.StartScanAsync(serviceUuids: serviceUuids, option: Option);
         //StateHasChanged();
 
         if (Devices != null)
@@ -442,92 +443,76 @@ public partial class BluetoothPrinter : IAsyncDisposable
 
             foreach (var bleDevice in Devices)
             {
-                //await InvokeAsync(StateHasChanged);
-
-                //_ = Task.Run(async () =>
-                //{
-                //    await Task.Delay(200);
-                //连接外设
-                var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name);
-                if (services != null)
+                if (Option.AutoConnectService)
                 {
-                    if (serviceUuids != null)
+                    //连接外设
+                    var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name);
+                    if (services != null)
                     {
-                        var isPrinter = services.Where(a => serviceUuids.Contains(a.Id)).Any();
-                        if (!isPrinter)
+                        if (serviceUuids != null)
                         {
-                            bleDevice.ServicesRemark = "isNotPrinter";
-                            await Tools_OnMessage($"排除{bleDevice.Name}");
-                            await InvokeAsync(StateHasChanged);
-                            continue;
-                        }
-                    }
-
-                    bleDevice.ServicesRemark = $"服务: {services.Count}";
-                    services.ForEach(a =>
-                    {
-                        if (a.Id == Guid.Parse(PrinterServiceUUID) || a.Id == Guid.Parse(PrinterNormalServiceUUID))
-                        {
-                            a.Name = "打印服务";
-                            bleDevice.ServicesRemark = $"打印服务,{bleDevice.ServicesRemark}";
-                        }
-                        else if (a.Id == Guid.Parse(GattServiceUUID))
-                        {
-                            a.Name = "GATT*";
-                        }
-                    });
-                    bleDevice.Services.AddRange(services);
-                    await InvokeAsync(StateHasChanged);
-                    var stop = false;
-                    var canWriteCount = 0;
-                    foreach (var bleService in services)
-                    {
-                        if (bleService != null && bleService.Id != Guid.Empty && bleService.IsPrimary)
-                        {
-                            if (!stop)
+                            var isPrinter = services.Where(a => serviceUuids.Contains(a.Id)).Any();
+                            if (!isPrinter)
                             {
-                                var characteristics = await Tools.GetCharacteristicsAsync(bleService!.Id);
-                                if (characteristics != null)
+                                bleDevice.ServicesRemark = "isNotPrinter";
+                                await Tools_OnMessage($"排除{bleDevice.Name}");
+                                await InvokeAsync(StateHasChanged);
+                                continue;
+                            }
+                        }
+
+                        bleDevice.ServicesRemark = $"服务: {services.Count}";
+                        services.ForEach(a =>
+                        {
+                            a.Name = Tools.GetServicesName(a.Id);
+                            if (Tools.GetServicesName(a.Id)== "打印服务")
+                            {
+                                bleDevice.ServicesRemark = $"打印服务,{bleDevice.ServicesRemark}";
+                            } 
+                        });
+                        bleDevice.Services.AddRange(services);
+                        await InvokeAsync(StateHasChanged);
+                        var stop = false;
+                        var canWriteCount = 0;
+                        foreach (var bleService in services)
+                        {
+                            if (bleService != null && bleService.Id != Guid.Empty && bleService.IsPrimary)
+                            {
+                                if (!stop)
                                 {
-                                    characteristics.ForEach(a =>
+                                    var characteristics = await Tools.GetCharacteristicsAsync(bleService!.Id);
+                                    if (characteristics != null)
                                     {
-                                        if (a.Id == Guid.Parse(PrinterNormalCharacteristicUUID) || a.Id == Guid.Parse(PrinterCharacteristicUUID))
+                                        characteristics.ForEach(a =>
                                         {
-                                            a.Name = "打印通道";
-                                        }
-                                        else if (a.Id == Guid.Parse(GattCharacteristicUUID))
-                                        {
-                                            a.Name = "GATT*";
-                                        }
-                                    });
-                                    bleService.Characteristics.AddRange(characteristics);
-                                    bleService.Remark = $"特征: {characteristics.Count}";
-                                    canWriteCount += characteristics.Where(a => a.CanWrite).Count();
-                                }
-                                else
-                                {
-                                    bleService.Remark = "-";
+                                            a.Name = Tools.GetCharacteristicsName(a.Id); 
+                                        });
+                                        bleService.Characteristics.AddRange(characteristics);
+                                        bleService.Remark = $"特征: {characteristics.Count}";
+                                        canWriteCount += characteristics.Where(a => a.CanWrite).Count();
+                                    }
+                                    else
+                                    {
+                                        bleService.Remark = "-";
+                                    }
                                 }
                             }
                         }
+                        if (canWriteCount > 0)
+                        {
+                            bleDevice.ServicesRemark += $"({canWriteCount}w)";
+                            await InvokeAsync(StateHasChanged);
+                        }
                     }
-                    if (canWriteCount > 0)
+                    else
                     {
-                        bleDevice.ServicesRemark += $"({canWriteCount}w)";
-                        await InvokeAsync(StateHasChanged);
+                        bleDevice.ServicesRemark = $"连接超时";
+                        Messages = $"连接{bleDevice.Name}超时"; 
                     }
+                    await OnDisConnectDevice(true);
+                    Messages = $"完成{bleDevice.Name}检查";
+                    await InvokeAsync(StateHasChanged);
                 }
-                else
-                {
-                    bleDevice.ServicesRemark = $"连接超时";
-                    Messages = $"连接{bleDevice.Name}超时";
-                    //await ToastService.Error("提示", Messages);
-                }
-                await OnDisConnectDevice(true);
-                Messages = $"完成{bleDevice.Name}检查";
-                //await ToastService.Success("提示", Messages);
-                await InvokeAsync(StateHasChanged);
-
                 DeviceList.Add(
                     new SelectedItem()
                     {
@@ -535,9 +520,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                         Text = string.IsNullOrWhiteSpace(bleDevice.Name) ? bleDevice.Id.ToString() : bleDevice.Name,
                         Value = bleDevice.Id.ToString()
                     });
-
-                //});
-            };
+            }
 
             Devices = Devices.Where(a => a.ServicesRemark != "isNotPrinter").ToList();
 
@@ -606,7 +589,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 new SelectedItem()
                 {
                     Active = IsAutoConnect && a.Id == BleInfo.Serviceid,
-                    Text = a.Name != "Unknown Service" ? $"{a.Name}({a.Id})" : a.Id.ToString(),
+                    Text = a.Name != "Unknown Service" ? $"{a.Name}({Tools.GetServicesName(a.Id)})" : Tools.GetServicesName(a.Id),
                     Value = a.Id.ToString()
                 })
             );
@@ -620,7 +603,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
         else
         {
-            Messages = $"连接{BleInfo.Name}失败";
+            Messages = $"连接{BleInfo.Name}失败. {Messages.Split("\r\n")?.FirstOrDefault() }";
             await ToastService.Error("提示", Messages);
         }
 
@@ -653,7 +636,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 new SelectedItem()
                 {
                     Active = IsAutoConnect && a.Id == BleInfo.Characteristic,
-                    Text = a.Name != "Unknown characteristic" ? $"{a.Name}({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({a.Id})" : $"({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({a.Id})",
+                    Text = a.Name != "Unknown characteristic" ? $"{a.Name}({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({Tools.GetCharacteristicsName(a.Id)})" : $"({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({Tools.GetCharacteristicsName(a.Id)})",
                     Value = a.Id.ToString()
                 })
             );

@@ -12,7 +12,7 @@ using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using System.Data;
 using System.Text;
-
+using static BlazorHybrid.Core.Device.BleUUID;
 
 namespace BlazorHybrid.Maui.Shared;
 
@@ -558,6 +558,8 @@ public partial class BluetoothLEServices
             return null;
         }
 
+        var errCode = 0;
+        var timeOut = 10;
         if (Device != null && Device.Id == deviceID)
         {
             OnMessage?.Invoke("设备已初始化");
@@ -572,8 +574,8 @@ public partial class BluetoothLEServices
 
                 _ = Task.Run(async () =>
                 {
-                    //连接设备超时 默认10秒
-                    await Task.Delay(TimeSpan.FromSeconds(10));
+                    //连接设备超时
+                    await Task.Delay(TimeSpan.FromSeconds(timeOut));
                     if (!_scanForAedCts!.IsCancellationRequested)
                     {
                         _scanForAedCts.Cancel(false);
@@ -591,10 +593,12 @@ public partial class BluetoothLEServices
             }
             catch (OperationCanceledException)
             {
-                OnMessage?.Invoke($"扫描外设超时,任务取消");
+                errCode = 1;
+                OnMessage?.Invoke($"扫描外设超时({timeOut}秒),任务取消");
             }
             catch (Exception ex)
             {
+                errCode = 2;
                 OnMessage?.Invoke($"扫描外设出错, {ex.Message}");
             }
 
@@ -608,7 +612,10 @@ public partial class BluetoothLEServices
 
         if (Device == null)
         {
-            OnMessage?.Invoke($"没有找到{deviceName}");
+            if (errCode == 0)
+            { 
+                OnMessage?.Invoke($"没有找到{deviceName}");
+            }
             OnStateConnect?.Invoke(false);
             return null;
         }
@@ -674,7 +681,7 @@ public partial class BluetoothLEServices
             var getServices = await Device.GetServicesAsync();
             getServices.ToList().ForEach(a =>
             {
-                OnMessage?.Invoke($"获取服务, Id={a.Id}, Name={a.Name}, IsPrimary={a.IsPrimary},");
+                OnMessage?.Invoke($"获取服务, Id={GetServicesName(a.Id)}, Name={a.Name}, IsPrimary={a.IsPrimary},");
                 services.Add(new BleService() { Id = a.Id, Name = a.Name, IsPrimary = a.IsPrimary });
             });
             return services;
@@ -815,7 +822,7 @@ public partial class BluetoothLEServices
 
         //获取服务集合
         var services = await Device!.GetServicesAsync();
-        var infoes = services.Select(x => $"{x.Id}: Name={x.Name}, IsPrimary={x.IsPrimary}");
+        var infoes = services.Select(x => $"{GetServicesName(x.Id)}: Name={x.Name}, IsPrimary={x.IsPrimary}");
         string msg = $"服务Uuid: " + string.Join(", ", infoes);
         OnMessage?.Invoke(msg);
 
@@ -914,7 +921,7 @@ public partial class BluetoothLEServices
         }
 
         //获取常规信息服务UUID: 
-        Guid genericServiceGuid = serviceid ?? Guid.Parse("00001800-0000-1000-8000-00805f9b34fb");
+        Guid genericServiceGuid = serviceid ?? Generic_Service2;
 
         var genericService = await Device.GetServiceAsync(genericServiceGuid);
         if (genericService == null)
@@ -932,7 +939,7 @@ public partial class BluetoothLEServices
         OnMessage?.Invoke(msg);
 
         //获取设备名特征值
-        var deviceNameCharacteristicGuid = characteristic ?? Guid.Parse("00002a00-0000-1000-8000-00805f9b34fb");
+        var deviceNameCharacteristicGuid = characteristic ?? DeviceNameCharacteristic2;
         var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == deviceNameCharacteristicGuid);
         if (deviceNameCharacteristic == null)
         {
@@ -1142,12 +1149,10 @@ public partial class BluetoothLEServices
         OnMessage?.Invoke(msg);
 
         //获取常规信息服务UUID: 
-        //Guid genericServiceGuid = Guid.Parse("00001800-0000-1000-8000-00805f9b34fb");
-        Guid genericServiceGuid = Guid.Parse("0000FEE9-0000-1000-8000-00805F9B34FB");
-        var genericService = await Device.GetServiceAsync(genericServiceGuid);
+        var genericService = await Device.GetServiceAsync(Generic_Service);
         if (genericService == null)
         {
-            OnMessage?.Invoke($"获取常规信息服务{genericServiceGuid}失败");
+            OnMessage?.Invoke($"获取常规信息服务{Generic_Service}失败");
             return false;
         }
 
@@ -1160,16 +1165,14 @@ public partial class BluetoothLEServices
         OnMessage?.Invoke(msg);
 
         //获取设备名特征值
-        //Guid deviceNameCharacteristicGuid = Guid.Parse("00002a00-0000-1000-8000-00805f9b34fb");
-        Guid deviceNameCharacteristicGuid = Guid.Parse("D44BC439-ABFD-45A2-B575-925416129601");
-        var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == deviceNameCharacteristicGuid);
+        var deviceNameCharacteristic = characteristics.FirstOrDefault(x => x.Id == DeviceNameCharacteristic);
         if (deviceNameCharacteristic == null)
         {
-            OnMessage?.Invoke($"获取设备名特征值{deviceNameCharacteristicGuid}失败");
+            OnMessage?.Invoke($"获取设备名特征值{DeviceNameCharacteristic}失败");
             return false;
         }
         //新增测试代码
-        var notifyCharacteristic = await genericService.GetCharacteristicAsync(deviceNameCharacteristicGuid);
+        var notifyCharacteristic = await genericService.GetCharacteristicAsync(DeviceNameCharacteristic);
 
         if (notifyCharacteristic != null)
         {
@@ -1200,5 +1203,47 @@ public partial class BluetoothLEServices
         //}
     }
 
+    public string GetServicesName(Guid guid)
+    {
+        var name = "";
+        Guid[] serviceUuids = [Guid.Parse(PrinterServiceUUID), Guid.Parse(PrinterNormalServiceUUID), Print_Service, Print_Service2, Print_Service3];
+        if (serviceUuids.Contains(guid))
+        {
+            name = "打印服务";
+        }
+        else if(guid == Guid.Parse(GattServiceUUID))
+        {
+            name = "GATT*";
+        }
+        else if (guid == Transparent_UART_Service)
+        {
+            name = "透明 UART 服务";
+        } 
+        return $"{name}({guid.ToString().TrimEnd("-0000-1000-8000-00805f9b34fb")})";
+    }
+
+    public string GetCharacteristicsName(Guid guid)
+    {
+        var name = "";
+
+        Guid[] serviceUuids = [Guid.Parse(PrinterNormalCharacteristicUUID), Guid.Parse(PrinterCharacteristicUUID)];
+        if (serviceUuids.Contains(guid))
+        {
+            name = "打印通道";
+        }
+        else if (guid == Guid.Parse(GattCharacteristicUUID))
+        {
+            name = "GATT*";
+        }
+        else if (guid == WRITEUUID)
+        {
+            name = "写入";
+        }
+        else if (guid == NOTIFYUUID || guid == Notification)
+        {
+            name = "监听";
+        }
+        return $"{name}({guid.ToString().TrimEnd("-0000-1000-8000-00805f9b34fb")})";
+    }
 }
 

@@ -26,6 +26,10 @@ public class BluetoothPrinterOption : BleTagDevice
     public bool PrinterOnly { get; set; } = true;
 
     [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
+    [DisplayName("主动连接服务")]
+    public bool AutoConnectService { get; set; } = false;
+
+    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
     [DisplayName("最低RSSI(-db)")]
     public int MinRssi { get; set; } = 80;
 
