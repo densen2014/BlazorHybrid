@@ -1042,6 +1042,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
     private async Task SendDataAsyncCPCLTest() => await SendDataAsyncPrinter(PrintCpclLabel());
     private async Task SendDataAsyncCPCLBarcode() => await SendDataAsyncPrinter(CpclBarcode);
     private async Task SendDataAsyncESC() => await SendDataAsyncPrinter(CpclCommands);
+    private async Task SendDataAsyncCPCLQR() => await SendDataAsyncPrinter(CpclCommands);
 
     private async Task SendDataAsyncPrinter(string commands)
     {

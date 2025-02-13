@@ -120,11 +120,18 @@ internal partial class NativeApi
         return res != null;
     }
 
-    public async Task<string> print_ticket(string data)
+    public async Task<string> print_ticket(string[] data)
     {
+        var ticekt = string.Empty;
+        if (data == null || data.Length == 0)
+        {
+            return "fail";
+        }
+
         try
         {
-            await SendDataAsyncPrinter(CpclBarcode);
+            data.ToList().ForEach(a => ticekt += a + "\r\n");
+            await SendDataAsyncPrinter(ticekt);
         }
         catch (Exception e)
         {
@@ -133,6 +140,62 @@ internal partial class NativeApi
             return err;
         }
         return "print_ticket ok";
+    }
+
+    public async Task<string> print_barcode(string[] data)
+    {
+        if (data==null || data.Length < 3)
+        {
+            return "fail";
+        }
+
+        try
+        {
+            CpclBarcode= "! 0 200 200 280 1\r\n" +
+    "PW 450\r\n" +
+    "CENTER\r\n" +
+    "SETMAG 1 1\r\n" +
+    "ENCODING GB18030\r\n" +
+    $"TEXT 4 11 30 40 {data[0]}\r\n" +
+    "BARCODE-TEXT 7 0 5\r\n" +
+    $"BARCODE 128 1 1 50 10 100 {data[1]}\r\n" +
+    "BARCODE-TEXT OFF\r\n" +
+    "SETMAG 2 2\r\n" +
+    "ENCODING ASCII\r\n" +
+    $"TEXT 4 11 30 210 PVP:  {data[2]}\r\n" +
+    "FORM\r\n" +
+    "PRINT\r\n";
+            await SendDataAsyncPrinter(CpclBarcode);
+        }
+        catch (Exception e)
+        {
+            var err = e.Message;
+            await Tools.Alert("提示", err, "OK");
+            return err;
+        }
+        return "print_barcode ok";
+    }
+
+    public async Task<string> print_cpcl_raw(string[] data)
+    {
+        var ticekt = string.Empty;
+        if (data == null || data.Length == 0)
+        {
+            return "fail";
+        }
+
+        try
+        {
+            data.ToList().ForEach(a => ticekt += a + "\r\n");
+            await SendDataAsyncPrinter(ticekt);
+        }
+        catch (Exception e)
+        {
+            var err = e.Message;
+            await Tools.Alert("提示", err, "OK");
+            return err;
+        }
+        return "print_cpcl_raw ok";
     }
 
     private async Task SendDataAsyncPrinter(string commands)

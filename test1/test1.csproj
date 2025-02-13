@@ -44,6 +44,10 @@
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' and '$(Configuration)' == 'Debug'">
         <CodeSignEntitlements>Platforms/MacCatalyst/Entitlements.Debug.plist</CodeSignEntitlements>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+      <CodesignKey>Apple Development: Created via API (568C259ZMN)</CodesignKey>
+      <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    </PropertyGroup>
 
 
 

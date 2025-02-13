@@ -6,18 +6,7 @@
             xmlns:pages="clr-namespace:test1"
             >
     <ContentPage Title="主页">
-            <VerticalStackLayout 
-                Spacing="25">
-                <Label Text="Hello, Hybird!"
-                       HorizontalOptions="Center"
-                       BackgroundColor="Honeydew"
-                       TextColor="Black"/>
-                <WebView x:Name="webView" Source="https://w11.app1.es" HeightRequest="700" />
-                <Label Text="Hello, Hybird!"
-                       HorizontalOptions="Center"
-                       BackgroundColor="Honeydew"
-                       TextColor="Black"/>
-            </VerticalStackLayout>
+        <WebView x:Name="webView" />
     </ContentPage>
     <ContentPage Title="打印机">
         <pages:Config />

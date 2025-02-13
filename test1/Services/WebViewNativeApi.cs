@@ -308,11 +308,17 @@ public class NativeBridge
                         }
                         else
                         {
-                            var jsonObject = jsonObjects[arg.Position];
-                            var jsonObject2 = jsonObject.Deserialize(arg.ParameterType);
-                            if (jsonObject2 != null)
+                            try
                             {
-                                arguments[arg.Position] = jsonObject2;
+                                var jsonObject = jsonObjects[arg.Position];
+                                var jsonObject2 = jsonObject.Deserialize(arg.ParameterType);
+                                if (jsonObject2 != null)
+                                {
+                                    arguments[arg.Position] = jsonObject2;
+                                }
+                            }
+                            catch
+                            {
                             }
                         }
                     }

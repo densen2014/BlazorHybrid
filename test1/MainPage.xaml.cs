@@ -16,10 +16,10 @@ public partial class MainPage : TabbedPage
     public MainPage()
     {
         InitializeComponent();
-
+        var Url = Preferences.Default.Get("Url", "https://w11.app1.es");
+        webView.Source = Url;
         //附加本机功能处理
-        WebView? wvBrowser = FindByName("webView") as WebView;
-        api = new NativeBridge(wvBrowser);
+        api = new NativeBridge(webView);
         api.AddTarget("dialogs", new NativeApi());
 #if MACCATALYST
         Microsoft.Maui.Handlers.WebViewHandler.Mapper.AppendToMapping("Inspect", (handler, view) =>

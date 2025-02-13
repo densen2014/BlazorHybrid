@@ -15,9 +15,9 @@
                     <BootstrapInputGroupLabel DisplayText="名称" class="border-primary" />
                     <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" style="max-width: 80px;" />
                     <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" style="max-width: 100px; " />
-                    <Button Text="Esc" Size="Size.Small" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
-                    <Button Text="Cpcl" Size="Size.Small"  OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
-                    <Button Text="票" Size="Size.Small" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
+                    <Button Text="QR" Size="Size.Small" OnClick="SendDataAsyncCPCLQR" IsDisabled="@isDisabled" />
+                    <Button Text="条码" Size="Size.Small"  OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
+                    <Button Text="小票" Size="Size.Small" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
                 </BootstrapInputGroup>
 
                 <BootstrapInputGroup class="m-1">
