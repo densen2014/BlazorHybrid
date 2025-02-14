@@ -12,6 +12,7 @@ using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using System.Data;
 using System.Text;
+using static BlazorHybrid.Core.Device.BleExtension;
 
 namespace BlazorHybrid.Maui.Shared;
 
@@ -305,7 +306,7 @@ public partial class BluetoothLEServices
         var device = e.Device;
 
         //[0:] 扫描到蓝牙设备honor Band 4-7E8, Id=00000000-0000-0000-0000-f4bf805ad7e8, Name=honor Band 4-7E8, Rssi=-50, State=Disconnected, AdvertisementRecords.Count=5
-        var info = $"{device.Name} Id:{device.Id.ToString().Replace("00000000-0000-0000-0000-", "")}, Rssi:{device.Rssi}, {(device.AdvertisementRecords.Count > 0 ? $"广播" +
+        var info = $"{device.Name} Id:{device.Id.ToShortName()}, Rssi:{device.Rssi}, {(device.AdvertisementRecords.Count > 0 ? $"广播" +
             $"{device.AdvertisementRecords.Count}" : "")}";
         OnMessage?.Invoke($"{(Option != null ? "扫描到蓝牙设备" : "发现蓝牙设备")}: " + info);
 
@@ -326,7 +327,7 @@ public partial class BluetoothLEServices
         Devices.Add(new BleDevice()
         {
             Id = device.Id,
-            Name = device.Name,
+            Name = device.Name??device.Id.ToShortName(),
             Rssi = device.Rssi,
             IsConnectable = device.IsConnectable,
             Remark = $"{(device.IsConnectable ? "可连接" : "")} {(device.AdvertisementRecords.Count > 0 ? $"广播" +
@@ -680,7 +681,7 @@ public partial class BluetoothLEServices
             var getServices = await Device.GetServicesAsync();
             getServices.ToList().ForEach(a =>
             {
-                OnMessage?.Invoke($"获取服务, Id={BleExtension.GetServicesName(a.Id)}, Name={a.Name}, IsPrimary={a.IsPrimary},");
+                OnMessage?.Invoke($"获取服务, Id={a.Id.GetServicesName()}, Name={a.Name}, IsPrimary={a.IsPrimary},");
                 services.Add(new BleService() { Id = a.Id, Name = a.Name, IsPrimary = a.IsPrimary });
             });
             return services;
@@ -821,7 +822,7 @@ public partial class BluetoothLEServices
 
         //获取服务集合
         var services = await Device!.GetServicesAsync();
-        var infoes = services.Select(x => $"{BleExtension.GetServicesName(x.Id)}: Name={x.Name}, IsPrimary={x.IsPrimary}");
+        var infoes = services.Select(x => $"{x.Id.GetServicesName()}: Name={x.Name}, IsPrimary={x.IsPrimary}");
         string msg = $"服务Uuid: " + string.Join(", ", infoes);
         OnMessage?.Invoke(msg);
 

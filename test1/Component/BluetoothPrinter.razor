@@ -1,7 +1,7 @@
 ﻿@inherits AppComponentBase
 @namespace BlazorHybrid.Core.Device
 @page "/"
-@*<Responsive OnBreakPointChanged="OnBreakPointChanged" />*@
+@using static BlazorHybrid.Core.Device.BleExtension
 
 <div class="row">
     <div class="col-12 col-m-6 col-sm-6">
@@ -93,7 +93,7 @@
                                         @if (ser != null)
                                         {
                                             var chars= ser.Characteristics.Select(a => a.Id);
-                                            var isPrinter = BlazorHybrid.Core.Device.BleExtension.IsPrintCharacteristics(chars);
+                                            var isPrinter = chars.IsPrintCharacteristics();
 
                                             if (isPrinter)
                                             {
@@ -135,7 +135,7 @@
                                         <Template Context="v">
                                             @{ 
                                                 var chars = v.Row.Characteristics.Select(a => a.Id);
-                                                var isPrinter = BlazorHybrid.Core.Device.BleExtension.IsPrintCharacteristics(chars);
+                                                var isPrinter = chars.IsPrintCharacteristics();
 
                                                 if (isPrinter && v.Row.Characteristics.Where(a => a.CanWrite).Any())
                                                 {
@@ -187,7 +187,7 @@
                                             <TableColumn @bind-Field="@characteristic.Id" Text="操作" Width="50">
                                                 <Template Context="v">
                                                     @{
-                                                        var isPrinter = BlazorHybrid.Core.Device.BleExtension.IsPrintCharacteristics(v.Row.Id);
+                                                        var isPrinter = v.Row.Id.IsPrintCharacteristics();
                                                         if (isPrinter && ((BleCharacteristic)v.Row).CanWrite)
                                                         {
                                                             <Button Color="Color.Primary"

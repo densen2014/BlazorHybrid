@@ -444,7 +444,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                     {
                         if (Option.PrinterOnly)
                         {
-                            if (!IsPrinter(services.Select(a => a.Id)))
+                            if (!services.Select(a => a.Id).IsPrinter())
                             {
                                 bleDevice.ServicesRemark = "isNotPrinter";
                                 await Tools_OnMessage($"排除{bleDevice.Name}");
@@ -456,8 +456,8 @@ public partial class BluetoothPrinter : IAsyncDisposable
                         bleDevice.ServicesRemark = $"服务: {services.Count}";
                         services.ForEach(a =>
                         {
-                            a.Name = GetServicesName(a.Id);
-                            if (GetServicesName(a.Id) == "打印服务")
+                            a.Name = a.Id.GetServicesName();
+                            if (a.Name.StartsWith("打印服务"))
                             {
                                 bleDevice.ServicesRemark = $"打印服务,{bleDevice.ServicesRemark}";
                             }
@@ -477,7 +477,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                                     {
                                         characteristics.ForEach(a =>
                                         {
-                                            a.Name = GetCharacteristicsName(a.Id);
+                                            a.Name = a.Id.GetCharacteristicsName();
                                         });
                                         bleService.Characteristics.AddRange(characteristics);
                                         bleService.Remark = $"特征: {characteristics.Count}";
@@ -581,7 +581,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 new SelectedItem()
                 {
                     Active = IsAutoConnect && a.Id == BleInfo.Serviceid,
-                    Text = a.Name != "Unknown Service" ? $"{a.Name}({GetServicesName(a.Id)})" : GetServicesName(a.Id),
+                    Text = a.Name != "Unknown Service" ? $"{a.Name}({a.Id.GetServicesName()})" : a.Id.GetServicesName(),
                     Value = a.Id.ToString()
                 })
             );
@@ -628,7 +628,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 new SelectedItem()
                 {
                     Active = IsAutoConnect && a.Id == BleInfo.Characteristic,
-                    Text = a.Name != "Unknown characteristic" ? $"{a.Name}({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({GetCharacteristicsName(a.Id)})" : $"({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({GetCharacteristicsName(a.Id)})",
+                    Text = a.Name != "Unknown characteristic" ? $"{a.Name}({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({a.Id.GetCharacteristicsName()})" : $"({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({a.Id.GetCharacteristicsName()})",
                     Value = a.Id.ToString()
                 })
             );

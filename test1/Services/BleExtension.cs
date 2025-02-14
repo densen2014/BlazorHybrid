@@ -138,11 +138,12 @@ public static class BleExtension
     /// </summary>
     public static Guid[] PrinterCharacteristicUuids = [PrinterNormalCharacteristic, PrinterCharacteristic, InnerPrinterCharacteristic];
 
-    public static bool IsPrinter(Guid guid) => PrinterServiceUuids.Contains(guid);
-    public static bool IsPrinter(IEnumerable<Guid> guids) => guids.Where(a => PrinterServiceUuids.Contains(a)).Any();
-    public static bool IsPrintCharacteristics(Guid guid) => PrinterCharacteristicUuids.Contains(guid);
-    public static bool IsPrintCharacteristics(IEnumerable<Guid> guids) => guids.Where(a => PrinterCharacteristicUuids.Contains(a)).Any();
-    public static string GetServicesName(Guid guid)
+    public static bool IsPrinter(this Guid guid) => PrinterServiceUuids.Contains(guid);
+    public static bool IsPrinter(this IEnumerable<Guid> guids) => guids.Where(a => PrinterServiceUuids.Contains(a)).Any();
+    public static bool IsPrintCharacteristics(this Guid guid) => PrinterCharacteristicUuids.Contains(guid);
+    public static bool IsPrintCharacteristics(this IEnumerable<Guid> guids) => guids.Where(a => PrinterCharacteristicUuids.Contains(a)).Any();
+    public static string ToShortName (this Guid guid) => guid.ToString().TrimEnd("-0000-1000-8000-00805f9b34fb").Replace("00000000-0000-0000-0000-", "");
+    public static string GetServicesName(this Guid guid)
     {
         var name = "";
         if (PrinterServiceUuids.Contains(guid))
@@ -153,11 +154,11 @@ public static class BleExtension
         {
             name = "GATT*";
         } 
-        return name!=""?$"{name}({guid.ToString().TrimEnd("-0000-1000-8000-00805f9b34fb")})":
-            guid.ToString().TrimEnd("-0000-1000-8000-00805f9b34fb");
+        return name!=""?$"{name}({guid.ToShortName()})":
+            guid.ToShortName();
     }
 
-    public static string GetCharacteristicsName(Guid guid)
+    public static string GetCharacteristicsName(this Guid guid)
     {
         var name = "";
 
@@ -177,7 +178,7 @@ public static class BleExtension
         {
             name = "监听";
         }
-        return name != "" ? $"{name}({guid.ToString().TrimEnd("-0000-1000-8000-00805f9b34fb")})" :
-            guid.ToString().TrimEnd("-0000-1000-8000-00805f9b34fb");
+        return name != "" ? $"{name}({guid.ToShortName()})" :
+            guid.ToShortName();
     }
 }
