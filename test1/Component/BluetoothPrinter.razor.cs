@@ -5,13 +5,13 @@
 // **********************************
 
 using AME;
-using BlazorHybrid.Maui.Shared;
 using BootstrapBlazor.Components;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
+using static BlazorHybrid.Core.Device.BleExtension;
 using static BlazorHybrid.Core.Device.BleUUID;
+using static BlazorHybrid.Core.Device.PrinterCommands;
 
 namespace BlazorHybrid.Core.Device;
 
@@ -154,13 +154,6 @@ public partial class BluetoothPrinter : IAsyncDisposable
     }
 
     #endregion 
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-        }
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -398,7 +391,10 @@ public partial class BluetoothPrinter : IAsyncDisposable
         await InvokeAsync(StateHasChanged);
     }
 
-    //扫描外设
+    /// <summary>
+    /// 扫描外设
+    /// </summary>
+    /// <returns></returns>
     private async Task ScanDevice()
     {
         if (!await Init() || IsScanning)
@@ -418,13 +414,10 @@ public partial class BluetoothPrinter : IAsyncDisposable
         ReadResult = "";
         DeviceList = new List<SelectedItem>() { new SelectedItem() { Text = "请选择...", Value = "" } };
 
-        Guid[]? serviceUuids = Option.PrinterOnly ? [Guid.Parse(PrinterServiceUUID), Guid.Parse(PrinterNormalServiceUUID)] : null;
-
         //开始扫描
-        Devices = await Tools.StartScanAsync(serviceUuids: serviceUuids, option: Option);
-        //StateHasChanged();
+        Devices = await Tools.StartScanAsync(serviceUuids: Option.PrinterOnly ? PrinterCharacteristicUuids:null, option: Option);
 
-        if (Devices != null)
+        if (Devices != null && Devices.Count > 0)
         {
             if (Option.MinRssi != 0)
             {
@@ -447,12 +440,11 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 {
                     //连接外设
                     var services = await Tools.ConnectToKnownDeviceAsync(bleDevice.Id, bleDevice.Name);
-                    if (services != null)
+                    if (services != null && services.Count > 0)
                     {
-                        if (serviceUuids != null)
+                        if (Option.PrinterOnly)
                         {
-                            var isPrinter = services.Where(a => serviceUuids.Contains(a.Id)).Any();
-                            if (!isPrinter)
+                            if (!IsPrinter(services.Select(a => a.Id)))
                             {
                                 bleDevice.ServicesRemark = "isNotPrinter";
                                 await Tools_OnMessage($"排除{bleDevice.Name}");
@@ -464,11 +456,11 @@ public partial class BluetoothPrinter : IAsyncDisposable
                         bleDevice.ServicesRemark = $"服务: {services.Count}";
                         services.ForEach(a =>
                         {
-                            a.Name = Tools.GetServicesName(a.Id);
-                            if (Tools.GetServicesName(a.Id)== "打印服务")
+                            a.Name = GetServicesName(a.Id);
+                            if (GetServicesName(a.Id) == "打印服务")
                             {
                                 bleDevice.ServicesRemark = $"打印服务,{bleDevice.ServicesRemark}";
-                            } 
+                            }
                         });
                         bleDevice.Services.AddRange(services);
                         await InvokeAsync(StateHasChanged);
@@ -485,7 +477,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                                     {
                                         characteristics.ForEach(a =>
                                         {
-                                            a.Name = Tools.GetCharacteristicsName(a.Id); 
+                                            a.Name = GetCharacteristicsName(a.Id);
                                         });
                                         bleService.Characteristics.AddRange(characteristics);
                                         bleService.Remark = $"特征: {characteristics.Count}";
@@ -507,7 +499,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                     else
                     {
                         bleDevice.ServicesRemark = $"连接超时";
-                        Messages = $"连接{bleDevice.Name}超时"; 
+                        Messages = $"连接{bleDevice.Name}超时";
                     }
                     await OnDisConnectDevice(true);
                     Messages = $"完成{bleDevice.Name}检查";
@@ -589,7 +581,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
                 new SelectedItem()
                 {
                     Active = IsAutoConnect && a.Id == BleInfo.Serviceid,
-                    Text = a.Name != "Unknown Service" ? $"{a.Name}({Tools.GetServicesName(a.Id)})" : Tools.GetServicesName(a.Id),
+                    Text = a.Name != "Unknown Service" ? $"{a.Name}({GetServicesName(a.Id)})" : GetServicesName(a.Id),
                     Value = a.Id.ToString()
                 })
             );
@@ -603,7 +595,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
         else
         {
-            Messages = $"连接{BleInfo.Name}失败. {Messages.Split("\r\n")?.FirstOrDefault() }";
+            Messages = $"连接{BleInfo.Name}失败. {Messages.Split("\r\n")?.FirstOrDefault()}";
             await ToastService.Error("提示", Messages);
         }
 
@@ -620,7 +612,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
     }
 
     /// <summary>
-    /// 获取特征
+    /// 选择服务,获取特征
     /// </summary>
     /// <returns></returns>
     private async Task OnServiceidSelect()
@@ -630,13 +622,13 @@ public partial class BluetoothPrinter : IAsyncDisposable
         ReadResult = "";
         CharacteristicList = new List<SelectedItem>() { new SelectedItem() { Text = "请选择...", Value = "" } };
         Characteristics = await Tools.GetCharacteristicsAsync(BleInfo.Serviceid);
-        if (Characteristics != null)
+        if (Characteristics != null && Characteristics.Count > 0)
         {
             Characteristics.ForEach(a => CharacteristicList.Add(
                 new SelectedItem()
                 {
                     Active = IsAutoConnect && a.Id == BleInfo.Characteristic,
-                    Text = a.Name != "Unknown characteristic" ? $"{a.Name}({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({Tools.GetCharacteristicsName(a.Id)})" : $"({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({Tools.GetCharacteristicsName(a.Id)})",
+                    Text = a.Name != "Unknown characteristic" ? $"{a.Name}({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({GetCharacteristicsName(a.Id)})" : $"({(a.CanRead ? "R" : "-")}{(a.CanWrite ? "W" : "-")}{(a.CanUpdate ? "U" : "-")})({GetCharacteristicsName(a.Id)})",
                     Value = a.Id.ToString()
                 })
             );
@@ -652,6 +644,10 @@ public partial class BluetoothPrinter : IAsyncDisposable
         await InvokeAsync(StateHasChanged);
     }
 
+    /// <summary>
+    /// 选择特征, 读取数值
+    /// </summary>
+    /// <returns></returns>
     private async Task OnCharacteristSelect(SelectedItem item)
     {
         if (IsAutoConnect) return;
@@ -671,7 +667,10 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
     }
 
-    //读取数值
+    /// <summary>
+    /// 读取数值
+    /// </summary>
+    /// <returns></returns>
     private async Task ReadDeviceName()
     {
         Messages = "";
@@ -713,163 +712,10 @@ public partial class BluetoothPrinter : IAsyncDisposable
     /// </summary>
     /// <returns></returns>
     private async Task SendDataAsyncCPCL()
-    {
-        //CPCL指令套打
-        StringBuilder cmds = new();
-        cmds.AppendLine("!0 200 200 777 1");
-        cmds.AppendLine("N-DOTS");
-        cmds.AppendLine("PAGE-WIDTH 595");
-        cmds.AppendLine("SETBOLD 1");
-        cmds.AppendLine("SETMAG 3 3");
-        cmds.AppendLine($"TEXT 10 0 8 195 测试-11-12-11");
-        cmds.AppendLine("SETMAG 0 0");
-        cmds.AppendLine("SETBOLD 0");
-        cmds.AppendLine("LINE 0 156 585 156 2");
-        cmds.AppendLine("LINE 0 301 585 301 2");
-        cmds.AppendLine("LINE 0 518 585 518 2");
-        cmds.AppendLine("LINE 0 724 585 724 2");
-        cmds.AppendLine("BOX 4 12 585 724 1");
-        cmds.AppendLine("BOX 4 156 585 301 1");
-        cmds.AppendLine("BOX 4 581 585 724 1");
-        cmds.AppendLine($"TEXT 4 0 22 327 投递机构：测试机构2");
-        cmds.AppendLine($"TEXT 4 0 22 450 处理终端：DLV1233213123123123311");
-        cmds.AppendLine($"TEXT 4 0 22 387 封包时间：{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}");
-        cmds.AppendLine("SETBOLD 1");
-        cmds.AppendLine($"TEXT 4 0 14 529 格口：121");
-        cmds.AppendLine($"TEXT 4 0 397 529 件数：111");
-        cmds.AppendLine($"TEXT 4 0 193 529 序号：123");
-        cmds.AppendLine("SETBOLD 0");
-        cmds.AppendLine($"TEXT 4 0 18 595 测试");
-        cmds.AppendLine($"TEXT 55 0 18 733 打印时间：{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}");
-        cmds.AppendLine($"BARCODE 128 1 20 80 80 27 12345678912346654");//条码
-        cmds.AppendLine("CENTR");
-        cmds.AppendLine($"TEXT 2 0 120 122 P12348785454445555");
-        cmds.AppendLine("FORM");
-        cmds.AppendLine("PRINT");
-
-        await SendDataAsyncPrinter(cmds.ToString());
+    { 
+        await SendDataAsyncPrinter(CpclTicket);
     }
 
-    private string CpclCommands =
-        "! 10 200 200 400 1\r\n" +
-        "BEEP 1\r\n" +
-        "PW 380\r\n" +
-        "SETMAG 1 1\r\n" +
-        "CENTER\r\n" +
-        "TEXT 10 2 10 40 Micro Bar\r\n" +
-        "TEXT 12 3 10 75 Blazor\r\n" +
-        "TEXT 10 2 10 350 eMenu\r\n" +
-        "B QR 30 150 M 2 U 7\r\n" +
-        "MA,https://google.com\r\n" +
-        "ENDQR\r\n" +
-        "FORM\r\n" +
-        "PRINT\r\n";
-
-    private string CpclBarcode =
-        "! 0 200 200 280 1\r\n" +
-        "PW 450\r\n" +
-        "CENTER\r\n" +
-        "SETMAG 1 1\r\n" +
-        "ENCODING GB18030\r\n" +
-        "TEXT 4 11 30 40 Coca-Cola 可口可乐\r\n" +
-        "BARCODE-TEXT 7 0 5\r\n" +
-        "BARCODE 128 1 1 50 10 100 123456789\r\n" +
-        "BARCODE-TEXT OFF\r\n" +
-        "SETMAG 2 2\r\n" +
-        "ENCODING ASCII\r\n" +
-        "TEXT 4 11 30 210 PVP:  123.45\r\n" +
-        "FORM\r\n" +
-        "PRINT\r\n";
-
-    // string = ESC + "!" + Chr(0) + ESC + "a" + Chr(1) + (str_title.value.length > 0 ? str_title.value : str_barcode
-    //     .value) + CRLF + CRLF + CRLF + qrCode(str_barcode.value) +
-    //CRLF + CRLF + CRLF;
-
-    public string PrintCpclQR(string? title = null, string? barcode = null, string? price = null)
-    {
-        title = title ?? Option.TestTitle;
-        barcode = barcode ?? Option.TestBarcode;
-        price = price ?? Option.TestPrice;
-
-        // 方形标签
-        // 店名
-        string storeTitleQR1 = Option.StoreTitleQR1 ?? "";
-        string storeTitleQR2 = Option.StoreTitleQR2 ?? "";
-        string storeTitleQR3 = Option.StoreTitleQR3 ?? "";
-        // 标签
-        string storeQRSize = Option.StoreQRSize ?? "10 200 200 400";
-        int storeQRWidth = Option.StoreQRWidth ?? 450;
-
-        return "! " + storeQRSize + " 1\r\n" +
-               "BEEP 1\r\n" +
-               "PW " + storeQRWidth + "\r\n" +
-               "CENTER\r\n" +
-               "TEXT 10 2 10 40 " + storeTitleQR1 + "\r\n" +
-               "TEXT 12 3 10 75 " + storeTitleQR2 + "\r\n" +
-               "TEXT 10 2 10 350 " + storeTitleQR3 + "\r\n" +
-               "B QR 30 150 M 2 U 7\r\n" +
-               "MA," + barcode + "\r\n" +
-               "ENDQR\r\n" +
-               "FORM\r\n" +
-               "PRINT\r\n";
-    }
-
-
-    public string PrintCpclLabel(string? title = null, string? barcode = null, string? price = null)
-    {
-        title = title ?? Option.TestTitle;
-        barcode = barcode ?? Option.TestBarcode;
-        price = price ?? Option.TestPrice;
-
-        // Store name
-        string storeTitle = Option.StoreTitle ?? "";
-        string storeTitleSize = Option.StoreTitleSize ?? "1 1";
-        string storePoint = Option.StorePoint ?? "1 0 0 10";
-
-        // Name
-        string nameSize = Option.NameSize ?? "1 2";
-        string namePoint = Option.NamePoint ?? "2 0 10 50";
-
-        // Barcode
-        string barcodePoint = Option.BarcodePoint ?? "1 0 50 0 110";
-
-        // Price
-        string pricePoint = Option.PricePoint ?? "4 0 0 205";
-        string priceSize = Option.PriceSize ?? "2 2";
-
-        // Price PVP and Euros
-        string priceTagSize = Option.PriceTagSize ?? "1 1";
-        string priceTagPoint = Option.PriceTagPoint ?? "4 0 10 230";
-        string priceTagPVPPoint = Option.PriceTagPVPPoint ?? "4 0 10 230";
-
-        // Label 标签规格设定
-        string labelSize = Option.LabelSize ?? "0 200 200 290";
-        int labelwidth = Option.LabelWidth ?? 450;
-        int escPriceSize = Option.StoreQREscSize ?? 51;
-
-        return "! " + labelSize + " 1\r\n" +
-               "BEEP 1" + "\r\n" +
-               "PW " + labelwidth + "\r\n" +
-               "CENTER\r\n" +
-               "SETMAG " + storeTitleSize + "\r\n" +
-               "TEXT " + storePoint + " " + storeTitle + "\r\n" +
-               "SETMAG " + nameSize + "\r\n" +
-               "TEXT " + namePoint + " " + title + "\r\n" +
-               "BARCODE-TEXT 7 0 5\r\n" +
-               "BARCODE 128 " + barcodePoint + " " + barcode + "\r\n" +
-               "BARCODE-TEXT OFF\r\n" +
-               "SETBOLD 1\r\n" +
-               "SETMAG " + priceSize + "\r\n" +
-               "TEXT " + pricePoint + " " + price + "\r\n" +
-               "SETMAG " + priceTagSize + "\r\n" +
-               "LEFT\r\n" +
-               "TEXT " + priceTagPVPPoint + " " + Option.PriceTagPVP + ":\r\n" +
-               "RIGHT\r\n" +
-               "TEXT " + priceTagPoint + " " + Option.PriceTagEuros + "\r\n" +
-               "SETBOLD 0\r\n" +
-               "FORM\r\n" +
-               "PRINT\r\n";
-    }
 
     /// <summary>
     /// 标签文件通常以“!”字符作为开头，后接“x”偏置参数、“x”和“y”轴分辨率、标签长度以及要打印的标签数量。包含这些参数的行称为命令起始行。任何情况下，标签文件都是以命令起始行开头，以“PRINT”命令结尾。用于构建具体标签的命令置于这两项命令之间
@@ -880,64 +726,6 @@ public partial class BluetoothPrinter : IAsyncDisposable
     public string CPCL_Init(string labelSize, int qty = 1)
     {
         return $"! {labelSize} {qty}\r\n";
-    }
-
-    public string PrintTicketESCPOS_barcode(string title, string barcode, string price, bool printbarcode = false)
-    {
-        if (barcode == "") return "";
-
-        //店名
-        string title0 = Option.StoreTitle ?? "";
-        string OutputDataQrCode = "";
-        ////initialize
-        //OutputDataQrCode += ESC + "@";
-        //if (title0.Length > 0)
-        //{
-        //    //setTextBold
-        //    OutputDataQrCode += ESC + "E" + (char)1;
-        //    //setJustification center
-        //    OutputDataQrCode += ESC + "a" + (char)1;
-        //    OutputDataQrCode += title0 + CRLF;
-        //}
-        ////setTextBold
-        //OutputDataQrCode += ESC + "E" + (char)1;
-        ////setJustification center
-        //OutputDataQrCode += ESC + "a" + (char)1;
-        ////setTextSize
-        ////OutputDataQrCode += GS + '!' + (char)1;
-        //OutputDataQrCode += escPriceSize.value + " " + title + CRLF;
-        ////OutputDataQrCode += ESC + "d" + (char)1;
-        //if (printbarcode)
-        //{
-        //    //initialize
-        //    OutputDataQrCode += ESC + "@";
-        //    //barcode
-        //    OutputDataQrCode += GS + 'h2' + GS + 'w' + (char)2 + GS + "k" + (char)73 + (char)(barcode.Length + 2) + (char)123 +
-        //        (char)66 + barcode; //+ NUL
-        //                            //OutputDataQrCode += CRLF;
-        //}
-        ////setTextSize reset
-        //OutputDataQrCode += ESC + "!" + (char)0;
-        //OutputDataQrCode += ESC + "a" + (char)0;
-        //OutputDataQrCode += ESC + "E" + (char)1;
-        //OutputDataQrCode += barcode;
-        //OutputDataQrCode += CRLF;
-        ////setTextSize reset
-        //OutputDataQrCode += ESC + "!" + (char)0;
-        //OutputDataQrCode += ESC + "E" + (char)0;
-        //OutputDataQrCode += ESC + "a" + (char)2;
-        ////setTextSize
-        //OutputDataQrCode += GS + '!' + (char)1;
-        //OutputDataQrCode += "PVP: ";
-        ////setTextSize
-        //OutputDataQrCode += GS + '!' + (char)escPriceSize.value;
-        //OutputDataQrCode += price;
-        ////setTextSize
-        //OutputDataQrCode += GS + '!' + (char)1;
-        //OutputDataQrCode += " EUR";
-        //OutputDataQrCode += CRLF;
-        //OutputDataQrCode += ESC + "d" + (char)3;
-        return OutputDataQrCode;
     }
 
     /// <summary>
@@ -995,6 +783,7 @@ public partial class BluetoothPrinter : IAsyncDisposable
             await ToastService.Warning("提示", message);
         }
     }
+
     private async Task SaveBleDevice(BleTagDevice BleInfo)
     {
         Option.Name = BleInfo.Name;
@@ -1034,9 +823,9 @@ public partial class BluetoothPrinter : IAsyncDisposable
         }
     }
 
-    private async Task SendDataAsyncCPCLTest() => await SendDataAsyncPrinter(PrintCpclLabel());
+    private async Task SendDataAsyncCPCLTest() => await SendDataAsyncPrinter(PrintCpclLabel(Option));
     private async Task SendDataAsyncCPCLBarcode() => await SendDataAsyncPrinter(CpclBarcode);
-    private async Task SendDataAsyncESC() => await SendDataAsyncPrinter(CpclCommands);
+    private async Task SendDataAsyncESC() => await SendDataAsyncPrinter(PrintTicketESCPOS_barcode(Option));
     private async Task SendDataAsyncCPCLQR() => await SendDataAsyncPrinter(CpclCommands);
 
     private async Task SendDataAsyncPrinter(string commands)

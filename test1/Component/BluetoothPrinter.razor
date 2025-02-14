@@ -15,23 +15,22 @@
                     <BootstrapInputGroupLabel DisplayText="名称" class="border-primary" />
                     <BootstrapInput TValue="string" Color="Color.Primary" @bind-Value="Option.NameFilter" style="max-width: 80px;" />
                     <Select TValue="string" Color="Color.Primary" Items="PrinterDemoList" OnSelectedItemChanged="OnPrinterSelect" style="max-width: 100px; " />
-                    <Button Text="QR" Size="Size.Small" OnClick="SendDataAsyncCPCLQR" IsDisabled="@isDisabled" />
-                    <Button Text="条码" Size="Size.Small"  OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
-                    <Button Text="小票" Size="Size.Small" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
                 </BootstrapInputGroup>
 
                 <BootstrapInputGroup class="m-1">
-                    @*<Button Text="返回" OnClick="BackToHome" />*@
-                    <Button Text="扫描" @attributes=IsScanningCss OnClick="ScanDevice" />
-                    <Button Text="连接" OnClick="OnDeviceSelect" IsDisabled="@(Devices == null)" />
-                    <Button Text="断开" OnClick="OnDisConnectDevice" IsDisabled="@(Devices == null)" />
-                    <Button Text="清空" OnClick="OnReset" />
+                    <Button Text="扫描" Size="Size.Small" @attributes=IsScanningCss OnClick="ScanDevice" />
+                    <Button Text="连接" Size="Size.Small" OnClick="OnDeviceSelect" IsDisabled="@(Devices == null)" />
+                    <Button Text="断开" Size="Size.Small" OnClick="OnDisConnectDevice" IsDisabled="@(Devices == null)" />
+                    <Button Text="清空" Size="Size.Small" OnClick="OnReset" />
+                    <Button Text="上次设备" Size="Size.Small" OnClick="(async()=>await SendDataAsyncCPCLBarcode(BleInfo))" IsDisabled="@(BleInfo.DeviceID == Guid.Empty)" />
                 </BootstrapInputGroup>
                 <BootstrapInputGroup class="m-1">
-                    <Button Text="连接上次设备" OnClick="(async()=>await SendDataAsyncCPCLBarcode(BleInfo))" IsDisabled="@(BleInfo.DeviceID == Guid.Empty)" />
-                    <Button Text="打印" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@(Characteristics == null)" />
-                    <Button Text="写入" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
-                    <Button Text="读取" OnClick="ReadDeviceName" IsDisabled="@(Characteristics == null)" />
+                    <Button Text="QR" Size="Size.Small" OnClick="SendDataAsyncCPCLQR" IsDisabled="@isDisabled" />
+                    <Button Text="条码" Size="Size.Small" OnClick="SendDataAsyncCPCLBarcode" IsDisabled="@isDisabled" />
+                    <Button Text="小票" Size="Size.Small" OnClick="SendDataAsyncCPCL" IsDisabled="@isDisabled" />
+                    <Button Text="Escpos" Size="Size.Small" OnClick="SendDataAsyncESC" IsDisabled="@isDisabled" />
+                    <Button Text="写入" Size="Size.Small" OnClick="ReadDeviceName" IsDisabled="@isDisabled" />
+                    <Button Text="读取" Size="Size.Small" OnClick="ReadDeviceName" IsDisabled="@isDisabled" />
                 </BootstrapInputGroup>
 
                 @if (Devices != null)
@@ -61,20 +60,23 @@
                         }
                     </div>
 
-                    <Table @ref="Table" TItem="BleDevice" Items='Devices.Where(a=>a.ServicesRemark !="isNotPrinter")'
+                    <Table @ref="Table" 
+                           TItem="BleDevice" 
+                           Items='Devices.Where(a=>a.ServicesRemark !="isNotPrinter")'
                            ShowDetailRow='(e)=>!(string.IsNullOrEmpty(e.ServicesRemark) && e.ServicesRemark !="-")'
-                           OnDoubleClickRowCallback="OnDoubleClickRowCallback()!"
-                           AllowResizing AllowDragColumn
+                           OnDoubleClickRowCallback="OnDoubleClickRowCallback()!" 
                            TableSize="TableSize.Compact"
                            RenderMode="TableRenderMode.Table">
                         <TableColumns>
-                            <TableColumn @bind-Field="@context.Name" Text="名称" Width="100">
+                            <TableColumn @bind-Field="@context.Name" Text="名称" TextWrap="true">
                                 <Template Context="v">
                                     <div>
                                         @{
                                             var device = (BleDevice)v.Row;
                                         }
-                                        <div><b>@v.Value</b> <i>(@device.Id.ToString().Replace("00000000-0000-0000-0000-", ""))</i></div>
+                                        <div>
+                                            <b>@v.Value</b> 
+                                        </div>
                                         <div>@device.Remark</div>
                                         <div>@device.ServicesRemark</div>
                                     </div>
@@ -85,67 +87,118 @@
                                     <div>
                                         @{
                                             var device = (BleDevice)v.Row;
+                                            var ser = device.Services.FirstOrDefault(a => a.Name != null && a.Name.StartsWith("打印服务"));
                                         }
                                         <div>@device.Rssi</div>
-                                        @if (device.ServicesRemark != null && device.ServicesRemark.Contains("打印服务"))
+                                        @if (ser != null)
                                         {
-                                            var serID = device.Services.FirstOrDefault(a => a.Name == "打印服务")?.Id;
+                                            var chars= ser.Characteristics.Select(a => a.Id);
+                                            var isPrinter = BlazorHybrid.Core.Device.BleExtension.IsPrintCharacteristics(chars);
 
-                                            if (serID != null)
+                                            if (isPrinter)
                                             {
                                                 <div>
-                                                    <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall"
-                                                            OnClickWithoutRender="()=> SendDataAsyncCPCLBarcode(device.Name,device.Id,serID.Value) " />
+                                                    <Button Color="Color.Primary"
+                                                            Text="Test"
+                                                            Size="Size.ExtraSmall"
+                                                            OnClickWithoutRender="()=> SendDataAsyncCPCLBarcode(device.Name,device.Id,ser.Id) " />
                                                 </div>
                                             }
-
                                         }
                                     </div>
                                 </Template>
                             </TableColumn>
                         </TableColumns>
                         <DetailRowTemplate>
-                            <Table TItem="BleService" Items="@context.Services" ShowDetailRow="ShowDetailRow"
+                            <Table TItem="BleService" 
+                                   Items="@context.Services" 
                                    OnDoubleClickRowCallback="OnDoubleClickRowCallback2()!"
-                                   IsAccordion AllowResizing AllowDragColumn
+                                   ShowDetailRow="ShowDetailRow" 
+                                   IsAccordion
                                    TableSize="TableSize.Compact"
                                    RenderMode="TableRenderMode.Table">
                                 <TableColumns Context="service">
-                                    <TableColumn @bind-Field="@service.Name" Text="名称" Width="100" />
-                                    <TableColumn @bind-Field="@service.Id" Text="操作">
+                                    <TableColumn @bind-Field="@service.Name" Text="名称" TextWrap="true">
                                         <Template Context="v">
-                                            @if (((BleService)v.Row).Characteristics.Where(a => a.CanWrite).Any())
-                                            {
-                                                <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall" IsDisabled="@(!((BleService) v.Row).Characteristics.Where(a=>a.CanWrite).Any())"
-                                                        OnClickWithoutRender="()=> SendDataAsyncCPCLBarcode(context.Name,context.Id,v.Value) " />
+                                            <div>
+                                                @{
+                                                    var service = (BleService)v.Row;
+                                                }
+                                                <div>
+                                                    <b>@v.Value</b>
+                                                </div>
+                                                <div>@service.Remark</div> 
+                                            </div>
+                                        </Template>
+                                    </TableColumn>
+                                    <TableColumn @bind-Field="@service.Id" Text="操作" Width="50">
+                                        <Template Context="v">
+                                            @{ 
+                                                var chars = v.Row.Characteristics.Select(a => a.Id);
+                                                var isPrinter = BlazorHybrid.Core.Device.BleExtension.IsPrintCharacteristics(chars);
 
+                                                if (isPrinter && v.Row.Characteristics.Where(a => a.CanWrite).Any())
+                                                {
+                                                    <Button Color="Color.Primary" 
+                                                        Text="Test" 
+                                                        Size="Size.ExtraSmall" 
+                                                        IsDisabled="@(!((BleService)v.Row).Characteristics.Where(a => a.CanWrite).Any())"
+                                                        OnClickWithoutRender="() => SendDataAsyncCPCLBarcode(context.Name, context.Id, v.Value) " />
+
+                                                }
                                             }
                                         </Template>
                                     </TableColumn>
-                                    <TableColumn @bind-Field="@service.Remark" Text="备注" Width="100" />
-                                    <TableColumn @bind-Field="@service.Id" Text="ID" />
-                                </TableColumns>
+                                 </TableColumns>
                                 <DetailRowTemplate Context="service">
-                                    <Table TItem="BleCharacteristic" Items="@service.Characteristics"
-                                           AllowResizing AllowDragColumn
+                                    <Table TItem="BleCharacteristic" 
+                                           Items="@service.Characteristics" 
                                            TableSize="TableSize.Compact"
                                            RenderMode="TableRenderMode.Table">
                                         <TableColumns Context="characteristic">
-                                            <TableColumn @bind-Field="@characteristic.Name" Text="名称" Width="100" />
-                                            <TableColumn @bind-Field="@characteristic.Id" Text="操作">
+                                            <TableColumn @bind-Field="@characteristic.Name" Text="名称" TextWrap="true">
                                                 <Template Context="v">
-                                                    @if (((BleCharacteristic)v.Row).CanWrite)
-                                                    {
-                                                        <Button Color="Color.Primary" Text="Test" Size="Size.ExtraSmall" IsDisabled="@(!((BleCharacteristic) v.Row).CanWrite)"
-                                                                OnClickWithoutRender="()=>SendDataAsyncCPCLBarcode(new BleTagDevice(context.Name,context.Id,service.Id,v.Value))" />
+                                                    <div>
+                                                        @{
+                                                            var characteris = (BleCharacteristic)v.Row;
+                                                        }
+                                                        <div>
+                                                            <b>@v.Value</b>
+                                                        </div>
+                                                        <div>@{ 
+                                                                if (characteris.CanRead)
+                                                                {
+                                                                    <Tag Color="Color.Primary">读</Tag>
+                                                                }
+                                                                if (characteris.CanWrite)
+                                                                {
+                                                                    <Tag Color="Color.Success">写</Tag>
+                                                                }
+                                                                if (characteris.CanUpdate)
+                                                                {
+                                                                    <Tag Color="Color.Info">通知</Tag>
+                                                                }
+                                                            } 
+                                                        </div>
+                                                        <div>@characteris.StringValue</div>
+                                                    </div>
+                                                </Template>
+                                            </TableColumn>
+                                            <TableColumn @bind-Field="@characteristic.Id" Text="操作" Width="50">
+                                                <Template Context="v">
+                                                    @{
+                                                        var isPrinter = BlazorHybrid.Core.Device.BleExtension.IsPrintCharacteristics(v.Row.Id);
+                                                        if (isPrinter && ((BleCharacteristic)v.Row).CanWrite)
+                                                        {
+                                                            <Button Color="Color.Primary"
+                                                                    Text="Test"
+                                                                    Size="Size.ExtraSmall"
+                                                                    IsDisabled="@(!((BleCharacteristic) v.Row).CanWrite)"
+                                                                    OnClickWithoutRender="()=>SendDataAsyncCPCLBarcode(new BleTagDevice(context.Name,context.Id,service.Id,v.Value))" />
+                                                        }
                                                     }
                                                 </Template>
                                             </TableColumn>
-                                            <TableColumn @bind-Field="@characteristic.CanRead" Text="读" Width="50" />
-                                            <TableColumn @bind-Field="@characteristic.CanWrite" Text="写" Width="50" />
-                                            <TableColumn @bind-Field="@characteristic.CanUpdate" Text="通知" Width="50" />
-                                            <TableColumn @bind-Field="@characteristic.StringValue" Text="值" />
-                                            <TableColumn @bind-Field="@characteristic.Id" Text="ID" />
                                         </TableColumns>
                                     </Table>
                                 </DetailRowTemplate>
