@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-12 col-m-6 col-sm-6">
 
-        <Tab IsLazyLoadTabItem>
+        <Tab IsLazyLoadTabItem IsBorderCard>
             <TabItem Text="打印">
                 @{
                     var isDisabled = !IsConnected && Devices == null;
@@ -33,9 +33,8 @@
                     <Button Text="读取" Size="Size.Small" OnClick="ReadDeviceName" IsDisabled="@isDisabled" />
                 </BootstrapInputGroup>
 
-                @if (Devices != null)
+                @if (Devices != null && Devices.Count>0)
                 {
-
                     <div class="row mt-1 g-3">
                         <div class="col-12 col-m-6 col-sm-6">
                             <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
@@ -240,17 +239,16 @@
 
     </div>
 
-    <div class="col-12 col-m-6 col-sm-6">
+    <div class="col-12 col-m-6 col-sm-6" style="font-size:xx-small;">
         @if (BleInfo.Name != null)
         {
-
             <div class="g-3">
                 历史连接 <br />
                 @BleInfo.Name <br />
                 @BleInfo.DeviceID.ToString() <br />
                 @BleInfo.Serviceid.ToString() <br />
                 @BleInfo.Characteristic.ToString() <br />
-                @ReadResult <br />
+                @ReadResult
             </div>
         }
         <Switch DisplayText="自动连接" OnText="自动连接" OffText="手动连接" Value="@IsAuto" OnValueChanged="@OnStateChanged" />
