@@ -505,8 +505,9 @@ public partial class BluetoothLEServices
             }
 
             bool connectState = true;
-            OnStateConnect?.Invoke(connectState);//这里获取成功才为真的连接成功，并可以开始读取Notify数据
+            OnStateConnect?.Invoke(connectState);
 
+            //这里获取成功才为真的连接成功，并可以开始读取Notify数据
             if (getNotify)
             {
                 //新增测试代码
