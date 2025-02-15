@@ -33,25 +33,25 @@
                     <Button Text="读取" Size="Size.Small" OnClick="ReadDeviceName" IsDisabled="@isDisabled" />
                 </BootstrapInputGroup>
 
-                @if (Devices != null && Devices.Count>0)
+                @if (Devices != null)
                 {
                     <div class="row mt-1 g-3">
-                        <div class="col-12 col-m-6 col-sm-6">
+                        <div class="col-12">
                             <Select TValue="Guid" Items="DeviceList" OnSelectedItemChanged="OnDeviceSelect" />
                         </div>
                         @if (Services != null)
                         {
-                            <div class="col-12 col-m-6 col-sm-6">
+                            <div class="col-12">
                                 <Select TValue="Guid" Items="ServiceidList" OnSelectedItemChanged="OnServiceidSelect" />
                             </div>
                             @if (Characteristics != null)
                             {
-                                <div class="col-12 col-m-6 col-sm-6">
+                                <div class="col-12">
                                     <Select TValue="Guid" Items="CharacteristicList" OnSelectedItemChanged="OnCharacteristSelect" />
                                 </div>
                                 @if (ReadResult != null)
                                 {
-                                    <div class="col-12 col-m-6 col-sm-6">
+                                    <div class="col-12">
                                         <Display TValue="string" Value="@ReadResult" />
                                     </div>
                                 }
