@@ -126,7 +126,8 @@ public class NullFeatureService : INativeFeatures
 
     public Task<string?> ReadDeviceName(Guid? serviceid, Guid? characteristic)
     {
-        throw new NotImplementedException();
+        string? res = "未实现";
+        return Task.FromResult(res);
     }
 
     public Task<byte[]?> ReadDataAsync(Guid characteristic)
@@ -161,7 +162,7 @@ public class NullFeatureService : INativeFeatures
 
     public Task ExecuteScriptAsync(string js = "alert('hello from WebView JS')")
     {
-        throw new NotImplementedException();
+        return Task.FromResult("未实现");;
     }
 
     public Task<string> CheckPermissionsNFC() => Task.FromResult("未实现");
@@ -172,6 +173,26 @@ public class NullFeatureService : INativeFeatures
     }
 
     public Task<List<string>?> ConnectDeviceAsync(BleTagDevice ble, bool getNotify = false, byte[]? sentbytes = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> SendDataAsyncChunk(Guid characteristic, byte[]? ary, int chunk = 20)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> SendDataAsync(Guid characteristic, string commands, int chunk = 20)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> ResetBluetooth()
     {
         throw new NotImplementedException();
     }

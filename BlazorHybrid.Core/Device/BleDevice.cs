@@ -4,11 +4,30 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
+using BootstrapBlazor.Components;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace BlazorHybrid.Core.Device;
+
+public class BleUUID
+{
+
+    //Android的SSP（协议栈默认）的UUID：00001101-0000-1000-8000-00805F9B34FB，只有使用该UUID才能正常和外部的，也是SSP串口的蓝牙设备去连接。
+    public static readonly string SerialPortServiceUUID = "00001101-0000-1000-8000-00805F9B34FB";
+
+    //正常打印机的打印服务
+    public static readonly string PrinterNormalServiceUUID = "e7810a71-73ae-499d-8c15-faa9aef0c3f2";
+    public static readonly string PrinterNormalCharacteristicUUID = "BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F";
+
+    public static readonly string PrinterServiceUUID = "0000ff00-0000-1000-8000-00805f9b34fb";
+
+    public static readonly string PrinterCharacteristicUUID = "0000ff02-0000-1000-8000-00805f9b34fb";
+
+    public static readonly string GattServiceUUID = "49535343-fe7d-4ae5-8fa9-9fafd205e455";
+    public static readonly string GattCharacteristicUUID = "49535343-8841-43F4-A8D4-ECBE34729BB3";
+}
 
 /// <summary>
 /// 蓝牙设备
@@ -16,36 +35,51 @@ namespace BlazorHybrid.Core.Device;
 public class BleTagDevice
 {
 
+
     /// <summary>
     /// 设备名称
     /// </summary>
+    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
+    [DisplayName("设备名称")]
     public string? Name { get; set; }
 
     /// <summary>
     /// 设备ID
     /// </summary>
+    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
+    [DisplayName("设备ID")]
     public Guid DeviceID { get; set; }
 
     /// <summary>
     /// 服务ID
     /// </summary>
+    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
+    [DisplayName("服务ID")]
     public Guid Serviceid { get; set; }
 
     /// <summary>
     /// 特征ID
     /// </summary>
+    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
+    [DisplayName("特征ID")]
     public Guid Characteristic { get; set; }
 
     /// <summary>
     /// 搜索超时时间,默认10秒
     /// </summary>
+    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
+    [DisplayName("搜索超时时间,默认10秒")]
     public int ScanTimeout { get; set; } = 10;
 
-    public bool ByName { get; set; }  
+    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
+    [DisplayName("按名称查找")]
+    public bool ByName { get; set; }
 
     /// <summary>
     /// 打印机类型
     /// </summary>
+    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
+    [DisplayName("打印机类型")]
     public BlePrinterType PrinterType { get; set; }
 
     public BleTagDevice() { }
@@ -69,7 +103,7 @@ public class BleTagDevice
         }
         else
         {
-            DeviceID= Guid.NewGuid();
+            DeviceID = Guid.NewGuid();
             ByName = true;
         }
         Serviceid = Guid.Parse(serviceid);
@@ -110,7 +144,7 @@ public class BleDevice
     /// </summary>
     [DisplayName("信号")]
     public int Rssi { get; set; }
-    
+
     /// <summary>
     /// 可连接
     /// </summary>
