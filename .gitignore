@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 BlazorHybrid.SSR/hybrid.db
 /.idea
+.DS_Store
