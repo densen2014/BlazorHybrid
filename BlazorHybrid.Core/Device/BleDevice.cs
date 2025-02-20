@@ -35,52 +35,52 @@ public class BleUUID
 public class BleTagDevice
 {
 
-
-    /// <summary>
-    /// 设备名称
-    /// </summary>
-    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
-    [DisplayName("设备名称")]
-    public string? Name { get; set; }
-
-    /// <summary>
-    /// 设备ID
-    /// </summary>
-    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
-    [DisplayName("设备ID")]
-    public Guid DeviceID { get; set; }
-
-    /// <summary>
-    /// 服务ID
-    /// </summary>
-    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
-    [DisplayName("服务ID")]
-    public Guid Serviceid { get; set; }
-
-    /// <summary>
-    /// 特征ID
-    /// </summary>
-    [AutoGenerateColumn(GroupName = "蓝牙设备", GroupOrder = 1)]
-    [DisplayName("特征ID")]
-    public Guid Characteristic { get; set; }
-
     /// <summary>
     /// 搜索超时时间,默认10秒
     /// </summary>
-    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
+    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 1)]
     [DisplayName("搜索超时时间,默认10秒")]
     public int ScanTimeout { get; set; } = 10;
 
-    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
+    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 1)]
     [DisplayName("按名称查找")]
     public bool ByName { get; set; }
 
     /// <summary>
     /// 打印机类型
     /// </summary>
-    [AutoGenerateColumn(GroupName = "配置", GroupOrder = 0)]
+    [AutoGenerateColumn(GroupName = "通用", GroupOrder = 0)]
     [DisplayName("打印机类型")]
     public BlePrinterType PrinterType { get; set; }
+
+
+    /// <summary>
+    /// 设备名称
+    /// </summary>
+    [AutoGenerateColumn(GroupName = "通用", GroupOrder = 0)]
+    [DisplayName("设备名称")]
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// 设备ID
+    /// </summary>
+    [AutoGenerateColumn(GroupName = "通用", GroupOrder = 0)]
+    [DisplayName("设备ID")]
+    public Guid DeviceID { get; set; }
+
+    /// <summary>
+    /// 服务ID
+    /// </summary>
+    [AutoGenerateColumn(GroupName = "蓝牙", GroupOrder = 1)]
+    [DisplayName("服务ID")]
+    public Guid Serviceid { get; set; }
+
+    /// <summary>
+    /// 特征ID
+    /// </summary>
+    [AutoGenerateColumn(GroupName = "蓝牙", GroupOrder = 1)]
+    [DisplayName("特征ID")]
+    public Guid Characteristic { get; set; }
 
     public BleTagDevice() { }
 
