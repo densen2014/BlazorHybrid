@@ -27,14 +27,20 @@ public partial class Index : IAsyncDisposable
             if (CrossNFC.IsSupported)
             {
                 if (!CrossNFC.Current.IsAvailable)
+                {
                     await ShowAlert("NFC is not available");
+                }
 
                 NfcIsEnabled = CrossNFC.Current.IsEnabled;
                 if (!NfcIsEnabled)
+                {
                     await ShowAlert("NFC is disabled");
+                }
 
                 if (DeviceInfo.Platform == DevicePlatform.iOS)
+                {
                     _isDeviceiOS = true;
+                }
 
                 await AutoStartAsync().ConfigureAwait(false);
             }
@@ -111,7 +117,9 @@ public partial class Index : IAsyncDisposable
     void SubscribeEvents()
     {
         if (_eventsAlreadySubscribed)
+        {
             UnsubscribeEvents();
+        }
 
         _eventsAlreadySubscribed = true;
 
@@ -122,7 +130,9 @@ public partial class Index : IAsyncDisposable
         CrossNFC.Current.OnTagListeningStatusChanged += Current_OnTagListeningStatusChanged;
 
         if (_isDeviceiOS)
+        {
             CrossNFC.Current.OniOSReadingSessionCancelled += Current_OniOSReadingSessionCancelled;
+        }
     }
 
     /// <summary>
@@ -137,7 +147,9 @@ public partial class Index : IAsyncDisposable
         CrossNFC.Current.OnTagListeningStatusChanged -= Current_OnTagListeningStatusChanged;
 
         if (_isDeviceiOS)
+        {
             CrossNFC.Current.OniOSReadingSessionCancelled -= Current_OniOSReadingSessionCancelled;
+        }
 
         _eventsAlreadySubscribed = false;
     }
@@ -208,9 +220,13 @@ public partial class Index : IAsyncDisposable
             ChkReadOnly = false;
             CrossNFC.Current.StopPublishing();
             if (tagInfo.IsEmpty)
+            {
                 await ShowAlert("Formatting tag operation successful");
+            }
             else
+            {
                 await ShowAlert("Writing tag operation successful");
+            }
         }
         catch (Exception ex)
         {
@@ -265,12 +281,16 @@ public partial class Index : IAsyncDisposable
             }
 
             if (!format && record == null)
+            {
                 throw new Exception("记录不能为空.");
+            }
 
             tagInfo.Records = new[] { record };
 
             if (format)
+            {
                 CrossNFC.Current.ClearMessage(tagInfo);
+            }
             else
             {
                 CrossNFC.Current.PublishMessage(tagInfo, _makeReadOnly);
@@ -324,9 +344,15 @@ public partial class Index : IAsyncDisposable
                 _makeReadOnly = true;
             }
             else
+            {
                 _makeReadOnly = false;
+            }
 
-            if (type.HasValue) _type = type.Value;
+            if (type.HasValue)
+            {
+                _type = type.Value;
+            }
+
             CrossNFC.Current.StartPublishing(!type.HasValue);
         }
         catch (Exception ex)

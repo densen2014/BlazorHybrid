@@ -4,15 +4,14 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-namespace bh006_NFC_tag
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
+namespace bh006_NFC_tag;
 
-            MainPage = new MainPage();
-        }
+public partial class App : Application
+{
+    public App()
+    {
+        InitializeComponent();
+
+        MainPage = new MainPage();
     }
 }

@@ -57,22 +57,14 @@
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-    </ItemGroup>
+    </ItemGroup> 
 
     <ItemGroup>
-      <None Remove="Platforms\Android\Resources\values\colors.xml" />
-    </ItemGroup>
-
-
-    <ItemGroup>
-        <PackageReference Include="BlazorHybrid.Maui.Permissions" Version="0.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-        <PackageReference Include="BootstrapBlazor" Version="7.*" />
-        <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="7.*" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <!--<ProjectReference Include="..\..\BlazorHybrid.Maui.Permissions\BlazorHybrid.Maui.Permissions.csproj" />-->
+        <PackageReference Include="BlazorHybrid.Maui.Permissions" Version="0.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+        <PackageReference Include="BootstrapBlazor" Version="9.6.3" />
+        <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="9.4.0" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
     </ItemGroup>
 
 </Project>

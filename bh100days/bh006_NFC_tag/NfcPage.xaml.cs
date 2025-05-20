@@ -66,14 +66,20 @@ public partial class NfcPage : ContentPage
         if (CrossNFC.IsSupported)
         {
             if (!CrossNFC.Current.IsAvailable)
+            {
                 await ShowAlert("NFC is not available");
+            }
 
             NfcIsEnabled = CrossNFC.Current.IsEnabled;
             if (!NfcIsEnabled)
+            {
                 await ShowAlert("NFC is disabled");
+            }
 
             if (DeviceInfo.Platform == DevicePlatform.iOS)
+            {
                 _isDeviceiOS = true;
+            }
 
             //// 自定义NFC配置（例如法语的UI消息）
             //CrossNFC.Current.SetConfiguration(new NfcConfiguration
@@ -230,9 +236,13 @@ public partial class NfcPage : ContentPage
             ChkReadOnly.IsChecked = false;
             CrossNFC.Current.StopPublishing();
             if (tagInfo.IsEmpty)
+            {
                 await ShowAlert("Formatting tag operation successful");
+            }
             else
+            {
                 await ShowAlert("Writing tag operation successful");
+            }
         }
         catch (Exception ex)
         {
@@ -287,12 +297,16 @@ public partial class NfcPage : ContentPage
             }
 
             if (!format && record == null)
+            {
                 throw new Exception("记录不能为空.");
+            }
 
             tagInfo.Records = new[] { record };
 
             if (format)
+            {
                 CrossNFC.Current.ClearMessage(tagInfo);
+            }
             else
             {
                 CrossNFC.Current.PublishMessage(tagInfo, _makeReadOnly);
@@ -367,9 +381,15 @@ public partial class NfcPage : ContentPage
                 _makeReadOnly = true;
             }
             else
+            {
                 _makeReadOnly = false;
+            }
 
-            if (type.HasValue) _type = type.Value;
+            if (type.HasValue)
+            {
+                _type = type.Value;
+            }
+
             CrossNFC.Current.StartPublishing(!type.HasValue);
         }
         catch (Exception ex)

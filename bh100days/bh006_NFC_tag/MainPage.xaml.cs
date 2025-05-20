@@ -6,15 +6,14 @@
 
 using BlazorHybrid.Maui.Shared;
 
-namespace bh006_NFC_tag
-{
-    public partial class MainPage : ContentPage
-    {
-        public MainPage()
-        {
-            InitializeComponent();
+namespace bh006_NFC_tag;
 
-            new InitBlazorWebView(blazorWebView);
-        }
+public partial class MainPage : ContentPage
+{
+    public MainPage()
+    {
+        InitializeComponent();
+
+        new InitBlazorWebView(blazorWebView);
     }
 }
