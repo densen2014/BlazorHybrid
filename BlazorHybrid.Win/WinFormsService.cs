@@ -198,4 +198,24 @@ public class WinFormsService : INativeFeatures
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> ResetBluetooth()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<BleDevice>?> StartScanAsync(Guid? deviceGuid = null, Guid[]? serviceUuids = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> SendDataAsyncChunk(Guid characteristic, byte[]? ary, int chunk = 20)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> SendDataAsync(Guid characteristic, string commands, int chunk = 0)
+    {
+        throw new NotImplementedException();
+    }
 }

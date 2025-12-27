@@ -91,7 +91,7 @@
         <PackageReference Include="BootstrapBlazor.VideoPlayer" Version="9.*" />
         <PackageReference Include="BootstrapBlazor.FileViewer" Version="9.*" />
         <PackageReference Include="BootstrapBlazor.MindMap" Version="9.*" />
-        <PackageReference Include="Densen.Component.Blazor" Version="*" />
+        <PackageReference Include="Densen.Component.Blazor" Version="8.0.0" />
         <PackageReference Include="Densen.FreeSql.Extensions.BootstrapBlazor" Version="10.0.0" />
         <PackageReference Include="FreeSql" Version="3.5.304" />
         <PackageReference Include="FreeSql.Provider.SqliteCore" Version="3.5.304" />
