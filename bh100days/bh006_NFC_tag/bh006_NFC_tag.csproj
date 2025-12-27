@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
-        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+        <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
+        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
         <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-        <!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+        <!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
         <OutputType>Exe</OutputType>
         <RootNamespace>bh006_NFC_tag</RootNamespace>
         <UseMaui>true</UseMaui>
@@ -32,13 +32,13 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+    <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
       <CodesignKey>Apple Development: zhou chuanglin (W9D8HB5VZK)</CodesignKey>
       <CodesignProvision>VS: com.companyname.bh006_nfc_tag Development</CodesignProvision>
       <ProvisioningType>automatic</ProvisioningType>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
       <CreatePackage>false</CreatePackage>
     </PropertyGroup>
     <ItemGroup>
@@ -61,10 +61,10 @@
 
     <ItemGroup>
         <PackageReference Include="BlazorHybrid.Maui.Permissions" Version="0.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-        <PackageReference Include="BootstrapBlazor" Version="9.6.3" />
-        <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="9.4.0" />
-        <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.*" />
+        <PackageReference Include="BootstrapBlazor" Version="9.*" />
+        <PackageReference Include="Densen.Extensions.BootstrapBlazor" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="9.*" />
     </ItemGroup>
 
 </Project>

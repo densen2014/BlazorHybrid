@@ -1,7 +1,6 @@
 ﻿@page "/MindMaps"
 @attribute [TabItemOption(Text = "思维导图")]
 @inherits AppComponentBase
-@using BootstrapBlazor.Components.MindMaps
 @namespace BlazorHybrid.Shared.Pages
 
 <a href="https://www.nuget.org/packages/BootstrapBlazor.MindMap#readme-body-tab"><h3>思维导图 MindMap</h3></a>
@@ -11,7 +10,7 @@
 <p>Tab:添加新节点</p>
 <p>鼠标可拖动节点排列</p>
 
-<MindMap @ref="MindMap" Data="@Data" OnReceive="@OnReceive" OnError="@OnError" StyleCss="height: 55vh;" />
+<MindMap @ref="MindMap" Data="@SampleData" style="height: 55vh;" />
 
 
 <Button Text="例子1" OnClick="Sample" />
@@ -35,70 +34,7 @@
     MindMap? MindMap { get; set; }
 
     new string? Message { get; set; } = "";
-
-    /// <summary>
-    /// 初始化数据
-    /// </summary>
-    public MindMapNode Data { get; set; } = new MindMapNode
-    {
-        Data = new NodeData
-        {
-            Text = "根节点",
-            Generalization = new Generalization
-            {
-                Text = "概要的内容"
-            },
-
-        },
-        Children = new List<MindMapNode>()
-    {
-            new MindMapNode
-            {
-                Data = new NodeData
-                {
-                    Text = "二级节点1",
-                },
-                    Children = new List<MindMapNode>()
-                {
-                        new MindMapNode
-                        {
-                            Data = new NodeData
-                            {
-                                Text = "分支主题1",
-                            },
-                        },
-                        new MindMapNode
-                        {
-                            Data = new NodeData
-                            {
-                                Text = "分支主题2",
-                            },
-                        },
-                        new MindMapNode
-                        {
-                            Data = new NodeData
-                            {
-                                Text = "分支主题3",
-                            },
-                        }
-                    }
-            },
-            new MindMapNode
-            {
-                Data = new NodeData
-                {
-                    Text = "二级节点2",
-                },
-            },
-            new MindMapNode
-            {
-                Data = new NodeData
-                {
-                    Text = "二级节点3",
-                },
-            }
-        }
-    };
+    
 
     private Task OnReceive(string? message)
     {
@@ -120,13 +56,13 @@
 
     async Task ExportJson()
     {
-        await MindMap.Export("json", WithConfig: false);
+        await MindMap.Export("json", withConfig: false);
         await ShowBottomMessage("下载Json");
     }
 
     async Task ExportPng()
     {
-        await MindMap.Export(IsDownload: false, WithConfig: false);
+        await MindMap.Export(download: false, withConfig: false);
         await ShowBottomMessage("已导出Png");
     }
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31611.283
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHybrid.Core", "BlazorHybrid.Core\BlazorHybrid.Core.csproj", "{682865EE-3A06-47F3-8AD9-7091FCF5E20E}"
 EndProject
@@ -200,6 +200,7 @@ Global
 		{79A2341B-9239-47AE-A42C-3CD1AB13A1BE}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{434D820F-1CF4-4586-AA67-752633C7CB7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{434D820F-1CF4-4586-AA67-752633C7CB7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{434D820F-1CF4-4586-AA67-752633C7CB7A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{434D820F-1CF4-4586-AA67-752633C7CB7A}.DebugNuget|Any CPU.ActiveCfg = Debug|Any CPU
 		{434D820F-1CF4-4586-AA67-752633C7CB7A}.DebugNuget|Any CPU.Build.0 = Debug|Any CPU
 		{434D820F-1CF4-4586-AA67-752633C7CB7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
